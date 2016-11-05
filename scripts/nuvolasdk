@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+
+import sys
+try:
+	import nuvolasdk
+except ImportError:
+	from os.path import dirname, basename
+	dir = dirname(__file__)
+	if basename(dir) == "scripts":
+		sys.path.append(dirname(dir))
+	import nuvolasdk
+
+sys.exit(nuvolasdk.run(".", sys.argv))
