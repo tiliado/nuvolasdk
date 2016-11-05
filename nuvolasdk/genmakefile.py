@@ -56,7 +56,7 @@ def gen_makefile():
 	install = [
 		'install: all\n',
 		'\tinstall -vCd $(APP_DIR)/$(ICONS_DIR)\n',
-		'\tinstall -vC -t $(APP_DIR) $(FILES)\n',
+		'\tcp -v -t $(APP_DIR) $(FILES)\n',
 	]
 	uninstall = [
 		'uninstall:\n',
@@ -77,7 +77,7 @@ def gen_makefile():
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/scalable.svg"
 				icons.append('%s : %s | $(ICONS_DIR)\n\tcp -v $< $@\n' % (dest, src))
-				install.append('\tinstall -vC -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
+				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/scalable/apps || true\n')
 				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
 				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
@@ -85,7 +85,7 @@ def gen_makefile():
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/%s.png" % size
 				icons.append('%s : %s | $(ICONS_DIR)\n\t$(NUVOLA_SDK_DATA)/svg-convert.sh $< %s $@\n' % (dest, src, size))
-				install.append('\tinstall -vC -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
+				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/%sx%s/apps || true\n' % (size, size))
 				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
 				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
