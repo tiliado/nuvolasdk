@@ -7,7 +7,7 @@ Dependencies
 ------------
 
   * Python >= 3.4
-  * Nuvola SDK
+  * [Nuvola SDK](https://github.com/tiliado/nuvolasdk)
   * GNU Make
   * SVG optimizer: [Scour](https://github.com/codedread/scour)
   * SVG converter: Lasem, librsvg, GraphicsMagick, ImageMagick
