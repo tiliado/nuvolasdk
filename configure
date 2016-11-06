@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+import sys
+prefix = "/usr/local"
+
+for arg in sys.argv[1:]:
+	try:
+		name, value = arg.split("=", 1)
+	except ValueError:
+		name = arg
+		value=None
+	if name == "--libdir":
+		pass
+	elif name == "--prefix":
+		prefix = value
+	elif name in ("CFLAGS", "CXXFLAGS"):
+		pass
+	else:
+		print("Warning: Unknown option: ", arg)
+
+makefile = """
+PREFIX ?= %s
+DEST ?= /
+
+all:
+	python3 setup.py build
+install:
+	python3 setup.py install --prefix="$(PREFIX)" --root="$(DEST)"
+""" % prefix
+
+with open("Makefile", "wt", encoding="utf-8") as f:
+	f.write(makefile)
