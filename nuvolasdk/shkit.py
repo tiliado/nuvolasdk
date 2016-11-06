@@ -39,6 +39,7 @@ from time import strftime
 import re as _re
 from pprint import pprint
 import json as _json
+from collections import OrderedDict
 
 shquote = _shlex.quote
 
@@ -132,8 +133,11 @@ def popdir():
 
 def readjson(path, **kwargs):
 	with open(path, encoding="utf-8") as f:
-		return _json.load(f, **kwargs)
+		return _json.load(f, object_pairs_hook=OrderedDict, **kwargs)
 
-def writejson(path, data, **kwargs):
+def writejson2(path, data, **kwargs):
 	with open(path, "w", encoding="utf-8") as f:
 		return _json.dump(data, f, **kwargs)
+
+def writejson(path, data):
+	return writejson2(path, data, indent=4, sort_keys=False, separators=(', ', ': '), ensure_ascii=False)
