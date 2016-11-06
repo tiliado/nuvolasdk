@@ -29,8 +29,8 @@ from nuvolasdk.defaults import BUILD_JSON
 def gen_makefile():
 	prefix = "/usr/local"
 	dbus_launcher = False
-	metadata = readjson("metadata.json")
-	build_json = readjson("build.json")
+	metadata = readjson("metadata.in.json")
+	build_json = metadata.get("build", {})
 	
 	for arg in sys.argv[1:]:
 		try:
@@ -131,10 +131,14 @@ def gen_makefile():
 	makefile.extend((
 		"clean:\n",
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
-		"\trm -rf icons\n",
+		"\trm -rvf icons\n",
 		"distclean: clean\n",
-		"\trm -f Makefile\n"
+		"\trm -vf Makefile metadata.json\n"
 	));
 	
 	fwrite("Makefile", "".join(makefile))
+	
+	del(metadata["build"])
+	metadata["has_dbus_launcher"] = dbus_launcher
+	writejson("metadata.json", metadata)
 		

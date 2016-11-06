@@ -29,15 +29,19 @@ def convert_project(directory):
 	sdk_data = joinpath(fdirname(__file__), "data")
 	pushdir(directory)
 	
-	print("Reading metadata.json")
-	metadata = readjson(joinpath(directory, "metadata.json"))
-	print("Reading build.json")
+	metadata = "metadata.json"
+	metadata_in = "metadata.in.json"
+	if fexists(metadata) and not fexists(metadata_in):
+		print("Renaming %s to %s" % (metadata, metadata_in))
+		rename(metadata, metadata_in)
+	
+	metadata = readjson(metadata_in)
 	try:
-		build_json = readjson(joinpath(directory, "build.json"))
-	except FileNotFoundError as e:
-		build_json = BUILD_JSON
-		print("Creating new build.json")
-		writejson(joinpath(directory, "build.json"), build_json)
+		build = metadata["build"]
+	except KeyError:
+		metadata["build"] = BUILD_JSON
+		print("Adding the build section to metadata.in.json")
+		writejson(metadata_in, metadata)
 	
 	print("Creating new configure script")
 	configure = joinpath(directory, "configure")
