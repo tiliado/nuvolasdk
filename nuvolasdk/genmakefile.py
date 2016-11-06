@@ -99,7 +99,7 @@ def gen_makefile():
 		'$(ICONS_DIR):\n',
 		'\tmkdir -p $@\n'
 		'$(ICONS_DIR)/%.svg: src/%.svg | $(ICONS_DIR)\n',
-		'\t$(NUVOLA_SDK_DATA)/svg-optimize.sh $< $@\n'
+		'\tsh $(NUVOLA_SDK_DATA)/svg-optimize.sh $< $@\n'
 		]
 	
 	for icon in icons_spec:
@@ -118,7 +118,7 @@ def gen_makefile():
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/%s.png" % size
-				icons.append('%s : %s | $(ICONS_DIR)\n\t$(NUVOLA_SDK_DATA)/svg-convert.sh $< %s $@\n' % (dest, src, size))
+				icons.append('%s : %s | $(ICONS_DIR)\n\tsh $(NUVOLA_SDK_DATA)/svg-convert.sh $< %s $@\n' % (dest, src, size))
 				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/%sx%s/apps || true\n' % (size, size))
 				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
