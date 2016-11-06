@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name = @@APP_NAME@@
+Exec = nuvolaplayer3 -a @@APP_ID@@
+Type = Application
+Categories = @@CATEGORIES@@
+Icon = @@ICON@@
+StartupWMClass = @@APP_ID_DASHED@@
+StartupNotify = true
+Terminal = false
