@@ -57,7 +57,7 @@ private async void launch(Variant args) throws GLib.Error
 	conn.register_object<CommandLine>(cmd_line_path, cmd_line);
 	var app_proxy = yield DBusProxy.@new(
 		conn, DBusProxyFlags.DO_NOT_LOAD_PROPERTIES|DBusProxyFlags.DO_NOT_CONNECT_SIGNALS, null,
-		"cz.fenryxo.NuvolaPlayer3", "/cz/fenryxo/NuvolaPlayer3", "org.gtk.Application", null);
+		"eu.tiliado.Nuvola", "/eu/tiliado/Nuvola", "org.gtk.Application", null);
 	var platform = new VariantBuilder(new VariantType("a{sv}"));
 	platform.add("{sv}", "cwd", new Variant.bytestring(Environment.get_current_dir()));
 	platform.add("{sv}", "desktop-startup-id", new Variant.string("0"));
