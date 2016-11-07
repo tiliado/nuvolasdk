@@ -113,7 +113,7 @@ def gen_makefile():
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/scalable/apps || true\n')
 				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
 				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
-				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
+				install.append('\tcp -v %s $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
 				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n')
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
@@ -123,7 +123,7 @@ def gen_makefile():
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/%sx%s/apps || true\n' % (size, size))
 				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
 				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
-				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
+				install.append('\tcp -v %s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
 				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
 			all_files.append(dest)
 
