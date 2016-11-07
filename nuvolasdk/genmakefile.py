@@ -90,7 +90,7 @@ def gen_makefile():
 		all_files.append('$(APP_ID_UNIQUE).desktop')
 		install.extend((
 			'\tinstall -vCd $(DEST)$(PREFIX)/share/applications\n',
-			'\tinstall -vC -t $(DEST)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
+			'\tcp -vf -t $(DEST)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
 		))
 		uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n')
 		
