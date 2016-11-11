@@ -26,6 +26,7 @@ namespace Nuvolasdk
 {
 
 extern const string APP_ID;
+extern const bool FLATPAK_BUILD;
 
 MainLoop loop = null;
 int retcode = 0;
@@ -93,11 +94,11 @@ private void on_launch_done(GLib.Object? o, AsyncResult res)
 	{
 		launch.end(res);
 		if (retcode != 0)
-			show_error("Failed to launch the application. Return code %d".printf(retcode));
+			show_error("Return code %d".printf(retcode));
 	}
 	catch (GLib.Error e)
 	{
-		show_error("Failed to launch the application. %s".printf(e.message));
+		show_error(e.message);
 	}
 	Idle.add(() => {loop.quit(); return false;});
 }
@@ -114,7 +115,10 @@ private void show_error(string error)
 	grid.margin = 15;
 	grid.row_spacing = 15;
 	window.add(grid);
-	var label = new Gtk.Label(error);
+	var text = "Failed to launch the application.";
+	if (FLATPAK_BUILD)
+		text +="\n\nIs the eu.tiliado.Nuvola flatpak installed?";
+	var label = new Gtk.Label(text);
 	label.set_line_wrap(true);
 	label.selectable = true;
 	grid.add(label);
@@ -122,19 +126,20 @@ private void show_error(string error)
 	var text_view = new Gtk.TextView();
 	grid.add(text_view);
 	text_view.editable = false;
-	text_view.no_show_all = true;
+	text_view.hexpand = true;
+	text_view.wrap_mode = Gtk.WrapMode.WORD_CHAR;
 	var buffer = text_view.buffer;
+	buffer.insert_at_cursor(error, -1);
+	buffer.insert_at_cursor("\n", -1);
 	if (stdout_buf != null && stdout_buf.len > 0)
 	{
 		buffer.insert_at_cursor(stdout_buf.str, (int) stdout_buf.len);
 		buffer.insert_at_cursor("\n", -1);
-		text_view.show();
 	}
 	if (stderr_buf != null && stderr_buf.len > 0)
 	{
 		buffer.insert_at_cursor(stderr_buf.str, (int) stdout_buf.len);
 		buffer.insert_at_cursor("\n", -1);
-		text_view.show();
 	}
 	window.delete_event.connect((e) => {Gtk.main_quit(); return false;});
 	window.show_all();

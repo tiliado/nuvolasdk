@@ -30,6 +30,7 @@ def gen_makefile():
 	prefix = "/usr/local"
 	dbus_launcher = False
 	desktop_launcher = False
+	flatpak_build = False
 	metadata = readjson("metadata.in.json")
 	build_json = metadata.get("build", {})
 	
@@ -49,6 +50,8 @@ def gen_makefile():
 			dbus_launcher = True
 		elif name == "--with-desktop-launcher":
 			desktop_launcher = True
+		elif name == "--flatpak-build":
+			flatpak_build = True
 		else:
 			print("Warning: Unknown option: ", arg)
 	
@@ -150,7 +153,10 @@ def gen_makefile():
 	if dbus_launcher:
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
-			'\tvalac --pkg gio-2.0  --pkg gtk+-3.0 -o $@ -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\"" $<\n',
+			'\tvalac --pkg gio-2.0  --pkg gtk+-3.0 -o $@',
+			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
+			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
+			' $<\n',
 		))
 	if desktop_launcher:
 		makefile.extend((
