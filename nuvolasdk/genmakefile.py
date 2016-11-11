@@ -150,7 +150,7 @@ def gen_makefile():
 	if dbus_launcher:
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
-			'\tvalac --pkg gio-2.0 -o $@ -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\"" $<\n',
+			'\tvalac --pkg gio-2.0  --pkg gtk+-3.0 -o $@ -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\"" $<\n',
 		))
 	if desktop_launcher:
 		makefile.extend((

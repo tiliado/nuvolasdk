@@ -6,7 +6,7 @@ Don't forget to update following sections in README.md:
 Dependencies
 ------------
 
-  * Valac (only in case of `./configure --with-dbus-launcher`)
+  * Valac, glib-2.0, gtk+-3.0 (only in case of `./configure --with-dbus-launcher`)
   * Python >= 3.4
   * [Nuvola SDK](https://github.com/tiliado/nuvolasdk)
   * GNU Make

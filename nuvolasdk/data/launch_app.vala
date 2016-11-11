@@ -30,22 +30,28 @@ extern const string APP_ID;
 MainLoop loop = null;
 int retcode = 0;
 CommandLine cmd_line = null;
+StringBuilder stdout_buf = null;
+StringBuilder stderr_buf = null;
 
 [DBus (name="org.gtk.private.CommandLine")]
 public class CommandLine : GLib.Object
 {
 	public CommandLine()
 	{
+		 stdout_buf = new StringBuilder("");
+		 stderr_buf = new StringBuilder("");
 	}
 	
 	public void print(string text)
 	{
 		stdout.puts(text);
+		stdout_buf.append(text);
 	}
 	
 	public void print_error(string text)
 	{
 		stderr.puts(text);
+		stderr_buf.append(text);
 	}
 }
 
@@ -86,12 +92,54 @@ private void on_launch_done(GLib.Object? o, AsyncResult res)
 	try
 	{
 		launch.end(res);
+		if (retcode != 0)
+			show_error("Failed to launch the application. Return code %d".printf(retcode));
 	}
 	catch (GLib.Error e)
 	{
-		stderr.printf("Failed to launch the application. %s\n", e.message);
+		show_error("Failed to launch the application. %s".printf(e.message));
 	}
 	Idle.add(() => {loop.quit(); return false;});
+}
+
+private void show_error(string error)
+{
+	stderr.printf("%s\n", error);
+	string[] _args = {};
+	unowned string[] args = _args;
+	Gtk.init(ref args);
+	var window = new Gtk.Window();
+	window.set_default_size(250, -1);
+	var grid = new Gtk.Grid();
+	grid.margin = 15;
+	grid.row_spacing = 15;
+	window.add(grid);
+	var label = new Gtk.Label(error);
+	label.set_line_wrap(true);
+	label.selectable = true;
+	grid.add(label);
+	grid.orientation = Gtk.Orientation.VERTICAL;
+	var text_view = new Gtk.TextView();
+	grid.add(text_view);
+	text_view.editable = false;
+	text_view.no_show_all = true;
+	var buffer = text_view.buffer;
+	if (stdout_buf != null && stdout_buf.len > 0)
+	{
+		buffer.insert_at_cursor(stdout_buf.str, (int) stdout_buf.len);
+		buffer.insert_at_cursor("\n", -1);
+		text_view.show();
+	}
+	if (stderr_buf != null && stderr_buf.len > 0)
+	{
+		buffer.insert_at_cursor(stderr_buf.str, (int) stdout_buf.len);
+		buffer.insert_at_cursor("\n", -1);
+		text_view.show();
+	}
+	window.delete_event.connect((e) => {Gtk.main_quit(); return false;});
+	window.show_all();
+	label.select_region(0, 0);
+	Gtk.main();
 }
 
 }
