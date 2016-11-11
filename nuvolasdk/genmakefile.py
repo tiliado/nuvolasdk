@@ -95,7 +95,7 @@ def gen_makefile():
 			'\tinstall -vCd $(DEST)$(PREFIX)/share/applications\n',
 			'\tcp -vf -t $(DEST)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
 		))
-		uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n')
+		uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/applications/$(APP_ID_UNIQUE).desktop\n')
 		
 	icons_spec = build_json.get("icons", BUILD_JSON["icons"])
 	icons = [
