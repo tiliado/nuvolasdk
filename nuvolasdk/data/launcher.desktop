@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name = @@APP_NAME@@
-Exec = nuvolaplayer3 -a @@APP_ID@@
+Exec = @@EXEC@@
 Type = Application
 Categories = @@CATEGORIES@@
 Icon = @@ICON@@

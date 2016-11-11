@@ -79,12 +79,15 @@ def gen_makefile():
 	]
 	
 	if dbus_launcher:
-		all_files.append('nuvola-app-$(APP_ID_DASHED)')
+		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
+		all_files.append(dbus_launcher_cmd)
 		install.extend((
 			'\tinstall -vCd $(DEST)$(PREFIX)/bin\n',
-			'\tinstall -vC -t $(DEST)$(PREFIX)/bin nuvola-app-$(APP_ID_DASHED)\n',
+			'\tinstall -vC -t $(DEST)$(PREFIX)/bin %s\n' % dbus_launcher_cmd,
 		))
-		uninstall.append('\trm -fv $(DEST)$(PREFIX)/bin/nuvola-app-$(APP_ID_DASHED)\n')
+		uninstall.append('\trm -fv $(DEST)$(PREFIX)/bin/%s\n' % dbus_launcher_cmd)
+	else:
+		dbus_launcher_cmd = None
 	
 	if desktop_launcher:
 		all_files.append('$(APP_ID_UNIQUE).desktop')
@@ -146,13 +149,14 @@ def gen_makefile():
 	]
 	if dbus_launcher:
 		makefile.extend((
-			'nuvola-app-$(APP_ID_DASHED): $(NUVOLA_SDK_DATA)/launch_app.vala\n',
+			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
 			'\tvalac --pkg gio-2.0 -o $@ -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\"" $<\n',
 		))
 	if desktop_launcher:
 		makefile.extend((
 			'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
 			'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
+			' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvolaplayer3 -a $(APP_ID)"),
 			' -e "s/@@CATEGORIES@@/%s/g"' % metadata["categories"],
 			' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_ID_DASHED@@/$(APP_ID_DASHED)/g" '
 			' $< > $@\n',
