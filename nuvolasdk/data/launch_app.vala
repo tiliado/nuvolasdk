@@ -138,7 +138,7 @@ private void show_error(string error)
 	}
 	if (stderr_buf != null && stderr_buf.len > 0)
 	{
-		buffer.insert_at_cursor(stderr_buf.str, (int) stdout_buf.len);
+		buffer.insert_at_cursor(stderr_buf.str, (int) stderr_buf.len);
 		buffer.insert_at_cursor("\n", -1);
 	}
 	window.delete_event.connect((e) => {Gtk.main_quit(); return false;});
