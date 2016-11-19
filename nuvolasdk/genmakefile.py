@@ -185,4 +185,6 @@ def gen_makefile():
 	metadata["has_dbus_launcher"] = dbus_launcher
 	metadata["has_desktop_launcher"] = desktop_launcher
 	writejson("metadata.json", metadata)
+	
+	print("Makefile written. Run `make all` and then `make install`.")
 		

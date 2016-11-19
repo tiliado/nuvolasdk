@@ -30,3 +30,5 @@ install:
 
 with open("Makefile", "wt", encoding="utf-8") as f:
 	f.write(makefile)
+
+print("Makefile written. Run `make all` and then `make install`.")
