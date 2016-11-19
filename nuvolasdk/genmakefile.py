@@ -85,20 +85,20 @@ def gen_makefile():
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
 		all_files.append(dbus_launcher_cmd)
 		install.extend((
-			'\tinstall -vCd $(DEST)$(PREFIX)/bin\n',
-			'\tinstall -vC -t $(DEST)$(PREFIX)/bin %s\n' % dbus_launcher_cmd,
+			'\tinstall -vCd $(DESTDIR)$(PREFIX)/bin\n',
+			'\tinstall -vC -t $(DESTDIR)$(PREFIX)/bin %s\n' % dbus_launcher_cmd,
 		))
-		uninstall.append('\trm -fv $(DEST)$(PREFIX)/bin/%s\n' % dbus_launcher_cmd)
+		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/bin/%s\n' % dbus_launcher_cmd)
 	else:
 		dbus_launcher_cmd = None
 	
 	if desktop_launcher:
 		all_files.append('$(APP_ID_UNIQUE).desktop')
 		install.extend((
-			'\tinstall -vCd $(DEST)$(PREFIX)/share/applications\n',
-			'\tcp -vf -t $(DEST)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
+			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/applications\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
 		))
-		uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/applications/$(APP_ID_UNIQUE).desktop\n')
+		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/applications/$(APP_ID_UNIQUE).desktop\n')
 		
 	icons_spec = build_json.get("icons", BUILD_JSON["icons"])
 	icons = [
@@ -117,20 +117,20 @@ def gen_makefile():
 				icons.append('%s : %s | $(ICONS_DIR)\n\tcp -v $< $@\n' % (dest, src))
 				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/scalable/apps || true\n')
-				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
-				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
-				install.append('\tcp -v %s $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
-				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n')
+				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
+				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
+				install.append('\tcp -v %s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
+				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n')
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/%s.png" % size
 				icons.append('%s : %s | $(ICONS_DIR)\n\tsh $(NUVOLA_SDK_DATA)/svg-convert.sh $< %s $@\n' % (dest, src, size))
 				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
 				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/%sx%s/apps || true\n' % (size, size))
-				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
-				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
-				install.append('\tcp -v %s $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
-				uninstall.append('\trm -fv $(DEST)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
+				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
+				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
+				install.append('\tcp -v %s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
+				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
 			all_files.append(dest)
 
 	makefile = [
@@ -144,12 +144,12 @@ def gen_makefile():
 		'FILES = ', files, '\n',
 		'ICONS_DIR ?= icons\n',
 		'PREFIX ?= ', prefix, '\n',
-		'DEST ?= \n',
-		'APP_DIR = $(DEST)$(PREFIX)/share/nuvolaplayer3/web_apps/$(APP_ID)\n',
+		'DESTDIR ?= \n',
+		'APP_DIR = $(DESTDIR)$(PREFIX)/share/nuvolaplayer3/web_apps/$(APP_ID)\n',
 		'\n',
 		'all: ', " ".join(all_files), '\n\n',
-		
 	]
+	
 	if dbus_launcher:
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
