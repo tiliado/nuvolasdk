@@ -45,7 +45,12 @@ Build a Project Using Nuvola SDK
 Create a New Project Using Nuvola SDK
 -------------------------------------
 
-TODO
+```
+nuvolasdk new-project
+```
+
+When run without additional arguments, user will be asked to provide necessary metadata for the script.
+In order to get information about available argumentsm run `nuvolasdk new-project --help`.
 
 Convert an Old Project to Use Nuvola SDK
 ----------------------------------------

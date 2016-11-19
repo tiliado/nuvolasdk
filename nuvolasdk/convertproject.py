@@ -23,7 +23,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 from nuvolasdk.shkit import *
-from nuvolasdk.defaults import BUILD_JSON
+from nuvolasdk import defaults
 
 def convert_project(directory):
 	sdk_data = joinpath(fdirname(__file__), "data")
@@ -39,13 +39,13 @@ def convert_project(directory):
 	try:
 		build = metadata["build"]
 	except KeyError:
-		metadata["build"] = BUILD_JSON
+		metadata["build"] = defaults.BUILD_JSON
 		print("Adding the build section to metadata.in.json")
 		writejson(metadata_in, metadata)
 	
 	print("Creating new configure script")
 	configure = joinpath(directory, "configure")
-	fwrite(configure, "#!/usr/bin/env python3\nimport nuvolasdk\nnuvolasdk.gen_makefile()\n")
+	fwrite(configure, defaults.CONFIGURE_SCRIPT)
 	fchmod(configure, fstat(configure).st_mode|0o111)
 	MAKEFILE = "Makefile"
 	makefile = joinpath(directory, MAKEFILE)
@@ -67,7 +67,7 @@ def convert_project(directory):
 	except Exception:
 		gitignore = []
 	
-	expected_rules = {METADATA_JSON, MAKEFILE, "icons"}
+	expected_rules = set(s for s in defaults.GITIGNORE.splitlines() if s)
 	for rule in gitignore:
 		expected_rules.discard(rule)
 	

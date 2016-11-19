@@ -15,7 +15,7 @@ setup(
 	description = "SDK for building Nuvola Player's web app scripts",
 	long_description = LONG_DESC,
 	packages = ['nuvolasdk'],
-	package_data = {'nuvolasdk': ['data/*']},
+	package_data = {'nuvolasdk': ['data/*', 'data/template/*']},
 	scripts = ['scripts/nuvolasdk'],
 	classifiers = [
         "Programming Language :: Python :: 3",
