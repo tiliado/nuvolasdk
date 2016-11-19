@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-from pathlib import Path
 import subprocess as _subprocess
 import shlex as _shlex
 import os as _os
