@@ -54,7 +54,7 @@ def new_project(directory, prog, argv):
 	
 	app_id = args.id.strip() if args.id else None
 	if not validate_app_id(app_id):
-		print('Error: App id "%s" is not valid.')
+		print('Error: App id "%s" is not valid.' % app_id)
 		app_id = None
 	
 	default_app_id = app_id_from_name(app_name)
@@ -68,7 +68,7 @@ def new_project(directory, prog, argv):
 			else:
 				app_id = input('Type app id, e.g. "google_play_music". Or press Ctrl-C to abort.\n').strip()
 			if not validate_app_id(app_id):
-				print('Error: App id "%s" is not valid.')
+				print('Error: App id "%s" is not valid.' % app_id)
 				app_id = None 
 		except KeyboardInterrupt:
 			return 1

@@ -22,14 +22,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import re
 import unicodedata
+
+APP_ID_RE = re.compile("^[a-z0-9]+(?:_[a-z0-9]+)*$")
 
 def remove_accents(input_str):
 	nfkd_form = unicodedata.normalize('NFKD', input_str)
 	return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 def validate_app_id(app_id):
-	return True
+	return bool(APP_ID_RE.match(app_id))
 
 def app_id_from_name(app_name):
 	app_id = "_".join(s for s in remove_accents(app_name.strip()).lower().split() if s)
