@@ -59,7 +59,7 @@ def gen_makefile():
 	app_name = metadata["name"]
 	app_id_dashed = app_id.replace("_", "-")
 	app_id_unique = ["eu.tiliado.NuvolaApp"]
-	for part in app_id.split("-"):
+	for part in app_id.split("_"):
 		app_id_unique.append(part[0].upper())
 		app_id_unique.append(part[1:].lower())
 	app_id_unique = "".join(app_id_unique)	
