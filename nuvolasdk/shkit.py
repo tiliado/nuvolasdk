@@ -30,8 +30,8 @@ import os as _os
 from os.path import (
 	expanduser, abspath, join as joinpath, isfile, isdir,
 	exists as fexists, basename as fbasename, dirname as fdirname)
-from shutil import rmtree, copy2 as cp
 from os import unlink, chdir, rename, mkdir, listdir, stat as fstat, chmod as fchmod, rmdir
+from shutil import rmtree, copy2 as cp, copytree
 from glob import glob
 from fnmatch import fnmatch as globmatch
 from time import strftime
@@ -41,6 +41,7 @@ import json as _json
 from collections import OrderedDict
 
 shquote = _shlex.quote
+cptree = copytree
 
 def run(command, *, verbose=False):
 	if verbose:
