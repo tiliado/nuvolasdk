@@ -29,7 +29,7 @@ from nuvolasdk.shkit import *
 from nuvolasdk import defaults
 from nuvolasdk.utils import validate_app_id, app_id_from_name, get_app_dir_name, get_dashed_app_id
 
-def new_project(directory, prog, argv):
+def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
 		prog = prog,
 		description = 'Creates a new web app script project.'
@@ -40,7 +40,10 @@ def new_project(directory, prog, argv):
 	parser.add_argument("--maintainer-name", help='Name of the maintainer, e.g. "John Doe"', type=str)
 	parser.add_argument("--maintainer-mail", help='Email of the maintainer, e.g. "john@doe.com"', type=str)
 	parser.add_argument("--maintainer-github", help='Github profile of the maintainer, e.g. "john.doe"', type=str)
-	args = parser.parse_args(argv)
+	return parser
+
+def new_project(directory, prog, argv):
+	args = create_arg_parser(prog).parse_args(argv)
 	
 	app_name = args.name.strip() if args.name else None
 	while not app_name:

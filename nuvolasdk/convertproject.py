@@ -22,10 +22,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import argparse
+
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
 
-def convert_project(directory):
+def create_arg_parser(prog):
+	parser = argparse.ArgumentParser(
+		prog = prog,
+		description = 'Converts an old-style project to a SDK project.'
+	)
+	return parser
+	
+def convert_project(directory, prog, argv):
+	args = create_arg_parser(prog).parse_args(argv)
 	sdk_data = joinpath(fdirname(__file__), "data")
 	pushdir(directory)
 	
