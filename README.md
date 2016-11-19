@@ -8,23 +8,47 @@ Dependencies
 
   - Python >= 3.4
 
-New-Style Projects
-------------------
+Installation
+------------
 
-The build procedure of new-style projects is as follows:
+  * `python3 setup.py build`
+  * `python3 setup.py install --prefix="$(PREFIX)" --root="$(DEST)"`
+ 
 
-1. Run `./configure` to generate `Makefile` and `metadata.json` from details in `metadata.in.json`.
-2. Run `make all` to build icons.
-3. Run `make install` to install the script.
+Build a Project Using Nuvola SDK
+--------------------------------
 
-SDK Usage
----------
+### Dependencies
 
-### Create New Project
+  * GNU Make
+  * SVG optimizer: [Scour](https://github.com/codedread/scour)
+  * SVG converter: Lasem, librsvg, GraphicsMagick, ImageMagick
+  * Valac, glib-2.0, gtk+-3.0 (only in case of `./configure --with-dbus-launcher`)
+
+
+### Installation
+
+ 1. Run `./configure` to generate `Makefile` and `metadata.json` from details in `metadata.in.json`. Recognized options:
+      - `--prefix`: Specify a custom build prefix instead of `/usr/local`. Example: `./configure --prefix=/usr`
+      - `--with-dbus-launcher`: Build a small launcher (`nuvola-app-{APP ID with dashes}`) to invoke the application
+         via the D-Bus service activation mechanism. Requires Nuvola Player 3.1.
+      - `--with-desktop-launcher`: Build a desktop launcher to invoke the application.
+         Required for Nuvola Player 3.1. Not compatible with Nuvola Player 3.0.
+ 2. Run `make all` to build the project.
+ 3. Run `make install` to install the project. Recognized variables:
+      - `DESTDIR`: A custom installation destination (defaults to the filesystem root).
+         Example: `make DESTDIR=/tmp/build/package install`
+ 4. Run `make uninstall` to uninstall the project. Recognized variables:
+      - `DESTDIR`: A custom installation destination (defaults to the filesystem root).
+         Example: `make DESTDIR=/tmp/build/package uninstall`
+
+Create a New Project Using Nuvola SDK
+-------------------------------------
 
 TODO
 
-### Convert Project
+Convert an Old Project to Use Nuvola SDK
+----------------------------------------
 
 ```
 nuvolasdk convert-project

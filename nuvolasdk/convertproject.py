@@ -57,7 +57,7 @@ def convert_project(directory):
 			pass
 	print("Removing obsolete scripts")
 	rmf("svg-convert.sh", "svg-optimize.sh")
-	print("Don't forget to update README.md. See file Update.README.md for details.")
+	
 	cp(joinpath(sdk_data, "Update.README.md"), "Update.README.md")
 	GITIGNORE = ".gitignore"
 	try:
@@ -88,6 +88,9 @@ def convert_project(directory):
 	try_run('git rm -f --cached svg-optimize.sh')
 	
 	print("Finished!")
+	print("\nTasks to do:\n")
+	print("  - Update README.md according to Update.README.md and the remove this template")
+	print("  - Remove Makefile.old if it has been created")
 
 if __name__ == "__main__":
 	convert_project(".")
