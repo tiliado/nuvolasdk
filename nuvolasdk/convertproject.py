@@ -29,11 +29,11 @@ def convert_project(directory):
 	sdk_data = joinpath(fdirname(__file__), "data")
 	pushdir(directory)
 	
-	metadata = "metadata.json"
+	METADATA_JSON = "metadata.json"
 	metadata_in = "metadata.in.json"
-	if fexists(metadata) and not fexists(metadata_in):
-		print("Renaming %s to %s" % (metadata, metadata_in))
-		rename(metadata, metadata_in)
+	if fexists(METADATA_JSON) and not fexists(metadata_in):
+		print("Renaming %s to %s" % (METADATA_JSON, metadata_in))
+		rename(METADATA_JSON, metadata_in)
 	
 	metadata = readjson(metadata_in)
 	try:
@@ -47,7 +47,8 @@ def convert_project(directory):
 	configure = joinpath(directory, "configure")
 	fwrite(configure, "#!/usr/bin/env python3\nimport nuvolasdk\nnuvolasdk.gen_makefile()\n")
 	fchmod(configure, fstat(configure).st_mode|0o111)
-	makefile = joinpath(directory, "Makefile")
+	MAKEFILE = "Makefile"
+	makefile = joinpath(directory, MAKEFILE)
 	if fexists(makefile) and not fexists(makefile + ".old"):
 		print("Making a backup of the Makefile")
 		try:
@@ -58,6 +59,34 @@ def convert_project(directory):
 	rmf("svg-convert.sh", "svg-optimize.sh")
 	print("Don't forget to update README.md. See file Update.README.md for details.")
 	cp(joinpath(sdk_data, "Update.README.md"), "Update.README.md")
+	GITIGNORE = ".gitignore"
+	try:
+		gitignore = fread(GITIGNORE).splitlines()
+		if gitignore and not gitignore[-1]:
+			del(gitignore[-1])
+	except Exception:
+		gitignore = []
+	
+	expected_rules = {METADATA_JSON, MAKEFILE, "icons"}
+	for rule in gitignore:
+		expected_rules.discard(rule)
+	
+	if expected_rules:
+		for rule in sorted(expected_rules):
+			gitignore.append(rule)
+		gitignore.append("")
+		print("Updating .gitignore")
+		fwrite(GITIGNORE, "\n".join(gitignore))
+	
+	print("Trying to update git repo")
+	try_run('git add metadata.in.json')
+	try_run('git add configure')
+	try_run('git add .gitignore')
+	try_run('git rm -f --cached Makefile')
+	try_run('git rm -f --cached metadata.json')
+	try_run('git rm -f --cached svg-convert.sh')
+	try_run('git rm -f --cached svg-optimize.sh')
+	
 	print("Finished!")
 
 if __name__ == "__main__":

@@ -48,6 +48,13 @@ def run(command, *, verbose=False):
 	argv = _shlex.split(command)
 	return _subprocess.check_call(argv)
 
+def try_run(command, *, verbose=False):
+	try:
+		run(command, verbose=verbose)
+		return True
+	except Exception:
+		return False
+
 def shell(command, *, verbose=False):
 	if verbose:
 		print(">", command)
