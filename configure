@@ -20,12 +20,12 @@ for arg in sys.argv[1:]:
 
 makefile = """
 PREFIX ?= %s
-DEST ?= /
+DESTDIR ?= /
 
 all:
 	python3 setup.py build
 install:
-	python3 setup.py install --prefix="$(PREFIX)" --root="$(DEST)"
+	python3 setup.py install --prefix="$(PREFIX)" --root="$(DESTDIR)"
 """ % prefix
 
 with open("Makefile", "wt", encoding="utf-8") as f:
