@@ -41,6 +41,10 @@ def run(directory, prog, argv):
 	pushdir(directory)
 	n_errors = 0
 	
+	print("Cleaning the project...")
+	try_run('make clean')
+	print("\nChecking the project...")
+	
 	F_METADATA_IN_JSON = "metadata.in.json"
 	F_CONFIGURE = "configure"
 	F_CHANGELOG_MD = "CHANGELOG.md"
@@ -196,7 +200,7 @@ def run(directory, prog, argv):
 	
 	
 	if n_errors > 0:
-		print("\n---------------\n%s errors have been found." % n_errors)
+		print("\n-----------------------------------------------------\n%s errors have been found." % n_errors)
 		return 2
 	
 	print("No errors have been found.")
