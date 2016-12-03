@@ -29,9 +29,9 @@ BASE_INSTALL_FILES = ["metadata.json", "integrate.js", "README.md", "CONTRIBUTIN
 
 BUILD_JSON = {
 	"icons": [
-		"icons/icon.svg SCALABLE 64 128 256",
-		"icons/icon-xs.svg 16 22 24",
-		"icons/icon-sm.svg 32 48"
+		"src/icon.svg SCALABLE 64 128 256",
+		"src/icon-xs.svg 16 22 24",
+		"src/icon-sm.svg 32 48"
 	]
 }
 
