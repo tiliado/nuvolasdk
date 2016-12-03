@@ -10,7 +10,7 @@ Documentation: https://github.com/tiliado/nuvolasdk
 
 setup(
 	name = "nuvolasdk",
-	version = "0.0.1",
+	version = "0.0.2",
 	author = "Jiří Janoušek",
 	author_email = "janousek.jiri@gmail.com",
 	url = "https://github.com/tiliado/nuvolasdk",
