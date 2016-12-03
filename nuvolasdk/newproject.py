@@ -27,7 +27,7 @@ import datetime
 
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
-from nuvolasdk.utils import validate_app_id, app_id_from_name, get_app_dir_name, get_dashed_app_id
+from nuvolasdk import utils
 
 def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
@@ -53,11 +53,11 @@ def new_project(directory, prog, argv):
 			return
 	
 	app_id = args.id.strip() if args.id else None
-	if not validate_app_id(app_id):
+	if not utils.validate_app_id(app_id):
 		print('Error: App id "%s" is not valid.' % app_id)
 		app_id = None
 	
-	default_app_id = app_id_from_name(app_name)
+	default_app_id = utils.app_id_from_name(app_name)
 	while not app_id:
 		try:
 			if default_app_id:
@@ -67,7 +67,7 @@ def new_project(directory, prog, argv):
 					break
 			else:
 				app_id = input('Type app id, e.g. "google_play_music". Or press Ctrl-C to abort.\n').strip()
-			if not validate_app_id(app_id):
+			if not utils.validate_app_id(app_id):
 				print('Error: App id "%s" is not valid.' % app_id)
 				app_id = None 
 		except KeyboardInterrupt:
@@ -104,7 +104,7 @@ def new_project(directory, prog, argv):
 			break
 		
 	sdk_data = joinpath(fdirname(__file__), "data")
-	app_dir_name = get_app_dir_name(app_id)
+	app_dir_name = utils.get_app_dir_name(app_id)
 	top_dir = joinpath(directory, app_dir_name)
 	
 	
@@ -129,7 +129,7 @@ def new_project(directory, prog, argv):
 	F_CHANGELOG_MD = "CHANGELOG.md"
 	new_files = [F_GITIGNORE, F_METADATA_IN_JSON, F_CONFIGURE]
 	print("Creating files", *new_files)
-	fwrite(F_GITIGNORE, defaults.GITIGNORE)
+	fwrite(F_GITIGNORE, utils.get_gitignore_for_app_id(app_id))
 	metadata = defaults.METADATA_IN_JSON.copy()
 	metadata["id"] = app_id
 	metadata["name"] = app_name
@@ -145,7 +145,7 @@ def new_project(directory, prog, argv):
 		"maintainer_mail": maintainer_mail,
 		"year": datetime.date.today().year,
 		"app_id": app_id,
-		"app_id_dashed": get_dashed_app_id(app_id),
+		"app_id_dashed": utils.get_dashed_app_id(app_id),
 		"app_name": app_name,
 	}
 	for path in F_INTEGRATE_JS, F_CHANGELOG_MD, F_README_MD, F_CONTRIBUTING_MD:

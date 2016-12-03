@@ -25,6 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import sys
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
+from nuvolasdk import utils
 
 def gen_makefile():
 	prefix = "/usr/local"
@@ -57,12 +58,9 @@ def gen_makefile():
 	
 	app_id = metadata["id"]
 	app_name = metadata["name"]
-	app_id_dashed = app_id.replace("_", "-")
-	app_id_unique = ["eu.tiliado.NuvolaApp"]
-	for part in app_id.split("_"):
-		app_id_unique.append(part[0].upper())
-		app_id_unique.append(part[1:].lower())
-	app_id_unique = "".join(app_id_unique)	
+	app_id_dashed = utils.get_dashed_app_id(app_id)
+	app_id_unique = utils.get_unique_app_id(app_id)
+	
 	sdk_data = joinpath(fdirname(__file__), "data")
 	
 	all_files = defaults.BASE_INSTALL_FILES[:]

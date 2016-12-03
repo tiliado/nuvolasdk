@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import re
 import unicodedata
 
+from nuvolasdk import defaults
+
 APP_ID_RE = re.compile("^[a-z0-9]+(?:_[a-z0-9]+)*$")
 
 def remove_accents(input_str):
@@ -41,5 +43,21 @@ def app_id_from_name(app_name):
 def get_dashed_app_id(app_id):
 	return app_id.replace("_", "-")
 
+def get_unique_app_id(app_id):
+	app_id_unique = ["eu.tiliado.NuvolaApp"]
+	for part in app_id.split("_"):
+		app_id_unique.append(part[0].upper())
+		app_id_unique.append(part[1:].lower())
+	return "".join(app_id_unique)	
+
 def get_app_dir_name(app_id):
 	return "nuvola-app-" + get_dashed_app_id(app_id)
+
+def get_dbus_launcher_name(app_id):
+	return get_app_dir_name(app_id)
+
+def get_desktop_launcher_name(app_id):
+	return get_unique_app_id(app_id) + ".desktop"
+
+def get_gitignore_for_app_id(app_id):
+	return '%s%s\n%s\n' % (defaults.GITIGNORE, get_dbus_launcher_name(app_id), get_desktop_launcher_name(app_id))

@@ -26,6 +26,7 @@ import argparse
 
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
+from nuvolasdk import utils
 
 def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
@@ -74,6 +75,10 @@ def convert_project(directory, prog, argv):
 	
 	metadata = readjson(metadata_in)
 	try:
+		app_id = metadata["id"]
+	except KeyError:
+		raise ValueError('Error: metadata.json file must contain the "id" property.')
+	try:
 		build = metadata["build"]
 	except KeyError:
 		metadata["build"] = {k: v for k, v in defaults.BUILD_JSON.items()}
@@ -99,7 +104,7 @@ def convert_project(directory, prog, argv):
 	except Exception:
 		gitignore = []
 	
-	expected_rules = set(s for s in defaults.GITIGNORE.splitlines() if s)
+	expected_rules = set(s for s in utils.get_gitignore_for_app_id(app_id).splitlines() if s)
 	for rule in gitignore:
 		expected_rules.discard(rule)
 	
