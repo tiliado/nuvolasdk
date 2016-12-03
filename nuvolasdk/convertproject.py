@@ -38,6 +38,33 @@ def convert_project(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
 	sdk_data = joinpath(fdirname(__file__), "data")
 	pushdir(directory)
+	build_extra_data = []
+	
+	MAKEFILE = "Makefile"
+	makefile = joinpath(directory, MAKEFILE)
+	if fexists(makefile) and not fexists(makefile + ".old"):
+		backup_makefile = True
+		extra_data = []
+		with open(makefile, "rt", encoding="utf-8") as f:
+			for line in f:
+				if line.strip() == defaults.GENERATED_MAKEFILE.strip():
+					backup_makefile = False
+					break
+				if line.startswith("INSTALL_FILES"):
+					__, files = line.split("=")
+					for entry in files.split():
+						entry = entry.strip()
+						if entry and entry not in defaults.BASE_INSTALL_FILES:
+							extra_data.append(entry)
+		
+		if backup_makefile:
+			build_extra_data.extend(extra_data)
+			print("Making a backup of the Makefile")
+			try:
+				rename(makefile, makefile + ".old")
+			except FileNotFoundError as e:
+				pass
+	
 	
 	METADATA_JSON = "metadata.json"
 	metadata_in = "metadata.in.json"
@@ -49,7 +76,9 @@ def convert_project(directory, prog, argv):
 	try:
 		build = metadata["build"]
 	except KeyError:
-		metadata["build"] = defaults.BUILD_JSON
+		metadata["build"] = {k: v for k, v in defaults.BUILD_JSON.items()}
+		if build_extra_data:
+			metadata["build"]["extra_data"] = build_extra_data
 		print("Adding the build section to metadata.in.json")
 		writejson(metadata_in, metadata)
 	
@@ -57,14 +86,7 @@ def convert_project(directory, prog, argv):
 	configure = joinpath(directory, "configure")
 	fwrite(configure, defaults.CONFIGURE_SCRIPT)
 	fchmod(configure, fstat(configure).st_mode|0o111)
-	MAKEFILE = "Makefile"
-	makefile = joinpath(directory, MAKEFILE)
-	if fexists(makefile) and not fexists(makefile + ".old"):
-		print("Making a backup of the Makefile")
-		try:
-			rename(makefile, makefile + ".old")
-		except FileNotFoundError as e:
-			pass
+	
 	print("Removing obsolete scripts")
 	rmf("svg-convert.sh", "svg-optimize.sh")
 	
