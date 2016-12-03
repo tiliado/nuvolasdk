@@ -27,6 +27,8 @@ import os.path
 from nuvolasdk.genmakefile import gen_makefile
 from nuvolasdk.convertproject import convert_project
 import nuvolasdk.newproject
+import nuvolasdk.convertproject
+import nuvolasdk.checkproject
 
 def print_help(prog):
 	print('Help')
@@ -36,6 +38,9 @@ def print_help(prog):
 	print('New project')
 	print('===========\n')
 	nuvolasdk.newproject.create_arg_parser(prog + " new-project").print_help()
+	print('\nCheck project')
+	print('===============\n')
+	nuvolasdk.checkproject.create_arg_parser(prog + " check-project").print_help()
 	print('\nConvert project')
 	print('===============\n')
 	nuvolasdk.convertproject.create_arg_parser(prog + " convert-project").print_help()
@@ -49,6 +54,9 @@ def run(wd, argv):
 	cmd = argv[1]
 	if cmd == "convert-project":
 		convert_project(wd, prog + " " + cmd, argv[2:])
+		return 0
+	if cmd == "check-project":
+		nuvolasdk.checkproject.run(wd, prog + " " + cmd, argv[2:])
 		return 0
 	if cmd == "new-project":
 		nuvolasdk.newproject.new_project(wd, prog + " " + cmd, argv[2:])

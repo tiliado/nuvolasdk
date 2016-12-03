@@ -64,7 +64,7 @@ def gen_makefile():
 	sdk_data = joinpath(fdirname(__file__), "data")
 	
 	all_files = defaults.BASE_INSTALL_FILES[:]
-	all_files.extend(glob("LICENSE*"))
+	all_files.extend(utils.get_license_files())
 	for entry in build_json.get("extra_data", []):
 		all_files.extend(glob(entry))
 	

@@ -53,6 +53,15 @@ nuvolasdk new-project
 When run without additional arguments, user will be asked to provide necessary metadata for the script.
 In order to get information about available argumentsm run `nuvolasdk new-project --help`.
 
+Check whether a project is well-formed
+--------------------------------------
+
+```
+nuvolasdk check-project
+```
+
+Please run this check before a code review.
+
 Convert an Old Project to Use Nuvola SDK
 ----------------------------------------
 

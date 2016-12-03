@@ -26,6 +26,7 @@ import re
 import unicodedata
 
 from nuvolasdk import defaults
+from nuvolasdk import shkit
 
 APP_ID_RE = re.compile("^[a-z0-9]+(?:_[a-z0-9]+)*$")
 
@@ -61,3 +62,6 @@ def get_desktop_launcher_name(app_id):
 
 def get_gitignore_for_app_id(app_id):
 	return '%s%s\n%s\n' % (defaults.GITIGNORE, get_dbus_launcher_name(app_id), get_desktop_launcher_name(app_id))
+
+def get_license_files():
+	return shkit.glob("LICENSE*")
