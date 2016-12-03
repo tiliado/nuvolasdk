@@ -23,6 +23,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import argparse
+import datetime
 
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
@@ -79,6 +80,36 @@ def convert_project(directory, prog, argv):
 	except KeyError:
 		raise ValueError('Error: metadata.json file must contain the "id" property.')
 	try:
+		app_name = metadata["name"]
+	except KeyError:
+		raise ValueError('Error: metadata.json file must contain the "name" property.')
+	
+	try:
+		version_major = metadata["version_major"]
+	except KeyError:
+		raise ValueError('Error: metadata.json file must contain the "version_major" property.')
+	try:
+		version_minor = metadata["version_minor"]
+	except KeyError:
+		raise ValueError('Error: metadata.json file must contain the "version_minor" property.')
+	try:
+		maintainer_name = metadata["maintainer_name"]
+	except KeyError:
+		raise ValueError('Error: metadata.json file must contain the "maintainer_name" property.')
+	try:
+		maintainer_link = metadata["maintainer_link"]
+	except KeyError:
+		raise ValueError('Error: metadata.json file must contain the "maintainer_link" property.')
+	
+	subst = {
+		"maintainer_name": maintainer_name,
+		"year": datetime.date.today().year,
+		"app_id": app_id,
+		"app_id_dashed": utils.get_dashed_app_id(app_id),
+		"app_name": app_name,
+	}
+		
+	try:
 		build = metadata["build"]
 	except KeyError:
 		metadata["build"] = {k: v for k, v in defaults.BUILD_JSON.items()}
@@ -91,6 +122,46 @@ def convert_project(directory, prog, argv):
 	configure = joinpath(directory, "configure")
 	fwrite(configure, defaults.CONFIGURE_SCRIPT)
 	fchmod(configure, fstat(configure).st_mode|0o111)
+	
+	F_CHANGELOG_MD = "CHANGELOG.md"
+	if not fexists(F_CHANGELOG_MD):
+		print("Generating", F_CHANGELOG_MD)
+		changelog = ["%s Change Log" % app_name]
+		changelog.append("=" * len(changelog[0]))
+		changelog.append("")
+		changelog.append("%s.%s - unreleased" % (version_major, version_minor))
+		changelog.append("-" * len(changelog[-1]))
+		changelog.append("  * Ported to use Nuvola SDK.")
+		with open(F_CHANGELOG_MD, "wt", encoding="utf-8") as f:
+			f.write("\n".join(changelog) + "\n")
+	
+	F_CONTRIBUTING_MD = "CONTRIBUTING.md"
+	if not fexists(F_CONTRIBUTING_MD):
+		print("Generating", F_CONTRIBUTING_MD)
+		cp(joinpath(sdk_data, "template", F_CONTRIBUTING_MD), F_CONTRIBUTING_MD)
+		dollar_replace(F_CONTRIBUTING_MD, subst)
+	
+	F_README_MD = "README.md"
+	if not fexists(F_README_MD):
+		print("Generating", F_README_MD)
+		cp(joinpath(sdk_data, "template", F_README_MD), F_README_MD)
+		copyright_details = 'copyright details (Copyright 2014-2016 Johny Bollen <johny@example.net>)'
+		
+		maintainer_mail = None
+		while not maintainer_mail:
+			prompt = 'Enter your contact e-mail to be used in %s.' % copyright_details
+			prompt += "\n" + " " * (len(prompt) - 20) + "^" * 17 + "\n"
+			maintainer_mail = input(prompt).strip()
+		subst["maintainer_mail"] = maintainer_mail
+		
+		copyright_years = None
+		while not copyright_years:
+			prompt = 'Enter copyright years to be used in %s.' % copyright_details
+			prompt += "\n" + " " * (len(prompt) - 44) + "^" * 9 + "\n"
+			copyright_years = input(prompt).strip()
+		subst["year"] = copyright_years
+		
+		dollar_replace(F_README_MD, subst)
 	
 	print("Removing obsolete scripts")
 	rmf("svg-convert.sh", "svg-optimize.sh")
@@ -119,6 +190,9 @@ def convert_project(directory, prog, argv):
 	try_run('git add metadata.in.json')
 	try_run('git add configure')
 	try_run('git add .gitignore')
+	try_run('git add ' + F_CHANGELOG_MD)
+	try_run('git add ' + F_CONTRIBUTING_MD)
+	try_run('git add ' + F_README_MD)
 	try_run('git rm -f --cached Makefile')
 	try_run('git rm -f --cached metadata.json')
 	try_run('git rm -f --cached svg-convert.sh')
