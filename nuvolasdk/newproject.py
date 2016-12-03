@@ -53,7 +53,7 @@ def new_project(directory, prog, argv):
 			return
 	
 	app_id = args.id.strip() if args.id else None
-	if not utils.validate_app_id(app_id):
+	if app_id and not utils.validate_app_id(app_id):
 		print('Error: App id "%s" is not valid.' % app_id)
 		app_id = None
 	
