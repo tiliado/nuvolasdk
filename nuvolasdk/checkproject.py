@@ -74,6 +74,98 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "id" property.')
 			n_errors += 1
+		
+		try:
+			app_name = metadata["name"].strip()
+			if not app_name:
+				print('Error: metadata.json file contains invalid "name" property: "%s"' % app_name)
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "name" property.')
+			n_errors += 1
+		
+		prop_name = "version_major"
+		try:
+			version_major = metadata[prop_name]
+			if not isinstance(version_major, int) or version_major < 1:
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, version_major))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+		
+		prop_name = "version_minor"
+		try:
+			version_minor = metadata[prop_name]
+			if not isinstance(version_minor, int) or version_minor < 0:
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, version_minor))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+		
+		prop_name = "api_major"
+		try:
+			api_major = metadata[prop_name]
+			if not isinstance(api_major, int) or api_major < 3:
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, api_major))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+		
+		prop_name = "api_minor"
+		try:
+			api_minor = metadata[prop_name]
+			if not isinstance(api_minor, int) or api_minor < 0:
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, api_minor))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+		
+		prop_name = "maintainer_link"
+		try:
+			maintainer_link = metadata[prop_name]
+			if not maintainer_link.strip() or not maintainer_link.startswith("https://github.com/"):
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, maintainer_link))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+			
+		prop_name = "maintainer_name"
+		try:
+			maintainer_name = metadata[prop_name]
+			if not maintainer_name.strip():
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, maintainer_name))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+			
+		prop_name = "license"
+		try:
+			license = metadata[prop_name]
+			if not license.strip():
+				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, license))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
+			n_errors += 1
+		
+		prop_name = "categories"
+		try:
+			categories = metadata[prop_name]
+			for err in utils.check_desktop_categories(categories):
+				print('Error: metadata.json file contains invalid "%s" property: %s' % (prop_name, err))
+				n_errors += 1
+		except KeyError:
+			print('Error: metadata.json file must contain the "%s" property.' % categories)
+			n_errors += 1
+		
+		
+		
 		try:
 			build = metadata["build"]
 			try:

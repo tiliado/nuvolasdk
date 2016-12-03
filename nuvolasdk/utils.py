@@ -30,6 +30,11 @@ from nuvolasdk import shkit
 
 APP_ID_RE = re.compile("^[a-z0-9]+(?:_[a-z0-9]+)*$")
 
+DESKTOP_CATEGORIES = (
+	"AudioVideo", "Audio", "Video", "Development", "Education", "Game",
+	"Graphics", "Network", "Office", "Science", "Settings", "System", "Utility"
+)
+
 def remove_accents(input_str):
 	nfkd_form = unicodedata.normalize('NFKD', input_str)
 	return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
@@ -65,3 +70,31 @@ def get_gitignore_for_app_id(app_id):
 
 def get_license_files():
 	return shkit.glob("LICENSE*")
+
+def check_desktop_categories(categories):
+	errors = []
+	if isinstance(categories, str):
+		categories = [c.strip() for c in categories.split(";") if c.strip()]
+	if not categories:
+		errors.append("Categories field is empty.")
+	else:
+		audio_video = False
+		audio = False
+		video = False
+		
+		for category in categories:
+			if category not in DESKTOP_CATEGORIES:
+				errors.append('The desktop category "%s" is not valid.' % category)
+			elif category == "AudioVideo":
+				audio_video = True
+			elif category == "Audio":
+				audio = True
+			elif category == "Video":
+				video = True
+		
+		if audio and not audio_video:
+			errors.append('If the desktop category "Audio" is specified, the desktop category AudioVideo must be specified too.')
+		if video and not audio_video:
+			errors.append('If the desktop category "Video" is specified, the desktop category AudioVideo must be specified too.')
+	return errors
+		
