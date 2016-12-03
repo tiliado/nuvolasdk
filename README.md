@@ -1,7 +1,7 @@
 Nuvola SDK
 ==========
 
-SDK for building Nuvola Player's web app scripts
+SDK for building Nuvola Player's web app scripts.
 
 Install Nuvola SDK
 ------------------
@@ -10,7 +10,12 @@ Install Nuvola SDK
 
   - Python >= 3.4
 
-### Installation
+### Installation from PyPI
+
+  * `pip3 install -U nuvolasdk`
+  * or `sudo pip3 install -U nuvolasdk`
+
+### Installation from Source Code
 
   * `python3 setup.py build`
   * `python3 setup.py install --prefix="$(PREFIX)" --root="$(DEST)"`
