@@ -41,6 +41,7 @@ def convert_project(directory, prog, argv):
 	sdk_data = joinpath(fdirname(__file__), "data")
 	pushdir(directory)
 	build_extra_data = []
+	todos = []
 	
 	MAKEFILE = "Makefile"
 	makefile = joinpath(directory, MAKEFILE)
@@ -64,6 +65,7 @@ def convert_project(directory, prog, argv):
 			print("Making a backup of the Makefile")
 			try:
 				rename(makefile, makefile + ".old")
+				todos.append("If the script builds, remove the Makefile.old file.")
 			except FileNotFoundError as e:
 				pass
 	
@@ -126,6 +128,7 @@ def convert_project(directory, prog, argv):
 	F_CHANGELOG_MD = "CHANGELOG.md"
 	if not fexists(F_CHANGELOG_MD):
 		print("Generating", F_CHANGELOG_MD)
+		todos.append("Revise the content of the auto-generated file %s." % F_CHANGELOG_MD)
 		changelog = ["%s Change Log" % app_name]
 		changelog.append("=" * len(changelog[0]))
 		changelog.append("")
@@ -138,12 +141,14 @@ def convert_project(directory, prog, argv):
 	F_CONTRIBUTING_MD = "CONTRIBUTING.md"
 	if not fexists(F_CONTRIBUTING_MD):
 		print("Generating", F_CONTRIBUTING_MD)
+		todos.append("Revise the content of the auto-generated file %s." % F_CONTRIBUTING_MD)
 		cp(joinpath(sdk_data, "template", F_CONTRIBUTING_MD), F_CONTRIBUTING_MD)
 		dollar_replace(F_CONTRIBUTING_MD, subst)
 	
 	F_README_MD = "README.md"
 	if not fexists(F_README_MD):
 		print("Generating", F_README_MD)
+		todos.append("Revise the content of the auto-generated file %s." % F_README_MD)
 		cp(joinpath(sdk_data, "template", F_README_MD), F_README_MD)
 		copyright_details = 'copyright details (Copyright 2014-2016 Johny Bollen <johny@example.net>)'
 		
@@ -200,8 +205,9 @@ def convert_project(directory, prog, argv):
 	
 	print("Finished!")
 	print("\nTasks to do:\n")
-	print("  - Update README.md according to Update.README.md and the remove this template")
-	print("  - Remove Makefile.old if it has been created")
+	print("  - Update README.md according to Update.README.md and then remove this template.")
+	for todo in todos:
+		print("  -", todo)
 
 if __name__ == "__main__":
 	convert_project(".")
