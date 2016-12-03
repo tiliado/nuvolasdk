@@ -82,3 +82,8 @@ Converts old-style projects without SDK to a new-style project with SDK. Notable
   * The old `Makefile` is renamed to `Makefile.old` and can be safely removed once the new-style
     project build successfully.
   * The scripts `svg-convert.sh` and `svg-optimize.sh` are removed because they are included in the SDK.
+
+Change Log
+----------
+
+See [CHANGELOG.md](./CHANGELOG.md).

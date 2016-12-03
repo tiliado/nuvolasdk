@@ -10,7 +10,7 @@ Documentation: https://github.com/tiliado/nuvolasdk
 
 setup(
 	name = "nuvolasdk",
-	version = "0.0.2",
+	version = "1.0.0",
 	author = "Jiří Janoušek",
 	author_email = "janousek.jiri@gmail.com",
 	url = "https://github.com/tiliado/nuvolasdk",
@@ -24,7 +24,7 @@ setup(
 	scripts = ['scripts/nuvolasdk'],
 	classifiers = [
         "Programming Language :: Python :: 3",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
