@@ -3,13 +3,14 @@ Nuvola SDK
 
 SDK for building Nuvola Player's web app scripts
 
-Dependencies
-------------
+Install Nuvola SDK
+------------------
+
+### Dependencies
 
   - Python >= 3.4
 
-Installation
-------------
+### Installation
 
   * `python3 setup.py build`
   * `python3 setup.py install --prefix="$(PREFIX)" --root="$(DEST)"`
