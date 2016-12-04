@@ -19,8 +19,21 @@ setup(
 	long_description = LONG_DESC,
 	license = 'BSD',
 	packages = ['nuvolasdk'],
-	package_data = {'nuvolasdk': ['data/*', 'data/template/*', 'data/template/src/*']},
-	exclude_package_data = {'nuvolasdk': ['data/template', 'data/template/src']},
+	package_data = {
+		'nuvolasdk': [
+				'data/*',
+				'data/template/*',
+				'data/template/src/*',
+				'data/examples/*',
+			]
+		},
+	exclude_package_data = {
+		'nuvolasdk': [
+			'data/template',
+			'data/template/src',
+			'data/examples'
+		]
+	},
 	scripts = ['scripts/nuvolasdk'],
 	classifiers = [
         "Programming Language :: Python :: 3",
