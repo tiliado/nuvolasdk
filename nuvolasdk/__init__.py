@@ -29,6 +29,7 @@ from nuvolasdk.convertproject import convert_project
 import nuvolasdk.newproject
 import nuvolasdk.convertproject
 import nuvolasdk.checkproject
+import nuvolasdk.datadir
 
 def print_help(prog):
 	print('Help')
@@ -44,6 +45,9 @@ def print_help(prog):
 	print('\nConvert project')
 	print('===============\n')
 	nuvolasdk.convertproject.create_arg_parser(prog + " convert-project").print_help()
+	print('\nPrint data dir')
+	print('==============\n')
+	nuvolasdk.datadir.create_arg_parser(prog + " data-dir").print_help()
 	
 def run(wd, argv):
 	prog = os.path.basename(argv[0])
@@ -61,6 +65,11 @@ def run(wd, argv):
 	if cmd == "new-project":
 		nuvolasdk.newproject.new_project(wd, prog + " " + cmd, argv[2:])
 		return 0	
+	
+	if cmd == "data-dir":
+		nuvolasdk.datadir.run(wd, prog + " " + cmd, argv[2:])
+		return 0
+	
 	if cmd in ('-h', '--help', 'help'):
 		print_help(prog)
 		return 0
