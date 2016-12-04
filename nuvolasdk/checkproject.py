@@ -41,9 +41,12 @@ def run(directory, prog, argv):
 	pushdir(directory)
 	n_errors = 0
 	
-	print("Cleaning the project...")
-	try_run('make clean')
-	print("\nChecking the project...")
+	if fexists("Makefile"):
+		print("Cleaning the project...")
+		try_run('make clean')
+		print("")
+	
+	print("Checking the project...")
 	
 	F_METADATA_IN_JSON = "metadata.in.json"
 	F_CONFIGURE = "configure"
