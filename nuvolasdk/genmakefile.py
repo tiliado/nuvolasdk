@@ -32,6 +32,7 @@ def gen_makefile():
 	dbus_launcher = False
 	desktop_launcher = False
 	flatpak_build = False
+	create_appdata = False
 	metadata = readjson("metadata.in.json")
 	build_json = metadata.get("build", {})
 	
@@ -49,6 +50,8 @@ def gen_makefile():
 			pass
 		elif name == "--with-dbus-launcher":
 			dbus_launcher = True
+		elif name == "--with-appdata-xml":
+			create_appdata = True
 		elif name == "--with-desktop-launcher":
 			desktop_launcher = True
 		elif name == "--flatpak-build":
@@ -98,6 +101,17 @@ def gen_makefile():
 			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/applications/$(APP_ID_UNIQUE).desktop\n')
+	
+	if create_appdata:
+		all_files.append('$(APP_ID_UNIQUE).appdata.xml')
+		install.extend((
+			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/metainfo\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/metainfo $(APP_ID_UNIQUE).appdata.xml\n',
+			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/appdata\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/appdata $(APP_ID_UNIQUE).appdata.xml\n',
+		))
+		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/metainfo/$(APP_ID_UNIQUE).appdata.xml\n')
+		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/appdata/$(APP_ID_UNIQUE).appdata.xml\n')
 		
 	icons_spec = build_json.get("icons", defaults.BUILD_JSON["icons"])
 	icons = [
@@ -156,6 +170,11 @@ def gen_makefile():
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
 			' $<\n',
+		))
+	if create_appdata:
+		makefile.extend((
+			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
+			'\tnuvolasdk create-appdata -o $@ -m $<\n',
 		))
 	if desktop_launcher:
 		makefile.extend((
