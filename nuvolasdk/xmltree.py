@@ -101,10 +101,13 @@ class TreeBuilder(ElementTree.TreeBuilder):
             elm = indent_tree(elm, pretty * " ")
         return elm
     
-    def dump(self, pretty=4):
+    def dump(self, pretty=4, xml_declaration=True):
         elm = self.close(pretty=pretty)
         if elm:
-            return ElementTree.tostring(elm, encoding="unicode", method="xml")
+            xml = ElementTree.tostring(elm, encoding="unicode", method="xml")
+            if xml_declaration:
+                xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + xml
+            return xml
         return ""
     
     class Cursor:
