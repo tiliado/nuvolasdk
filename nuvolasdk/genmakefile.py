@@ -59,6 +59,11 @@ def gen_makefile():
 		else:
 			print("Warning: Unknown option: ", arg)
 	
+	if flatpak_build:
+		dbus_launcher = True
+		desktop_launcher = True
+		create_appdata = True
+	
 	app_id = metadata["id"]
 	app_name = metadata["name"]
 	app_id_dashed = utils.get_dashed_app_id(app_id)
@@ -94,6 +99,13 @@ def gen_makefile():
 	else:
 		dbus_launcher_cmd = None
 	
+	if flatpak_build:
+		all_files.append('$(APP_ID_UNIQUE).data.service')
+		install.extend((
+			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/dbus-1/services\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_UNIQUE).data.service\n',
+		))
+		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_UNIQUE).data.service\n')
 	if desktop_launcher:
 		all_files.append('$(APP_ID_UNIQUE).desktop')
 		install.extend((
@@ -120,7 +132,7 @@ def gen_makefile():
 		'$(ICONS_DIR)/%.svg: src/%.svg | $(ICONS_DIR)\n',
 		'\tsh $(NUVOLA_SDK_DATA)/svg-optimize.sh $< $@\n'
 		]
-	
+
 	for icon in icons_spec:
 		path, *sizes = icon.split(' ')
 		for size in sizes:
@@ -166,11 +178,22 @@ def gen_makefile():
 	if dbus_launcher:
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
-			'\tvalac --pkg gio-2.0  --pkg gtk+-3.0 -o $@',
+			'\tvalac --pkg gio-2.0 --pkg gtk+-3.0',
+			' --pkg gio-unix-2.0 -D FLATPAK' if flatpak_build else '',
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
+			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
-			' $<\n',
+			' -o $@ $<\n',
 		))
+		
+	if flatpak_build:
+		makefile.extend((
+			'$(APP_ID_UNIQUE).data.service:\n',
+			'\techo "[D-BUS Service]" > $@\n',
+			'\techo "Name=$(APP_ID_UNIQUE).data" >> $@\n',
+			'\techo "Exec=%s --data" >> $@\n' % dbus_launcher_cmd,
+		))
+	
 	if create_appdata:
 		makefile.extend((
 			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
