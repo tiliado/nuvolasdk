@@ -77,16 +77,21 @@ def gen_makefile():
 		all_files.extend(glob(entry))
 	
 	files = ' '.join(all_files)
+	flatpak_archive = all_files[:]
 	
 	install = [
 		'install: all\n',
-		'\tinstall -vCd $(APP_DIR)/$(ICONS_DIR)\n',
-		'\tcp -v -t $(APP_DIR) $(FILES)\n',
 	]
 	uninstall = [
 		'uninstall:\n',
 		'\trm -rfv $(APP_DIR)\n'
 	]
+	
+	if not flatpak_build:
+		install.extend([
+		'\tinstall -vCd $(APP_DIR)/$(ICONS_DIR)\n',
+		'\tcp -v -t $(APP_DIR) $(FILES)\n',
+		])
 	
 	if dbus_launcher:
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
@@ -101,11 +106,15 @@ def gen_makefile():
 	
 	if flatpak_build:
 		all_files.append('$(APP_ID_UNIQUE).data.service')
+		all_files.append('$(APP_ID).tar.gz')
 		install.extend((
 			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/dbus-1/services\n',
 			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_UNIQUE).data.service\n',
+			'\tmkdir -p $(WEB_APPS)\n',
+			'\tcp -vf -t $(WEB_APPS) $(APP_ID).tar.gz\n',
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_UNIQUE).data.service\n')
+		uninstall.append('\trm -fv $(WEB_APPS)/$(APP_ID).tar.gz\n')
 	if desktop_launcher:
 		all_files.append('$(APP_ID_UNIQUE).desktop')
 		install.extend((
@@ -140,23 +149,28 @@ def gen_makefile():
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/scalable.svg"
 				icons.append('%s : %s | $(ICONS_DIR)\n\tcp -v $< $@\n' % (dest, src))
-				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
-				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/scalable/apps || true\n')
-				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
-				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
-				install.append('\tcp -v %s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
-				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APP_ID_UNIQUE).svg\n')
+				install.append('\tmkdir -pv $(HICOLOR_DIR)/scalable/apps || true\n')
+				install.append('\tcp -v %s $(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
+				uninstall.append('\trm -fv $(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n')
+				if not flatpak_build:
+					install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
+					install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
+					uninstall.append('\trm -fv $(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
+				
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/%s.png" % size
 				icons.append('%s : %s | $(ICONS_DIR)\n\tsh $(NUVOLA_SDK_DATA)/svg-convert.sh $< %s $@\n' % (dest, src, size))
-				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
-				install.append('\tmkdir -pv $(APP_DIR)/../../../icons/hicolor/%sx%s/apps || true\n' % (size, size))
-				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
-				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
-				install.append('\tcp -v %s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
-				uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
+				install.append('\tmkdir -pv $(HICOLOR_DIR)/%sx%s/apps || true\n' % (size, size))
+				install.append('\tcp -v %s $(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
+				uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
+				if not flatpak_build:
+					install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
+					install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
+					uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
+				
 			all_files.append(dest)
+			flatpak_archive.append(dest)
 
 	makefile = [
 		defaults.GENERATED_MAKEFILE,
@@ -170,7 +184,9 @@ def gen_makefile():
 		'ICONS_DIR ?= icons\n',
 		'PREFIX ?= ', prefix, '\n',
 		'DESTDIR ?= \n',
-		'APP_DIR = $(DESTDIR)$(PREFIX)/share/nuvolaplayer3/web_apps/$(APP_ID)\n',
+		'WEB_APPS = $(DESTDIR)$(PREFIX)/share/nuvolaplayer3/web_apps\n',
+		'APP_DIR = $(WEB_APPS)/$(APP_ID)\n',
+		'HICOLOR_DIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor\n',
 		'\n',
 		'all: ', " ".join(all_files), '\n\n',
 	]
@@ -184,14 +200,6 @@ def gen_makefile():
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
 			' -o $@ $<\n',
-		))
-		
-	if flatpak_build:
-		makefile.extend((
-			'$(APP_ID_UNIQUE).data.service:\n',
-			'\techo "[D-BUS Service]" > $@\n',
-			'\techo "Name=$(APP_ID_UNIQUE).data" >> $@\n',
-			'\techo "Exec=%s --data" >> $@\n' % dbus_launcher_cmd,
 		))
 	
 	if create_appdata:
@@ -209,12 +217,27 @@ def gen_makefile():
 			' $< > $@\n',
 		))
 	makefile.extend(icons)
+	
+	if flatpak_build:
+		makefile.extend((
+			'$(APP_ID_UNIQUE).data.service:\n',
+			'\techo "[D-BUS Service]" > $@\n',
+			'\techo "Name=$(APP_ID_UNIQUE).data" >> $@\n',
+			'\techo "Exec=%s --data" >> $@\n' % dbus_launcher_cmd,
+			'$(APP_ID).tar.gz: ', " ".join(flatpak_archive), '\n',
+			'\ttar -cvzf $@ ', " ".join(flatpak_archive), '\n',
+		))
+	
+	
 	makefile.extend(install)
 	makefile.extend(uninstall)
 	makefile.extend((
 		"clean:\n",
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n' if desktop_launcher else "",
+		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
+		'\trm -fv $(APP_ID_UNIQUE).data.service\n' if flatpak_build else "",
+		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
 		"\trm -rvf icons\n",
 		"distclean: clean\n",
 		"\trm -vf Makefile metadata.json\n"
