@@ -66,7 +66,14 @@ def get_desktop_launcher_name(app_id):
 	return get_unique_app_id(app_id) + ".desktop"
 
 def get_gitignore_for_app_id(app_id):
-	return '%s%s\n%s\n' % (defaults.GITIGNORE, get_dbus_launcher_name(app_id), get_desktop_launcher_name(app_id))
+	uid = get_unique_app_id(app_id)
+	return ''.join((
+		defaults.GITIGNORE,
+		get_dbus_launcher_name(app_id) + '\n',
+		get_desktop_launcher_name(app_id) + '\n',
+		uid + '.data.service\n',
+		uid + '.appdata.xml\n',
+		app_id + '.tar.gz\n'))
 
 def get_license_files():
 	return shkit.glob("LICENSE*")
