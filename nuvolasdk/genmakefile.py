@@ -197,7 +197,7 @@ def gen_makefile():
 	if create_appdata:
 		makefile.extend((
 			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
-			'\tnuvolasdk create-appdata -o $@ -m $<\n',
+			'\tpython3 -m nuvolasdk create-appdata -o $@ -m $<\n',
 		))
 	if desktop_launcher:
 		makefile.extend((
