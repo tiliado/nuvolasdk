@@ -80,5 +80,5 @@ def run(wd, argv):
 		return 0
 	
 	print("Error: Unknown command '%s'.\n" % cmd)
-	print_help()
+	print_help(prog)
 	return 2
