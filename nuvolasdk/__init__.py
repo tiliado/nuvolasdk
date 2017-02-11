@@ -55,6 +55,8 @@ def print_help(prog):
 	
 def run(wd, argv):
 	prog = os.path.basename(argv[0])
+	if prog.startswith("__main__"):
+		prog = os.path.basename(os.path.dirname(argv[0]))
 	if len(argv) == 1:
 		print("Error: Not enough arguments.\n")
 		print_help(prog)
