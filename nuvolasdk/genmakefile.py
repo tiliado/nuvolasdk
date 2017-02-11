@@ -189,6 +189,8 @@ def gen_makefile():
 		'HICOLOR_DIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor\n',
 		'\n',
 		'all: ', " ".join(all_files), '\n\n',
+		'metadata.json: metadata.in.json\n',
+		'\t$(error metadata.in.json is newer that metadata.json. Run ./configure again.)\n',
 	]
 	
 	if dbus_launcher:
