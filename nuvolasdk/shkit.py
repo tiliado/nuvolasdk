@@ -42,6 +42,7 @@ from collections import OrderedDict
 
 shquote = _shlex.quote
 cptree = copytree
+mv = rename
 
 def run(command, *, verbose=False):
 	if verbose:
