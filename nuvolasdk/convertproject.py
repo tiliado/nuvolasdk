@@ -42,6 +42,7 @@ def convert_project(directory, prog, argv):
 	pushdir(directory)
 	build_extra_data = []
 	todos = []
+	git_commands = []
 	
 	MAKEFILE = "Makefile"
 	makefile = joinpath(directory, MAKEFILE)
@@ -77,6 +78,7 @@ def convert_project(directory, prog, argv):
 		rename(METADATA_JSON, metadata_in)
 	
 	metadata = readjson(metadata_in)
+	metadata_changed = False
 	try:
 		app_id = metadata["id"]
 	except KeyError:
@@ -103,6 +105,16 @@ def convert_project(directory, prog, argv):
 	except KeyError:
 		raise ValueError('Error: metadata.json file must contain the "maintainer_link" property.')
 	
+	try:
+		license = metadata["license"]
+	except KeyError:
+		license = None
+		while not license:
+			prompt = 'Enter license of your script (e.g. BSD-2-Clause)\n'
+			license = input(prompt).strip()
+		metadata["license"] = license
+		metadata_changed = True
+	
 	subst = {
 		"maintainer_name": maintainer_name,
 		"year": datetime.date.today().year,
@@ -118,6 +130,9 @@ def convert_project(directory, prog, argv):
 		if build_extra_data:
 			metadata["build"]["extra_data"] = build_extra_data
 		print("Adding the build section to metadata.in.json")
+		metadata_changed = True
+	
+	if metadata_changed:
 		writejson(metadata_in, metadata)
 	
 	print("Creating new configure script")
@@ -168,10 +183,41 @@ def convert_project(directory, prog, argv):
 		
 		dollar_replace(F_README_MD, subst)
 	
+	F_UPDATE_README_MD = "Update.README.md"
+	cp(joinpath(sdk_data, F_UPDATE_README_MD), F_UPDATE_README_MD)
+	
+	D_SRC = "src"
+	F_ICON_SVG = joinpath(D_SRC, "icon.svg")
+	if isdir(D_SRC) and not isfile(F_ICON_SVG):
+		print("The src directory has been renamed to src.old because it doesn't contain icon.svg")
+		mv(D_SRC, D_SRC + ".old")
+	if not isdir(D_SRC):
+		print("Copying generic icons to " + "src")
+		cptree(joinpath(sdk_data, "template", "src"), "src")
+		git_commands.append("git add " + D_SRC)
+		ICONS_COPYRIGHT = """
+Copyright
+---------
+
+  - `src/icon*.svg`
+    + Copyright 2011 Alexander King <alexanderddking@gmail.com>
+    + Copyright 2011 Arturo Torres Sánchez <arturo.ilhuitemoc@gmail.com>
+    + License: [CC-BY-3.0](./LICENSE-CC-BY.txt)
+"""
+		fappend(F_UPDATE_README_MD, ICONS_COPYRIGHT)
+	
+	
+	for icon, *sizes in ("icon-sm.svg", 32, 48), ("icon-xs.svg", 16, 22, 24):
+		f_icon = joinpath(D_SRC, icon)
+		if not isfile(f_icon):
+			todos.append("Optimize the '%s' icon for sizes %s." % (f_icon, ", ".join(str(i) for i in sizes)))
+			print("Copy the icon %s as %s." % (F_ICON_SVG, f_icon))
+			cp(F_ICON_SVG, f_icon)
+			git_commands.append("git add " + f_icon)
+			
 	print("Removing obsolete scripts")
 	rmf("svg-convert.sh", "svg-optimize.sh")
-	
-	cp(joinpath(sdk_data, "Update.README.md"), "Update.README.md")
+
 	GITIGNORE = ".gitignore"
 	try:
 		gitignore = fread(GITIGNORE).splitlines()
@@ -202,6 +248,8 @@ def convert_project(directory, prog, argv):
 	try_run('git rm -f --cached metadata.json')
 	try_run('git rm -f --cached svg-convert.sh')
 	try_run('git rm -f --cached svg-optimize.sh')
+	for cmd in git_commands:
+		try_run(cmd)
 	
 	print("Finished!")
 	print("\nTasks to do:\n")

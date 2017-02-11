@@ -3,8 +3,9 @@ Update Readme
 
 Don't forget to update README.md:
 
-1. Remove the Dependencies section
+1. Remove the Dependencies section if there is any
 2. Modify the Installation section according to the template bellow.
+3. Update copyright information if neccessary
 
 Installation
 ------------
