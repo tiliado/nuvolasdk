@@ -82,6 +82,10 @@ def fwrite(path, text, encoding="utf-8"):
 	with open(str(path), "wt", encoding=encoding) as f:
 		f.write(text)
 
+def fappend(path, text, encoding="utf-8"):
+	with open(str(path), "at", encoding=encoding) as f:
+		f.write(text)
+	
 def rmftree(path):
 	if not fexists(path):
 		return
