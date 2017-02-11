@@ -61,7 +61,7 @@ def create_app_data_xml(meta):
 		tree.add("id", uid + ".desktop")
 		tree.add("metadata_license", "CC0-1.0")
 		tree.add("project_license", meta["license"])
-		tree.add("name", "%s (Nuvola App)" % meta["name"])
+		tree.add("name", "%s (Nuvola app)" % meta["name"])
 		tree.add("summary", "%s - Sandboxed web application" % meta["name"])
 		with tree("description"):
 			tree.add("p", "%s - Sandboxed web application" % meta["name"])
