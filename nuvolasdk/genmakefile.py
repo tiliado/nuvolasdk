@@ -30,7 +30,6 @@ from nuvolasdk import utils
 def gen_makefile():
 	prefix = "/usr/local"
 	dbus_launcher = False
-	desktop_launcher = False
 	flatpak_build = False
 	create_appdata = False
 	metadata = readjson("metadata.in.json")
@@ -52,8 +51,6 @@ def gen_makefile():
 			dbus_launcher = True
 		elif name == "--with-appdata-xml":
 			create_appdata = True
-		elif name == "--with-desktop-launcher":
-			desktop_launcher = True
 		elif name == "--flatpak-build":
 			flatpak_build = True
 		else:
@@ -61,7 +58,6 @@ def gen_makefile():
 	
 	if flatpak_build:
 		dbus_launcher = True
-		desktop_launcher = True
 		create_appdata = True
 	
 	app_id = metadata["id"]
@@ -115,13 +111,13 @@ def gen_makefile():
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_UNIQUE).data.service\n')
 		uninstall.append('\trm -fv $(WEB_APPS)/$(APP_ID).tar.gz\n')
-	if desktop_launcher:
-		all_files.append('$(APP_ID_UNIQUE).desktop')
-		install.extend((
-			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/applications\n',
-			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
-		))
-		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/applications/$(APP_ID_UNIQUE).desktop\n')
+	
+	all_files.append('$(APP_ID_UNIQUE).desktop')
+	install.extend((
+		'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/applications\n',
+		'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/applications $(APP_ID_UNIQUE).desktop\n',
+	))
+	uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/applications/$(APP_ID_UNIQUE).desktop\n')
 	
 	if create_appdata:
 		all_files.append('$(APP_ID_UNIQUE).appdata.xml')
@@ -209,15 +205,15 @@ def gen_makefile():
 			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
 			'\tpython3 -m nuvolasdk create-appdata -o $@ -m $<\n',
 		))
-	if desktop_launcher:
-		makefile.extend((
-			'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
-			'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
-			' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvolaplayer3 -a $(APP_ID)"),
-			' -e "s/@@CATEGORIES@@/%s/g"' % metadata["categories"],
-			' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_ID_DASHED@@/$(APP_ID_DASHED)/g" '
-			' $< > $@\n',
-		))
+		
+	makefile.extend((
+		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
+		'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
+		' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvolaplayer3 -a $(APP_ID)"),
+		' -e "s/@@CATEGORIES@@/%s/g"' % metadata["categories"],
+		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_ID_DASHED@@/$(APP_ID_DASHED)/g" '
+		' $< > $@\n',
+	))
 	makefile.extend(icons)
 	
 	if flatpak_build:
@@ -236,7 +232,7 @@ def gen_makefile():
 	makefile.extend((
 		"clean:\n",
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
-		'\trm -fv $(APP_ID_UNIQUE).desktop\n' if desktop_launcher else "",
+		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
 		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
 		'\trm -fv $(APP_ID_UNIQUE).data.service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
@@ -249,7 +245,7 @@ def gen_makefile():
 	
 	del(metadata["build"])
 	metadata["has_dbus_launcher"] = dbus_launcher
-	metadata["has_desktop_launcher"] = desktop_launcher
+	metadata["has_desktop_launcher"] = True
 	writejson("metadata.json", metadata)
 	
 	print("Makefile written. Run `make all` and then `make install`.")

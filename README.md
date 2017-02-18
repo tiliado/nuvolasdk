@@ -38,8 +38,6 @@ Build a Project Using Nuvola SDK
       - `--prefix`: Specify a custom build prefix instead of `/usr/local`. Example: `./configure --prefix=/usr`
       - `--with-dbus-launcher`: Build a small launcher (`nuvola-app-{APP ID with dashes}`) to invoke the application
          via the D-Bus service activation mechanism. Requires Nuvola Player 3.1.
-      - `--with-desktop-launcher`: Build a desktop launcher to invoke the application.
-         Required for Nuvola Player 3.1. Not compatible with Nuvola Player 3.0.
  2. Run `make all` to build the project.
  3. Run `make install` to install the project. Recognized variables:
       - `DESTDIR`: A custom installation destination (defaults to the filesystem root).

@@ -1,6 +1,12 @@
 Nuvola SDK Change Log
 =====================
 
+1.3.0 - unreleased
+------------------
+
+  * Makefile generator: The `--with-desktop-launcher` option has been removed and the launcher
+    is always created. Requires Nuvola Player 3.0.5 or 3.1.x.
+
 1.2.0 - February 11th, 2017
 ---------------------------
 
