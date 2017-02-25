@@ -211,7 +211,7 @@ def gen_makefile():
 		'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
 		' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvolaplayer3 -a $(APP_ID)"),
 		' -e "s/@@CATEGORIES@@/%s/g"' % metadata["categories"],
-		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_ID_DASHED@@/$(APP_ID_DASHED)/g" '
+		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_UID@@/$(APP_ID_UNIQUE)/g" '
 		' $< > $@\n',
 	))
 	makefile.extend(icons)

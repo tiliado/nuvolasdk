@@ -4,6 +4,6 @@ Exec = @@EXEC@@
 Type = Application
 Categories = @@CATEGORIES@@
 Icon = @@ICON@@
-StartupWMClass = @@APP_ID_DASHED@@
+StartupWMClass = @@APP_UID@@
 StartupNotify = true
 Terminal = false
