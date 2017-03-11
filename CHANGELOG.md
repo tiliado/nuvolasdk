@@ -1,6 +1,11 @@
 Nuvola SDK Change Log
 =====================
 
++1
+---
+
+  * Makefile generator: Also install tar-gzipped files in flatpak build mode. 
+
 1.3.0 - February 26th, 2017
 ---------------------------
 

@@ -83,8 +83,7 @@ def gen_makefile():
 		'\trm -rfv $(APP_DIR)\n'
 	]
 	
-	if not flatpak_build:
-		install.extend([
+	install.extend([
 		'\tinstall -vCd $(APP_DIR)/$(ICONS_DIR)\n',
 		'\tcp -v -t $(APP_DIR) $(FILES)\n',
 		])
@@ -148,10 +147,9 @@ def gen_makefile():
 				install.append('\tmkdir -pv $(HICOLOR_DIR)/scalable/apps || true\n')
 				install.append('\tcp -v %s $(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
 				uninstall.append('\trm -fv $(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n')
-				if not flatpak_build:
-					install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
-					install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
-					uninstall.append('\trm -fv $(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
+				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
+				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n' % dest)
+				uninstall.append('\trm -fv $(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
 				
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
@@ -160,10 +158,9 @@ def gen_makefile():
 				install.append('\tmkdir -pv $(HICOLOR_DIR)/%sx%s/apps || true\n' % (size, size))
 				install.append('\tcp -v %s $(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
 				uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
-				if not flatpak_build:
-					install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
-					install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
-					uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
+				install.append('\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s $(DESTDIR)$(PREFIX)/share/icons/hicolor/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (dest, size, size))
+				install.append('\tcp -v -t $(APP_DIR)/$(ICONS_DIR) %s\n' % dest)
+				uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
 				
 			all_files.append(dest)
 			flatpak_archive.append(dest)
