@@ -91,12 +91,17 @@ def gen_makefile():
 	
 	if dbus_launcher:
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
-		all_files.append(dbus_launcher_cmd)
+		all_files.extend((dbus_launcher_cmd, '$(APP_ID_UNIQUE).service'))
 		install.extend((
 			'\tinstall -vCd $(DESTDIR)$(PREFIX)/bin\n',
 			'\tinstall -vC -t $(DESTDIR)$(PREFIX)/bin %s\n' % dbus_launcher_cmd,
+			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/dbus-1/services\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_UNIQUE).service\n',
 		))
-		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/bin/%s\n' % dbus_launcher_cmd)
+		uninstall.extend((
+			'\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_UNIQUE).service\n',
+			'\trm -fv $(DESTDIR)$(PREFIX)/bin/%s\n' % dbus_launcher_cmd,
+		))
 	else:
 		dbus_launcher_cmd = None
 	
@@ -199,6 +204,12 @@ def gen_makefile():
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
 			' -o $@ $<\n',
+		))
+		makefile.extend((
+			'$(APP_ID_UNIQUE).service:\n',
+			'\techo "[D-BUS Service]" > $@\n',
+			'\techo "Name=$(APP_ID_UNIQUE)" >> $@\n',
+			'\techo "Exec=%s --gapplication-service" >> $@\n' % dbus_launcher_cmd,
 		))
 	
 	if create_appdata:

@@ -70,7 +70,7 @@ int main(string[] argv)
 		var opt_context = new OptionContext("- %s".printf(Nuvola.get_app_name()));
 		opt_context.set_help_enabled(true);
 		opt_context.add_main_entries(Args.options, null);
-		opt_context.set_ignore_unknown_options(false);
+		opt_context.set_ignore_unknown_options(true);  // e.g. --gapplication-service
 		opt_context.parse(ref argv);
 	}
 	catch (OptionError e)
