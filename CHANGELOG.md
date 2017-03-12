@@ -4,7 +4,10 @@ Nuvola SDK Change Log
 +1
 ---
 
-  * Makefile generator: Also install tar-gzipped files in flatpak build mode. 
+  * Makefile generator: Also install tar-gzipped files in flatpak build mode.
+  * Makefile generator: DBus Launcher requires Nuvola libraries as it now executes a standalone
+    Nuvola App Runner process instead of calling the Nuvola Master process to do so. Required
+    for Flatpak and Snap packaging.
 
 1.3.0 - February 26th, 2017
 ---------------------------

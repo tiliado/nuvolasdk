@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
+ * Copyright 2016-2017 Jiří Janoušek <janousek.jiri@gmail.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 
@@ -28,95 +28,123 @@ namespace Nuvolasdk
 extern const string APP_ID;
 extern const string UNIQUE_ID;
 extern const bool FLATPAK_BUILD;
+extern const string NUVOLA_BUS;
 #if FLATPAK
  const string FLATPAK_ARCHIVE = "/app/share/nuvolaplayer3/web_apps/" + APP_ID + ".tar.gz";
 #endif
 
 
+struct Args
+{
+	static bool debug;
+	#if FLATPAK
+	static bool data;
+	#endif
+	static bool verbose;
+	static bool version;
+	static string? log_file;
+	
+	public const OptionEntry[] options =
+	{
+		{ "verbose", 'v', 0, OptionArg.NONE, ref Args.verbose, "Print informational messages", null },
+		#if FLATPAK
+		{ "data", 0, 0, OptionArg.NONE, ref Args.data, "Launch data provider", null },
+		#endif
+		{ "debug", 'D', 0, OptionArg.NONE, ref Args.debug, "Print debugging messages", null },
+		{ "version", 'V', 0, OptionArg.NONE, ref Args.version, "Print version and exit", null },
+		{ "log-file", 'L', 0, OptionArg.FILENAME, ref Args.log_file, "Log to file", "FILE" },
+		{ null }
+	};
+}
+
+
 MainLoop loop = null;
 int retcode = 0;
-CommandLine cmd_line = null;
 StringBuilder stdout_buf = null;
 StringBuilder stderr_buf = null;
 
-[DBus (name="org.gtk.private.CommandLine")]
-public class CommandLine : GLib.Object
-{
-	public CommandLine()
-	{
-		 stdout_buf = new StringBuilder("");
-		 stderr_buf = new StringBuilder("");
-	}
-	
-	public void print(string text)
-	{
-		stdout.puts(text);
-		stdout_buf.append(text);
-	}
-	
-	public void print_error(string text)
-	{
-		stderr.puts(text);
-		stderr_buf.append(text);
-	}
-}
-
-private async void launch(Variant args) throws GLib.Error
-{
-	var conn = yield Bus.@get(BusType.SESSION, null);
-	cmd_line = new CommandLine();
-	var cmd_line_path = "/eu/tiliado/NuvolaSdk/CommandLine";
-	conn.register_object<CommandLine>(cmd_line_path, cmd_line);
-	var app_proxy = yield DBusProxy.@new(
-		conn, DBusProxyFlags.DO_NOT_LOAD_PROPERTIES|DBusProxyFlags.DO_NOT_CONNECT_SIGNALS, null,
-		"eu.tiliado.Nuvola", "/eu/tiliado/Nuvola", "org.gtk.Application", null);
-	var platform = new VariantBuilder(new VariantType("a{sv}"));
-	platform.add("{sv}", "cwd", new Variant.bytestring(Environment.get_current_dir()));
-	platform.add("{sv}", "desktop-startup-id", new Variant.string("0"));
-	var params = new Variant("(o@aaya{sv})", cmd_line_path, args, platform);
-	var result = yield app_proxy.call("CommandLine", params, 0, -1, null);
-	result.get("(i)", out retcode);
-}
-
 int main(string[] argv)
-{
-	#if FLATPAK
-		for (var i = 1; i < argv.length; i++)
-			if (argv[i] == "--data")
-				return launch_data_provider();
-	#endif
-	var builder = new VariantBuilder(new VariantType("aay"));
-	builder.add_value(new Variant.bytestring(argv[0]));
-	builder.add_value(new Variant.bytestring("-a"));
-	builder.add_value(new Variant.bytestring(APP_ID));
-	for (var i = 1; i < argv.length; i++)
-		builder.add_value(new Variant.bytestring(argv[i]));
-	var args = builder.end();
-	loop = new MainLoop();
-	launch.begin(args, on_launch_done);
-	loop.run();
-	return retcode;
-}
-
-private void on_launch_done(GLib.Object? o, AsyncResult res)
 {
 	try
 	{
-		launch.end(res);
-		if (retcode != 0)
-			show_error("Return code %d".printf(retcode));
+		var opt_context = new OptionContext("- %s".printf(Nuvola.get_app_name()));
+		opt_context.set_help_enabled(true);
+		opt_context.add_main_entries(Args.options, null);
+		opt_context.set_ignore_unknown_options(false);
+		opt_context.parse(ref argv);
 	}
-	catch (GLib.Error e)
+	catch (OptionError e)
 	{
-		show_error(e.message);
+		stderr.printf("option parsing failed: %s\n", e.message);
+		return 1;
 	}
-	quit();
+	
+	if (Args.version)
+	{
+		stdout.printf("%s %s\n", Nuvola.get_app_name(), Nuvola.get_version());
+		return 0;
+	}
+	
+	#if FLATPAK
+	if (Args.data)
+		return launch_data_provider();
+	#endif
+	
+	FileStream? log = null;
+	if (Args.log_file != null)
+	{
+		log = FileStream.open(Args.log_file, "w");
+		if (log == null)
+		{
+			stderr.printf("Cannot open log file '%s' for writting.\n", Args.log_file);
+			return 1;
+		}
+	}
+	
+	
+	Diorite.Logger.init(log != null ? log : stderr, Args.debug ? GLib.LogLevelFlags.LEVEL_DEBUG
+	  : (Args.verbose ? GLib.LogLevelFlags.LEVEL_INFO: GLib.LogLevelFlags.LEVEL_WARNING),
+	  true, "Runner");
+	
+	// Init GTK early to have be able to use Gtk.IconTheme stuff
+	string[] empty_argv = {};
+	unowned string[] unowned_empty_argv = empty_argv;
+	Gtk.init(ref unowned_empty_argv);
+	
+	var storage = new Diorite.XdgStorage.for_project(Nuvola.get_app_id());
+	var web_apps_storage = storage.get_child("web_apps");
+	var web_app_reg = new Nuvola.WebAppRegistry(web_apps_storage.user_data_dir, web_apps_storage.data_dirs, true, null);
+	var web_app = web_app_reg.get_app_meta(APP_ID);
+	if (web_app == null)
+	{
+		show_error("App %s not found.".printf(APP_ID));
+		return 2;
+	}
+	#if !FLATPAK
+	if (!web_app.has_desktop_launcher)
+	{
+		warning(
+			"The %s script doesn't provide a desktop file. It might not function properly."
+			+ " Ask the maintainer to switch to the Nuvola SDK "
+			+ "<https://github.com/tiliado/nuvolasdk> and build it with `./configure --with-desktop-launcher`.",
+			web_app.name);
+	}
+	#endif
+	var app_storage = new Nuvola.WebAppStorage(
+	  storage.user_config_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id),
+	  storage.user_data_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id),
+	  storage.user_cache_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id));
+	
+	var controller = new Nuvola.AppRunnerController(storage, web_app, app_storage, null, NUVOLA_BUS);
+	return controller.run(argv);
 }
+
 
 void quit()
 {
 	Idle.add(() => {loop.quit(); return false;});
 }
+
 
 private void show_error(string error)
 {

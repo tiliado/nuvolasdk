@@ -29,15 +29,16 @@ Build a Project Using Nuvola SDK
   * GNU Make
   * SVG optimizer: [Scour](https://github.com/codedread/scour)
   * SVG converter: Lasem, librsvg, GraphicsMagick, ImageMagick
-  * Valac, glib-2.0, gtk+-3.0 (only in case of `./configure --with-dbus-launcher`)
+  * Nuvola 3.1 libraries - only for `./configure --with-dbus-launcher`
 
 
 ### Installation
 
  1. Run `./configure` to generate `Makefile` and `metadata.json` from details in `metadata.in.json`. Recognized options:
       - `--prefix`: Specify a custom build prefix instead of `/usr/local`. Example: `./configure --prefix=/usr`
-      - `--with-dbus-launcher`: Build a small launcher (`nuvola-app-{APP ID with dashes}`) to invoke the application
-         via the D-Bus service activation mechanism. Requires Nuvola Player 3.1.
+      - `--with-dbus-launcher`: Build a small launcher (`nuvola-app-{APP ID with dashes}`) to start a standalone
+        Nuvola App Runner process instead of calling the Nuvola Master process to do so. The app runner then registers
+        with the master process via DBus.
  2. Run `make all` to build the project.
  3. Run `make install` to install the project. Recognized variables:
       - `DESTDIR`: A custom installation destination (defaults to the filesystem root).

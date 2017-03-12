@@ -32,6 +32,7 @@ def gen_makefile():
 	dbus_launcher = False
 	flatpak_build = False
 	create_appdata = False
+	nuvola_bus = "eu.tiliado.Nuvola"
 	metadata = readjson("metadata.in.json")
 	build_json = metadata.get("build", {})
 	
@@ -171,6 +172,7 @@ def gen_makefile():
 		"APP_NAME = ", app_name, "\n",
 		"APP_ID_DASHED = ", app_id_dashed, "\n",
 		"APP_ID_UNIQUE = ", app_id_unique, "\n",
+		"NUVOLA_BUS = ", nuvola_bus, "\n",
 		"APP_NAME = ", app_name, "\n",
 		"NUVOLA_SDK_DATA = ", sdk_data, "\n",
 		'FILES = ', files, '\n',
@@ -189,8 +191,10 @@ def gen_makefile():
 	if dbus_launcher:
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
-			'\tvalac --pkg gio-2.0 --pkg gtk+-3.0',
-			' --pkg gio-unix-2.0 -D FLATPAK' if flatpak_build else '',
+			'\tvalac --vapidir="$(NUVOLA_SDK_DATA)"',
+			' --pkg gio-2.0 --pkg gtk+-3.0 --pkg gio-unix-2.0 --pkg nuvolaplayer3-runner',
+			' -D FLATPAK' if flatpak_build else '',
+			' -X "-DNUVOLASDK_NUVOLA_BUS=\\"$(NUVOLA_BUS)\\""',
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
