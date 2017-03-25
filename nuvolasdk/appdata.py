@@ -26,6 +26,7 @@ import argparse
 import sys
 
 from nuvolasdk import licenses
+from nuvolasdk import screenshots
 from nuvolasdk import utils
 from nuvolasdk import xmltree
 from nuvolasdk.shkit import *
@@ -67,9 +68,11 @@ def create_app_data_xml(meta):
 		with tree("description"):
 			tree.add("p", "%s - Sandboxed web application" % meta["name"])
 		with tree("screenshots"):
-			with tree("screenshot", type="default"):
-				tree.add("image", "https://tiliado.github.io/nuvolaplayer/documentation/images/3.0/new/orig/gnome_grooveshark_add_to_favorites.png")
-				tree.add("caption", "Nuvola Player creates desktop launchers for quick access to streaming services")
+			for i, (url, caption) in enumerate(screenshots.SCREENSHOTS):
+				args = {"type": "default"} if i == 0 else {} 
+				with tree("screenshot", **args):
+					tree.add("image", url)
+					tree.add("caption", caption)
 		tree.add("url", "https://tiliado.eu/nuvolaplayer/", type="homepage")
 		tree.add("url", "https://github.com/tiliado/nuvolaplayer/wiki/Bug-Reporting-Guidelines", type="bugtracker")
 		tree.add("url", "https://tiliado.github.io/nuvolaplayer/documentation/3.1/explore.html", type="help")
