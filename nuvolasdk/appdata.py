@@ -32,6 +32,24 @@ from nuvolasdk import xmltree
 from nuvolasdk.shkit import *
 
 
+DESCRIPTION = """
+Nuvola is a runtime for semi-sandboxed web apps providing more native user experience and tighter
+integration with Linux desktop environments than usual web browsers can offer. It tries to feel and look
+like a native application as much as possible.
+Nuvola mostly specializes on music streaming web apps (e.g. Google Play Music, Spotify, Amazon Music, Deezer,
+and more), but progress is being made to support generic web apps (e.g. Google Calendar, Google Keep, etc.).
+
+Features of Nuvola: desktop launchers, integration with media applets (e.g. in GNOME Shell and Ubuntu sound menu),
+Unity launcher quick list actions, lyrics fetching, Last.fm audio scrobbler, tray icon, desktop notifications,
+media keys binding, password manager, remote control over HTTP and more. Some features may be availably only to
+users with premium or patron plans available at https://tiliado.eu/nuvolaplayer/funding/
+
+Users of the official Flatpak builds available at https://nuvola.tiliado.eu are eligible for user support
+free of charge. Users of third-party build should contact the customer care of their distributor or order
+paid support provided by the Nuvola developer.
+"""
+
+
 def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
 		prog = prog,
@@ -66,7 +84,9 @@ def create_app_data_xml(meta):
 		tree.add("name", "%s (Nuvola app)" % meta["name"])
 		tree.add("summary", "%s - Sandboxed web application" % meta["name"])
 		with tree("description"):
-			tree.add("p", "%s - Sandboxed web application" % meta["name"])
+			tree.add("p", "%s (Nuvola app) is a semi-sandboxed web application running in the Nuvola Apps runtime." % meta["name"])
+			for para in DESCRIPTION.strip().split("\n\n"):
+				tree.add("p", para)
 		with tree("screenshots"):
 			for i, (url, caption) in enumerate(screenshots.SCREENSHOTS):
 				args = {"type": "default"} if i == 0 else {} 
