@@ -1,5 +1,5 @@
 """
-Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2017 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -25,6 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import argparse
 import sys
 
+from nuvolasdk import licenses
 from nuvolasdk import utils
 from nuvolasdk import xmltree
 from nuvolasdk.shkit import *
@@ -60,7 +61,7 @@ def create_app_data_xml(meta):
 	with tree("component", type="desktop"):
 		tree.add("id", uid + ".desktop")
 		tree.add("metadata_license", "CC0-1.0")
-		tree.add("project_license", meta["license"])
+		tree.add("project_license", licenses.get_spdx_expression(meta["license"], ignore_unknown=True))
 		tree.add("name", "%s (Nuvola app)" % meta["name"])
 		tree.add("summary", "%s - Sandboxed web application" % meta["name"])
 		with tree("description"):
