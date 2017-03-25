@@ -48,7 +48,7 @@ METADATA_IN_JSON = OrderedDict((
     ("api_major", 3), 
     ("api_minor", 0), 
     ("categories", "AudioVideo;Audio;"), 
-    ("license", "2-Clause BSD-license; CC-BY-SA 3.0"),
+    ("license", "BSD-2-Clause; CC-BY-SA-3.0"),
     ("build", BUILD_JSON)
 ))
 
