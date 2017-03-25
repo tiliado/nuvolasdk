@@ -1,5 +1,5 @@
 """
-Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2017 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -26,6 +26,7 @@ import argparse
 
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
+from nuvolasdk import licenses
 from nuvolasdk import utils
 
 def create_arg_parser(prog):
@@ -157,6 +158,19 @@ def run(directory, prog, argv):
 			if not license.strip():
 				print('Error: metadata.json file contains invalid "%s" property: "%s"' % (prop_name, license))
 				n_errors += 1
+			else:
+				try:
+					licenses.get_spdx_expression(license)
+				except ValueError as e:
+					print('Error: Unrecognized license "{}". Recognized licenses are: {}.'.format(
+						e, ", ".join(sorted(licenses.RECOGNIZED_LICENSES))))
+					n_errors += 1
+				else:
+					try:
+						licenses.check_canonical(license)
+					except ValueError as e:
+						print('Warning: "{}" is not a canonical SPDX license name, use "{}" instead.'.format(*e.args))
+					
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
