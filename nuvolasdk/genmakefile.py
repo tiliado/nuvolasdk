@@ -32,9 +32,9 @@ def gen_makefile():
 	dbus_launcher = False
 	flatpak_build = False
 	create_appdata = False
-	nuvola_bus = "eu.tiliado.Nuvola"
 	metadata = readjson("metadata.in.json")
 	build_json = metadata.get("build", {})
+	genuine = False
 	
 	for arg in sys.argv[1:]:
 		try:
@@ -54,6 +54,8 @@ def gen_makefile():
 			create_appdata = True
 		elif name == "--flatpak-build":
 			flatpak_build = True
+		elif name == "--genuine":
+			genuine = True
 		else:
 			print("Warning: Unknown option: ", arg)
 	
@@ -65,6 +67,7 @@ def gen_makefile():
 	app_name = metadata["name"]
 	app_id_dashed = utils.get_dashed_app_id(app_id)
 	app_id_unique = utils.get_unique_app_id(app_id)
+	app_id_dbus = utils.get_dbus_app_id(app_id, genuine)
 	
 	sdk_data = joinpath(fdirname(__file__), "data")
 	
@@ -91,30 +94,30 @@ def gen_makefile():
 	
 	if dbus_launcher:
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
-		all_files.extend((dbus_launcher_cmd, '$(APP_ID_UNIQUE).service'))
+		all_files.extend((dbus_launcher_cmd, '$(APP_ID_DBUS).service'))
 		install.extend((
 			'\tinstall -vCd $(DESTDIR)$(PREFIX)/bin\n',
 			'\tinstall -vC -t $(DESTDIR)$(PREFIX)/bin %s\n' % dbus_launcher_cmd,
 			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/dbus-1/services\n',
-			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_UNIQUE).service\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_DBUS).service\n',
 		))
 		uninstall.extend((
-			'\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_UNIQUE).service\n',
+			'\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_DBUS).service\n',
 			'\trm -fv $(DESTDIR)$(PREFIX)/bin/%s\n' % dbus_launcher_cmd,
 		))
 	else:
 		dbus_launcher_cmd = None
 	
 	if flatpak_build:
-		all_files.append('$(APP_ID_UNIQUE).data.service')
+		all_files.append('$(APP_ID_DBUS).data.service')
 		all_files.append('$(APP_ID).tar.gz')
 		install.extend((
 			'\tinstall -vCd $(DESTDIR)$(PREFIX)/share/dbus-1/services\n',
-			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_UNIQUE).data.service\n',
+			'\tcp -vf -t $(DESTDIR)$(PREFIX)/share/dbus-1/services $(APP_ID_DBUS).data.service\n',
 			'\tmkdir -p $(WEB_APPS)\n',
 			'\tcp -vf -t $(WEB_APPS) $(APP_ID).tar.gz\n',
 		))
-		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_UNIQUE).data.service\n')
+		uninstall.append('\trm -fv $(DESTDIR)$(PREFIX)/share/dbus-1/services/$(APP_ID_DBUS).data.service\n')
 		uninstall.append('\trm -fv $(WEB_APPS)/$(APP_ID).tar.gz\n')
 	
 	all_files.append('$(APP_ID_UNIQUE).desktop')
@@ -177,7 +180,7 @@ def gen_makefile():
 		"APP_NAME = ", app_name, "\n",
 		"APP_ID_DASHED = ", app_id_dashed, "\n",
 		"APP_ID_UNIQUE = ", app_id_unique, "\n",
-		"NUVOLA_BUS = ", nuvola_bus, "\n",
+		"APP_ID_DBUS = ", app_id_dbus, "\n",
 		"APP_NAME = ", app_name, "\n",
 		"NUVOLA_SDK_DATA = ", sdk_data, "\n",
 		'FILES = ', files, '\n',
@@ -196,19 +199,19 @@ def gen_makefile():
 	if dbus_launcher:
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
-			'\tvalac --vapidir="$(NUVOLA_SDK_DATA)"',
+			'\tvalac $(VALAFLAGS)',
+			' --vapidir="$(NUVOLA_SDK_DATA)"',
 			' --pkg gio-2.0 --pkg gtk+-3.0 --pkg gio-unix-2.0 --pkg nuvolaplayer3-runner',
 			' -D FLATPAK' if flatpak_build else '',
-			' -X "-DNUVOLASDK_NUVOLA_BUS=\\"$(NUVOLA_BUS)\\""',
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
 			' -o $@ $<\n',
 		))
 		makefile.extend((
-			'$(APP_ID_UNIQUE).service:\n',
+			'$(APP_ID_DBUS).service:\n',
 			'\techo "[D-BUS Service]" > $@\n',
-			'\techo "Name=$(APP_ID_UNIQUE)" >> $@\n',
+			'\techo "Name=$(APP_ID_DBUS)" >> $@\n',
 			'\techo "Exec=%s --gapplication-service" >> $@\n' % dbus_launcher_cmd,
 		))
 	
@@ -230,9 +233,9 @@ def gen_makefile():
 	
 	if flatpak_build:
 		makefile.extend((
-			'$(APP_ID_UNIQUE).data.service:\n',
+			'$(APP_ID_DBUS).data.service:\n',
 			'\techo "[D-BUS Service]" > $@\n',
-			'\techo "Name=$(APP_ID_UNIQUE).data" >> $@\n',
+			'\techo "Name=$(APP_ID_DBUS).data" >> $@\n',
 			'\techo "Exec=%s --data" >> $@\n' % dbus_launcher_cmd,
 			'$(APP_ID).tar.gz: ', " ".join(flatpak_archive), '\n',
 			'\ttar -cvzf $@ ', " ".join(flatpak_archive), '\n',
@@ -246,7 +249,7 @@ def gen_makefile():
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
 		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
-		'\trm -fv $(APP_ID_UNIQUE).data.service\n' if flatpak_build else "",
+		'\trm -fv $(APP_ID_DBUS).data.service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
 		"\trm -rvf icons\n",
 		"distclean: clean\n",

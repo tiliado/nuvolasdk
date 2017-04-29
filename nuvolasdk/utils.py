@@ -49,8 +49,14 @@ def app_id_from_name(app_name):
 def get_dashed_app_id(app_id):
 	return app_id.replace("_", "-")
 
+def get_dbus_app_id(app_id, genuine=False):
+	return build_unique_id("eu.tiliado.Nuvola" if genuine else "eu.tiliado.NuvolaOse", app_id)
+	
 def get_unique_app_id(app_id):
-	app_id_unique = ["eu.tiliado.NuvolaApp"]
+	return build_unique_id("eu.tiliado.Nuvola", app_id)
+	
+def build_unique_id(base_id, app_id):
+	app_id_unique = [base_id, "App"]
 	for part in app_id.split("_"):
 		app_id_unique.append(part[0].upper())
 		app_id_unique.append(part[1:].lower())

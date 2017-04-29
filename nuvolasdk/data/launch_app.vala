@@ -28,7 +28,6 @@ namespace Nuvolasdk
 extern const string APP_ID;
 extern const string UNIQUE_ID;
 extern const bool FLATPAK_BUILD;
-extern const string NUVOLA_BUS;
 #if FLATPAK
  const string FLATPAK_ARCHIVE = "/app/share/nuvolaplayer3/web_apps/" + APP_ID + ".tar.gz";
 #endif
@@ -119,7 +118,7 @@ int main(string[] argv)
 	
 	var storage = new Diorite.XdgStorage.for_project(Nuvola.get_app_id());
 	var web_apps_storage = storage.get_child("web_apps");
-	var web_app_reg = new Nuvola.WebAppRegistry(web_apps_storage.user_data_dir, web_apps_storage.data_dirs, true, null);
+	var web_app_reg = new Nuvola.WebAppRegistry(web_apps_storage.user_data_dir, web_apps_storage.data_dirs);
 	var web_app = web_app_reg.get_app_meta(APP_ID);
 	if (web_app == null)
 	{
@@ -141,7 +140,7 @@ int main(string[] argv)
 	  storage.user_data_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id),
 	  storage.user_cache_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id));
 	
-	var controller = new Nuvola.AppRunnerController(storage, web_app, app_storage, null, NUVOLA_BUS);
+	var controller = new Nuvola.AppRunnerController(storage, web_app, app_storage, null, true);
 	return controller.run(argv);
 }
 
