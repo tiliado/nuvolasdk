@@ -189,6 +189,7 @@ def gen_makefile():
 		'DESTDIR ?= \n',
 		'WEB_APPS = $(DESTDIR)$(PREFIX)/share/nuvolaplayer3/web_apps\n',
 		'APP_DIR = $(WEB_APPS)/$(APP_ID)\n',
+		'NUVOLASDK_APP_DATA_DIR ?= $(PREFIX)/share/nuvolaruntime/web_apps/$(APP_ID)\n'
 		'HICOLOR_DIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor\n',
 		'\n',
 		'all: ', " ".join(all_files), '\n\n',
@@ -206,6 +207,7 @@ def gen_makefile():
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
+			' -X "-DNUVOLASDK_APP_DATA_DIR=\\"$(NUVOLASDK_APP_DATA_DIR)\\""',
 			' -o $@ $<\n',
 		))
 		makefile.extend((

@@ -27,6 +27,7 @@ namespace Nuvolasdk
 
 extern const string APP_ID;
 extern const string UNIQUE_ID;
+extern const string APP_DATA_DIR;
 extern const bool FLATPAK_BUILD;
 #if FLATPAK
  const string FLATPAK_ARCHIVE = "/app/share/nuvolaplayer3/web_apps/" + APP_ID + ".tar.gz";
@@ -41,7 +42,6 @@ struct Args
 	#endif
 	static bool verbose;
 	static bool version;
-	static string? log_file;
 	
 	public const OptionEntry[] options =
 	{
@@ -51,7 +51,6 @@ struct Args
 		#endif
 		{ "debug", 'D', 0, OptionArg.NONE, ref Args.debug, "Print debugging messages", null },
 		{ "version", 'V', 0, OptionArg.NONE, ref Args.version, "Print version and exit", null },
-		{ "log-file", 'L', 0, OptionArg.FILENAME, ref Args.log_file, "Log to file", "FILE" },
 		{ null }
 	};
 }
@@ -63,13 +62,7 @@ StringBuilder stdout_buf = null;
 StringBuilder stderr_buf = null;
 
 int main(string[] argv)
-{
-	/* We are not ready for Wayland yet.
-	 * https://github.com/tiliado/nuvolaplayer/issues/181
-	 * https://github.com/tiliado/nuvolaplayer/issues/240
-	 */
-	Environment.set_variable("GDK_BACKEND", "x11", true);
-	
+{	
 	try
 	{
 		var opt_context = new OptionContext("- %s".printf(Nuvola.get_app_name()));
@@ -84,64 +77,28 @@ int main(string[] argv)
 		return 1;
 	}
 	
-	if (Args.version)
-	{
-		stdout.printf("%s %s\n", Nuvola.get_app_name(), Nuvola.get_version());
-		return 0;
-	}
+	Diorite.Logger.init(stderr, Args.debug ? GLib.LogLevelFlags.LEVEL_DEBUG
+	  : (Args.verbose ? GLib.LogLevelFlags.LEVEL_INFO: GLib.LogLevelFlags.LEVEL_WARNING),
+	  true, "Runner");
 	
 	#if FLATPAK
 	if (Args.data)
 		return launch_data_provider();
 	#endif
 	
-	FileStream? log = null;
-	if (Args.log_file != null)
+	var app_dir = File.new_for_path(Environment.get_variable("NUVOLASDK_APP_DATA_DIR") ?? APP_DATA_DIR);
+	if (Args.version)
+		return Nuvola.Startup.print_web_app_version(stdout, app_dir);
+	
+	try
 	{
-		log = FileStream.open(Args.log_file, "w");
-		if (log == null)
-		{
-			stderr.printf("Cannot open log file '%s' for writting.\n", Args.log_file);
-			return 1;
-		}
+		return Nuvola.Startup.run_web_app_with_dbus_handshake(app_dir, argv);
 	}
-	
-	
-	Diorite.Logger.init(log != null ? log : stderr, Args.debug ? GLib.LogLevelFlags.LEVEL_DEBUG
-	  : (Args.verbose ? GLib.LogLevelFlags.LEVEL_INFO: GLib.LogLevelFlags.LEVEL_WARNING),
-	  true, "Runner");
-	
-	// Init GTK early to have be able to use Gtk.IconTheme stuff
-	string[] empty_argv = {};
-	unowned string[] unowned_empty_argv = empty_argv;
-	Gtk.init(ref unowned_empty_argv);
-	
-	var storage = new Diorite.XdgStorage.for_project(Nuvola.get_app_id());
-	var web_apps_storage = storage.get_child("web_apps");
-	var web_app_reg = new Nuvola.WebAppRegistry(web_apps_storage.user_data_dir, web_apps_storage.data_dirs);
-	var web_app = web_app_reg.get_app_meta(APP_ID);
-	if (web_app == null)
+	catch (Nuvola.WebAppError e)
 	{
-		show_error("App %s not found.".printf(APP_ID));
+		show_error("Failed to load web app '%s'.\n%s".printf(APP_ID, e.message));
 		return 2;
 	}
-	#if !FLATPAK
-	if (!web_app.has_desktop_launcher)
-	{
-		warning(
-			"The %s script doesn't provide a desktop file. It might not function properly."
-			+ " Ask the maintainer to switch to the Nuvola SDK "
-			+ "<https://github.com/tiliado/nuvolasdk> and build it with `./configure --with-desktop-launcher`.",
-			web_app.name);
-	}
-	#endif
-	var app_storage = new Nuvola.WebAppStorage(
-	  storage.user_config_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id),
-	  storage.user_data_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id),
-	  storage.user_cache_dir.get_child(Nuvola.WEB_APP_DATA_DIR).get_child(web_app.id));
-	
-	var controller = new Nuvola.AppRunnerController(storage, web_app, app_storage, null, true);
-	return controller.run(argv);
 }
 
 
