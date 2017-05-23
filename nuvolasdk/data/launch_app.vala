@@ -47,8 +47,6 @@ struct Args
 }
 
 
-MainLoop loop = null;
-int retcode = 0;
 StringBuilder stdout_buf = null;
 StringBuilder stderr_buf = null;
 
@@ -86,13 +84,6 @@ int main(string[] argv)
 		return 2;
 	}
 }
-
-
-void quit()
-{
-	Idle.add(() => {loop.quit(); return false;});
-}
-
 
 private void show_error(string error)
 {
