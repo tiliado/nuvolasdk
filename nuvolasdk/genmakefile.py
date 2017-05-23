@@ -77,7 +77,6 @@ def gen_makefile():
 		all_files.extend(glob(entry))
 	
 	files = ' '.join(all_files)
-	flatpak_archive = all_files[:]
 	
 	makefile = [
 		defaults.GENERATED_MAKEFILE,
@@ -124,18 +123,6 @@ def gen_makefile():
 		))
 	else:
 		dbus_launcher_cmd = None
-	
-	if flatpak_build:
-		all_files.append('$(APP_ID_DBUS).data.service')
-		all_files.append('$(APP_ID).tar.gz')
-		install.extend((
-			'\tinstall -vCd $(DESTDIR)$(DATADIR)/dbus-1/services\n',
-			'\tcp -vf -t $(DESTDIR)$(DATADIR)/dbus-1/services $(APP_ID_DBUS).data.service\n',
-			'\tmkdir -p $(DESTDIR)$(WEB_APPS_DIR)\n',
-			'\tcp -vf -t $(DESTDIR)$(WEB_APPS_DIR) $(APP_ID).tar.gz\n',
-		))
-		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/dbus-1/services/$(APP_ID_DBUS).data.service\n')
-		uninstall.append('\trm -fv $(DESTDIR)$(WEB_APPS_DIR)/$(APP_ID).tar.gz\n')
 	
 	all_files.append('$(APP_ID_UNIQUE).desktop')
 	install.extend((
@@ -197,7 +184,6 @@ def gen_makefile():
 				uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
 				
 			all_files.append(dest)
-			flatpak_archive.append(dest)
 
 	makefile.extend([
 		'all: ', " ".join(all_files), '\n\n',
@@ -239,21 +225,11 @@ def gen_makefile():
 		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_UID@@/$(APP_ID_UNIQUE)/g" '
 		' $< > $@\n',
 	))
+	
 	makefile.extend(icons)
-	
-	if flatpak_build:
-		makefile.extend((
-			'$(APP_ID_DBUS).data.service:\n',
-			'\techo "[D-BUS Service]" > $@\n',
-			'\techo "Name=$(APP_ID_DBUS).data" >> $@\n',
-			'\techo "Exec=%s --data" >> $@\n' % dbus_launcher_cmd,
-			'$(APP_ID).tar.gz: ', " ".join(flatpak_archive), '\n',
-			'\ttar -cvzf $@ ', " ".join(flatpak_archive), '\n',
-		))
-	
-	
 	makefile.extend(install)
 	makefile.extend(uninstall)
+	
 	makefile.extend((
 		"clean:\n",
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
