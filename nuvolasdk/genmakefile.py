@@ -105,7 +105,7 @@ def gen_makefile():
 	]
 	uninstall = [
 		'uninstall:\n',
-		'\trm -rfv $(DESTDIR)$(APP_DIR)\n'
+		'\trm -rfv $(DESTDIR)$(APP_DATA_DIR)\n',
 	]
 	
 	if dbus_launcher:
@@ -179,9 +179,9 @@ def gen_makefile():
 				# Nuvola 3.0.x:
 				install.extend((
 					'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
-					'$(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size),
+					' $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size),
 				))
-				uninstall.append('\trm -fv $(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
+				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
 				
 			all_files.append(dest)
 
@@ -235,7 +235,7 @@ def gen_makefile():
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
 		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
-		'\trm -fv $(APP_ID_DBUS).data.service\n' if flatpak_build else "",
+		'\trm -fv $(APP_ID_DBUS).service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
 		"\trm -rvf icons\n",
 		"distclean: clean\n",
