@@ -93,7 +93,8 @@ def gen_makefile():
 		'DESTDIR ?= \n',
 		'DATADIR ?= $(PREFIX)/share\n',
 		'BINDIR ?= $(PREFIX)/bin\n',
-		'WEB_APPS_DIR ?= $(DATADIR)/nuvolaplayer3/web_apps\n',
+		'WEB_APPS_DIR ?= $(DATADIR)/nuvolaruntime/web_apps\n',
+		'OLD_APPS_DIR ?= $(DATADIR)/nuvolaplayer3/web_apps\n',
 		'APP_DATA_DIR ?= $(WEB_APPS_DIR)/$(APP_ID)\n',
 		'HICOLOR_DIR = $(DATADIR)/icons/hicolor\n',
 		'\n',
@@ -102,10 +103,15 @@ def gen_makefile():
 		'install: all\n',
 		'\tinstall -vCd $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR)\n',
 		'\tcp -v -t $(DESTDIR)$(APP_DATA_DIR) $(FILES)\n',
+		# Nuvola 3.0.x:
+		'\tinstall -vCd $(DESTDIR)$(OLD_APPS_DIR)\n',
+		'\tln -sv ../../nuvolaruntime/web_apps/$(APP_ID) $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n',
 	]
 	uninstall = [
 		'uninstall:\n',
 		'\trm -rfv $(DESTDIR)$(APP_DATA_DIR)\n',
+		# Nuvola 3.0.x:
+		'\trm -rfv $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n'
 	]
 	
 	if dbus_launcher:
@@ -196,7 +202,7 @@ def gen_makefile():
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
 			'\tvalac $(VALAFLAGS)',
 			' --vapidir="$(NUVOLA_SDK_DATA)"',
-			' --pkg gio-2.0 --pkg gtk+-3.0 --pkg gio-unix-2.0 --pkg nuvolaplayer3-runner',
+			' --pkg gio-2.0 --pkg gtk+-3.0 --pkg gio-unix-2.0 --pkg nuvolaruntime-runner',
 			' -D FLATPAK' if flatpak_build else '',
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
@@ -220,7 +226,7 @@ def gen_makefile():
 	makefile.extend((
 		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
 		'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
-		' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvolaplayer3 -a $(APP_ID)"),
+		' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvola -a $(APP_ID)"),
 		' -e "s/@@CATEGORIES@@/%s/g"' % metadata["categories"],
 		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_UID@@/$(APP_ID_UNIQUE)/g" '
 		' $< > $@\n',
