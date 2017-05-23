@@ -71,6 +71,7 @@ int main(string[] argv)
 	  true, "Runner");
 	
 	var app_dir = File.new_for_path(Environment.get_variable("NUVOLASDK_APP_DATA_DIR") ?? APP_DATA_DIR);
+	debug("App data dir: %s", app_dir.get_path());
 	if (Args.version)
 		return Nuvola.Startup.print_web_app_version(stdout, app_dir);
 	

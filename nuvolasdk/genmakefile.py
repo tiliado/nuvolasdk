@@ -207,7 +207,7 @@ def gen_makefile():
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
 			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
 			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
-			' -X "-DNUVOLASDK_APP_DATA_DIR=\\"$(NUVOLASDK_APP_DATA_DIR)\\""',
+			' -X "-DNUVOLASDK_APP_DATA_DIR=\\"$(APP_DATA_DIR)\\""',
 			' -o $@ $<\n',
 		))
 		makefile.extend((
