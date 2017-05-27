@@ -1,6 +1,16 @@
 Nuvola SDK Change Log
 =====================
 
+4.4.0 - May 27th, 2017
+----------------------
+
+  * Versioning scheme is synchronized with Nuvola Apps Runtime.
+  * DBus Launcher has been ported to use the high level Start-up API of Nuvola and a data service have been removed
+    because it is no longer used.
+  * Compatibility with Nuvola Player 3.0.x must be enabled with the --compat flag passed to ./configure.
+  * Web apps scripts are installed into the PREFIX/share/nuvolaruntime/web_apps directory used by Nuvola 4.4+
+    but legacy symlinks in the PREFIX/share/nuvolaplayer3/web_apps directory are also provided for Nuvola 3.x.
+    
 1.4.0 - April 30th, 2017
 ------------------------
 

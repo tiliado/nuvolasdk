@@ -29,7 +29,7 @@ Build a Project Using Nuvola SDK
   * GNU Make
   * SVG optimizer: [Scour](https://github.com/codedread/scour)
   * SVG converter: Lasem, librsvg, GraphicsMagick, ImageMagick
-  * Nuvola 3.1 libraries - only for `./configure --with-dbus-launcher`
+  * Nuvola 4.x libraries - only for `./configure --with-dbus-launcher`
 
 
 ### Installation

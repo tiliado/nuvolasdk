@@ -3,18 +3,18 @@
 from setuptools import setup
 
 LONG_DESC = """\
-SDK for building Nuvola Player's web app scripts.
+SDK for building Nuvola Apps scripts.
 
 Documentation: https://github.com/tiliado/nuvolasdk
 """
 
 setup(
 	name = "nuvolasdk",
-	version = "1.4.0",
+	version = "4.4.0",
 	author = "Jiří Janoušek",
 	author_email = "janousek.jiri@gmail.com",
 	url = "https://github.com/tiliado/nuvolasdk",
-	description = "SDK for building Nuvola Player's web app scripts",
+	description = "SDK for building Nuvola Apps scripts",
 	keywords = 'nuvola sdk development',
 	long_description = LONG_DESC,
 	license = 'BSD',
