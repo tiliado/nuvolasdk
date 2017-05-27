@@ -36,6 +36,7 @@ Build a Project Using Nuvola SDK
 
  1. Run `./configure` to generate `Makefile` and `metadata.json` from details in `metadata.in.json`. Recognized options:
       - `--prefix`: Specify a custom build prefix instead of `/usr/local`. Example: `./configure --prefix=/usr`
+      - `--compat`: Turn on compatibility with Nuvola Player 3.0.x.
       - `--with-dbus-launcher`: Build a small launcher (`nuvola-app-{APP ID with dashes}`) to start a standalone
         Nuvola App Runner process instead of calling the Nuvola Master process to do so. The app runner then registers
         with the master process via DBus.

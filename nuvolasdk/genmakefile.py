@@ -29,6 +29,7 @@ from nuvolasdk import utils
 
 def gen_makefile():
 	prefix = "/usr/local"
+	compat = False
 	dbus_launcher = False
 	flatpak_build = False
 	create_appdata = False
@@ -56,6 +57,8 @@ def gen_makefile():
 			flatpak_build = True
 		elif name == "--genuine":
 			genuine = True
+		elif name == "--compat":
+			compat = True
 		else:
 			print("Warning: Unknown option: ", arg)
 	
@@ -103,16 +106,18 @@ def gen_makefile():
 		'install: all\n',
 		'\tinstall -vCd $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR)\n',
 		'\tcp -v -t $(DESTDIR)$(APP_DATA_DIR) $(FILES)\n',
-		# Nuvola 3.0.x:
-		'\tinstall -vCd $(DESTDIR)$(OLD_APPS_DIR)\n',
-		'\tln -sv ../../nuvolaruntime/web_apps/$(APP_ID) $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n',
 	]
 	uninstall = [
 		'uninstall:\n',
 		'\trm -rfv $(DESTDIR)$(APP_DATA_DIR)\n',
-		# Nuvola 3.0.x:
-		'\trm -rfv $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n'
 	]
+	
+	if compat:  # Nuvola 3.0.x:
+		install.extend([
+			'\tinstall -vCd $(DESTDIR)$(OLD_APPS_DIR)\n',
+			'\tln -sv ../../nuvolaruntime/web_apps/$(APP_ID) $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n',
+		])
+		uninstall.append('\trm -rfv $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n')
 	
 	if dbus_launcher:
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
@@ -223,10 +228,15 @@ def gen_makefile():
 			'\tpython3 -m nuvolasdk create-appdata -o $@ -m $<\n',
 		))
 		
+	if dbus_launcher_cmd:
+		launcher_cmd =  dbus_launcher
+	else:
+		launcher_cmd = "%s -a $(APP_ID)" % ("nuvola" if not compat else "nuvolaplayer3")
+	 
 	makefile.extend((
 		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
 		'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
-		' -e "s/@@EXEC@@/%s/g"' % (dbus_launcher_cmd if dbus_launcher else "nuvola -a $(APP_ID)"),
+		' -e "s/@@EXEC@@/%s/g"' % launcher_cmd,
 		' -e "s/@@CATEGORIES@@/%s/g"' % metadata["categories"],
 		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_UID@@/$(APP_ID_UNIQUE)/g" '
 		' $< > $@\n',
