@@ -229,7 +229,7 @@ def gen_makefile():
 		))
 		
 	if dbus_launcher_cmd:
-		launcher_cmd =  dbus_launcher
+		launcher_cmd =  dbus_launcher_cmd
 	else:
 		launcher_cmd = "%s -a $(APP_ID)" % ("nuvola" if not compat else "nuvolaplayer3")
 	 
