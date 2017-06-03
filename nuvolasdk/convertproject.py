@@ -27,6 +27,7 @@ import datetime
 
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
+from nuvolasdk import git
 from nuvolasdk import utils
 
 def create_arg_parser(prog):
@@ -44,6 +45,13 @@ def convert_project(directory, prog, argv):
 	todos = []
 	git_commands = []
 	
+	try:
+		git.set_up_git()
+	except KeyboardInterrupt:
+		return 1
+	except ExecError as e:
+		print("Error: Failed to set up git. %s" % e)
+		
 	MAKEFILE = "Makefile"
 	makefile = joinpath(directory, MAKEFILE)
 	if fexists(makefile) and not fexists(makefile + ".old"):

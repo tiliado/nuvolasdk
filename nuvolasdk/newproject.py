@@ -27,6 +27,7 @@ import datetime
 
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
+from nuvolasdk import git
 from nuvolasdk import utils
 
 def create_arg_parser(prog):
@@ -103,6 +104,13 @@ def new_project(directory, prog, argv):
 			print("")
 			break
 		
+	try:
+		git.set_up_git()
+	except KeyboardInterrupt:
+		return 1
+	except ExecError as e:
+		print("Error: Failed to set up git. %s" % e)
+	
 	sdk_data = joinpath(fdirname(__file__), "data")
 	app_dir_name = utils.get_app_dir_name(app_id)
 	top_dir = joinpath(directory, app_dir_name)

@@ -1,6 +1,11 @@
 Nuvola SDK Change Log
 =====================
 
++1
+---------------------
+
+  * new-project, convert-project: User is asked for git name and git email if they are not set.
+  
 4.4.0 - May 27th, 2017
 ----------------------
 
