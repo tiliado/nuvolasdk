@@ -40,6 +40,7 @@ from pprint import pprint
 import json as _json
 from collections import OrderedDict
 
+ExecError = _subprocess.CalledProcessError
 shquote = _shlex.quote
 cptree = copytree
 mv = rename
