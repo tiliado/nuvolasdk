@@ -7,15 +7,24 @@
 		tbody tr {cursor: pointer;}
 		.playing td {font-weight: bold; background-color: yellow;}
 		#nowplaying {display:none;}
+		#progressbar {border: 1px solid green; background-color: #666; width: 500px; display: none; position: relative;}
+		#progresstext {color: white; font-weight: bold; text-align: center; display: block; z-index: 10; position: relative;}
+		#progressmark {display: block; background-color: green; width: 80%; height: 100%; position: absolute; z-index: 5;}
 		</style>
 	</head>
 	<body>
 		<h1>Welcome to Happy Songs</h1>
 		<script type="text/javascript">true;</script>
-		<p>
+		<p>[Volume <span id="volume">100</span>%]
 		<strong id="status"></strong>
 		<span id="timer"></span>
-		<span id="nowplaying"><i id="track"></i> by <i id="artist"></i> from <i id="album"></i></span>
+		<span id="nowplaying">
+			<i id="track"></i> by <i id="artist"></i> from <i id="album"></i> rated <i id="rating"></i>
+		</span>
+		</p>
+		<p id="progressbar">
+			<span id="progressmark"></span>
+			<span id="progresstext"><span id="timeelapsed"></span> / <span id="timetotal"></span></span>
 		</p>
 		<p>
 		<button id="pp" onclick="player.togglePlay();">Play</button>
@@ -24,7 +33,7 @@
 		</p>
 		<table>
 			<thead>
-				<tr><th>Id</th><th>Song</th><th>Artist</th><th>Album</th></tr>
+				<tr><th>Id</th><th>Song</th><th>Artist</th><th>Album</th><th>Rating</th></tr>
 			</thead>
 			<tbody id="playlist"></tbody>
 		</table>
@@ -63,10 +72,13 @@ Nuvola.makeElement = function(name, attributes, text)
 	return elm;
 }
 
+var RATING_TEXT = ["bad", "-", "good"];
+
 var Player = function()
 {
 	this.playlist = document.getElementById("playlist");
 	var self = this;
+	
 	for (var i = 0; i < Player.songs.length; i++)
 	{
 		var song = Player.songs[i];
@@ -75,6 +87,7 @@ var Player = function()
 		tr.appendChild(Nuvola.makeElement("td", null, song.name));
 		tr.appendChild(Nuvola.makeElement("td", null, song.artist));
 		tr.appendChild(Nuvola.makeElement("td", null, song.album));
+		tr.appendChild(Nuvola.makeElement("td", null, RATING_TEXT[song.rating + 1]));
 		tr.setAttribute("data-i", i);
 		tr.onclick = function()
 		{
@@ -94,7 +107,19 @@ var Player = function()
 		track: document.getElementById("track"),
 		artist: document.getElementById("artist"),
 		album: document.getElementById("album"),
+		rating: document.getElementById("rating"),
+		progressbar: document.getElementById("progressbar"),
+		progressmark: document.getElementById("progressmark"),
+		progresstext: document.getElementById("progresstext"),
+		timeelapsed: document.getElementById("timeelapsed"),
+		timetotal: document.getElementById("timetotal"),
+		volume: document.getElementById("volume"),
 	}
+	
+	this.elm.progresstext.onclick = function(event)
+	{
+		self._onProgressBarClicked(this, event);
+	};
 	
 	this.elm.prev.disabled = true;
 	this.elm.next.disabled = true;
@@ -109,52 +134,73 @@ Player.songs =
 	{
 		name: "Surrender",
 		artist: "Billy Talent",
-		album: "Billy Talent II"
+		album: "Billy Talent II",
+		rating: 1,
+		time: 25
 	},
 	{
 		name: "Holiday",
 		artist: "Green Day",
-		album: "American Idiot"
+		album: "American Idiot",
+		rating: -1,
+		time: 8
 	},
 	{
 		name: "Fallen Leaves",
 		artist: "Billy Talent",
-		album: "Billy Talent II"
+		album: "Billy Talent II",
+		rating: 0,
+		time: 10
 	},
 	{
 		name: "Boten Anna",
 		artist: "Basshunter",
-		album: "LOL"
+		album: "LOL",
+		rating: 1,
+		time: 5
 	},
 	{
 		name: "Set Your Monster Free",
 		artist: "Quiet Company",
-		album: "We Are All Where We Belong"
+		album: "We Are All Where We Belong",
+		rating: 1,
+		time: 5
 	},
 	{
 		name: "Come Home",
 		artist: "Morandi",
-		album: "Mindfields"
+		album: "Mindfields",
+		rating: -1,
+		time: 5
 	},
 	{
 		name: "Dancer in the Dark",
 		artist: "The Rasmus",
-		album: "Hide From the Sun"
+		album: "Hide From the Sun",
+		rating: -1,
+		time: 5
 	},
 	{
 		name: "Have You Ever",
 		artist: "The Offspring",
-		album: "Americana"
+		album: "Americana",
+		rating: 0,
+		time: 5
 	},
 	{
 		name: "Pushing Me Away",
 		artist: "Linkin Park",
-		album: "Hybrid Theory"
+		album: "Hybrid Theory",
+		rating: 0,
+		time: 5
 	}
 ];
 
 Player.statuses = ["Not playing", "Playing", "Paused"];
-
+Player.STOPPED = 0;
+Player.PLAYING = 1;
+Player.PAUSED = 2;
+	
 Player.prototype.setStatus = function(status)
 {
 	this.status = status;
@@ -176,11 +222,18 @@ Player.prototype.setPos = function(pos)
 	if (pos >= 0)
 	{
 		var track = Player.songs[pos];
+		this.timer = track.time;
 		this.elm.timer.innerText = this.timer;
 		this.elm.track.innerText = track.name;
 		this.elm.artist.innerText = track.artist;
 		this.elm.album.innerText = track.album;
+		this.elm.rating.innerText = RATING_TEXT[track.rating + 1];
 		this.elm.nowplaying.style.display = "inline";
+		this.elm.progressbar.style.display = "block";
+		var totaltime = track.time < 10 ? "0" + track.time : track.time;
+		this.elm.timetotal.innerText = "00:" + totaltime;
+		this.elm.timeelapsed.innerText = "00:00";
+		this.elm.progressmark.style.width = 0 + "%";
 	}
 	else
 	{
@@ -189,30 +242,31 @@ Player.prototype.setPos = function(pos)
 		this.elm.artist.innerText = "";
 		this.elm.album.innerText = "";
 		this.elm.nowplaying.style.display = "none";
+		this.elm.progressbar.style.display = "none";
 	}
 }
 
 Player.prototype.play = function()
 {
-	if (this.status == 2)
+	if (this.status == Player.PAUSED)
 	{
-		this.setStatus(1);
+		this.setStatus(Player.PLAYING);
 		this.timerId = setTimeout(this.tick.bind(this), 1000);
 	}
-	else if (this.status == 0)
+	else if (this.status == Player.STOPPED)
 	{
 		if (this.pos < 0)
 			this.setPos(0);
-		this.setStatus(1);
+		this.setStatus(Player.PLAYING);
 		this.startTimer();
 	}
 }
 
 Player.prototype.pause = function()
 {
-	if (this.status == 1)
+	if (this.status == Player.PLAYING)
 	{
-		this.setStatus(2);
+		this.setStatus(Player.PAUSED);
 		clearTimeout(this.timerId);
 		this.timerId = 0;
 	}
@@ -220,7 +274,7 @@ Player.prototype.pause = function()
 
 Player.prototype.togglePlay = function()
 {
-	if (this.status == 1)
+	if (this.status == Player.PLAYING)
 		this.pause();
 	else
 		this.play();
@@ -258,6 +312,7 @@ Player.prototype.tick = function()
 	if (this.timer > 0)
 	{
 		this.elm.timer.innerText = this.timer--;
+		this.updateProgressBar();
 		this.timerId = setTimeout(this.tick.bind(this), 1000);
 	}
 	else
@@ -275,6 +330,28 @@ Player.prototype.reset = function()
 	this.setStatus(0);
 	this.elm.timer.innerText = "";
 	this.timerId = 0;
+}
+
+Player.prototype.updateProgressBar = function()
+{
+	var total = Player.songs[this.pos].time;
+	var elapsed = total - this.timer;
+	this.elm.progressmark.style.width = (elapsed / total * 100) + "%";
+	elapsed = elapsed < 10 ? "0" + elapsed : elapsed;
+	this.elm.timeelapsed.innerText = "00:" + elapsed;
+}
+
+Player.prototype._onProgressBarClicked = function(button, event)
+{
+	if (event.button === 0)
+	{
+		var x = event.clientX;
+		var rect = button.getBoundingClientRect();
+		var pos = (x - rect.left) / rect.width;
+		var total = Player.songs[this.pos].time;
+		this.timer = total - Math.round(pos * total);
+		this.updateProgressBar();
+	}
 }
 
 var player = new Player();

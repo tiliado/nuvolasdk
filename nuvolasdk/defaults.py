@@ -47,7 +47,8 @@ METADATA_IN_JSON = OrderedDict((
     ("version_minor", 0), 
     ("api_major", 3), 
     ("api_minor", 0), 
-    ("categories", "AudioVideo;Audio;"), 
+    ("categories", "AudioVideo;Audio;"),
+    ("requirements", "Feature[Flash] Codec[MP3]"),
     ("license", "BSD-2-Clause; CC-BY-SA-3.0"),
     ("build", BUILD_JSON)
 ))
