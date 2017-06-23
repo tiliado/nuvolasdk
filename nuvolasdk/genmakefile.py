@@ -1,5 +1,5 @@
 """
-Copyright 2014-2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2014-2017 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -172,12 +172,13 @@ def gen_makefile():
 				install.append('\tcp -v %s $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
 				install.append('\tcp -v -t $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR) %s\n' % dest)
 				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n')
-				# Nuvola 3.0.x:
-				install.extend((
-					'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
-					' $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n',
-				))
-				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
+				
+				if compat:  # Nuvola 3.0.x:
+					install.extend((
+						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
+						' $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n',
+					))
+					uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
 				
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
@@ -187,12 +188,12 @@ def gen_makefile():
 				install.append('\tcp -v %s $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
 				install.append('\tcp -v -t $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR) %s\n' % dest)
 				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
-				# Nuvola 3.0.x:
-				install.extend((
-					'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
-					' $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size),
-				))
-				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
+				if compat:  # Nuvola 3.0.x:
+					install.extend((
+						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
+						' $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size),
+					))
+					uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
 				
 			all_files.append(dest)
 
