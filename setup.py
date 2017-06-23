@@ -31,7 +31,8 @@ setup(
 		'nuvolasdk': [
 			'data/template',
 			'data/template/src',
-			'data/examples'
+			'data/examples',
+			'data/vapi',
 		]
 	},
 	scripts = ['scripts/nuvolasdk'],

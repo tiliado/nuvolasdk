@@ -206,7 +206,7 @@ def gen_makefile():
 		makefile.extend((
 			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
 			'\tvalac $(VALAFLAGS)',
-			' --vapidir="$(NUVOLA_SDK_DATA)"',
+			' --vapidir="$(NUVOLA_SDK_DATA)/vapi"',
 			' --pkg gio-2.0 --pkg gtk+-3.0 --pkg gio-unix-2.0 --pkg nuvolaruntime-runner',
 			' -D FLATPAK' if flatpak_build else '',
 			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
