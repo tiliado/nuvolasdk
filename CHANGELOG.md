@@ -1,11 +1,16 @@
 Nuvola SDK Change Log
 =====================
 
-+1
----------------------
+4.5.0 - June 23rd, 2017
+-----------------------
 
   * new-project, convert-project: User is asked for git name and git email if they are not set.
-  
+  * Happy Songs demo was updated to include progress bar and volume level.
+  * genmakefile: Wrong dbus launcher command in desktop file was fixed. Issue: tiliado/nuvolaruntime#348
+  * genmakefile: Legacy nuvolaplayer3_xxx icon symlinks are created only in Nuvola 3.0.x compat mode.
+    Issue: tiliado/nuvolasdk#3
+  * Fixed compatibility with Nuvola 4.5.0.
+
 4.4.0 - May 27th, 2017
 ----------------------
 
