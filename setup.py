@@ -25,6 +25,7 @@ setup(
 				'data/template/*',
 				'data/template/src/*',
 				'data/examples/*',
+				'data/vapi/*',
 			]
 		},
 	exclude_package_data = {
