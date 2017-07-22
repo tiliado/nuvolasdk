@@ -1,6 +1,12 @@
 Nuvola SDK Change Log
 =====================
 
++1
+--
+
+  * genmakefile: Add `-link` suffix to compat symlinks to workaround Debian not being able to replace a directory
+    with a symlink. Issue: tiliado/nuvolaruntime#362
+
 4.5.0 - June 23rd, 2017
 -----------------------
 

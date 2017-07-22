@@ -115,9 +115,9 @@ def gen_makefile():
 	if compat:  # Nuvola 3.0.x:
 		install.extend([
 			'\tinstall -vCd $(DESTDIR)$(OLD_APPS_DIR)\n',
-			'\tln -sv ../../nuvolaruntime/web_apps/$(APP_ID) $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n',
+			'\tln -sv ../../nuvolaruntime/web_apps/$(APP_ID) $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)-link\n',
 		])
-		uninstall.append('\trm -rfv $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)\n')
+		uninstall.append('\trm -rfv $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)-link\n')
 	
 	if dbus_launcher:
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
