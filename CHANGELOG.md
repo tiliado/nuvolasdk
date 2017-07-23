@@ -6,6 +6,7 @@ Nuvola SDK Change Log
 
   * genmakefile: Add `-link` suffix to compat symlinks to workaround Debian not being able to replace a directory
     with a symlink. Issue: tiliado/nuvolaruntime#362
+  * dbus launcher: Rename Diorite to Drt.
 
 4.5.0 - June 23rd, 2017
 -----------------------

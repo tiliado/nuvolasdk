@@ -66,7 +66,7 @@ int main(string[] argv)
 		return 1;
 	}
 	
-	Diorite.Logger.init(stderr, Args.debug ? GLib.LogLevelFlags.LEVEL_DEBUG
+	Drt.Logger.init(stderr, Args.debug ? GLib.LogLevelFlags.LEVEL_DEBUG
 	  : (Args.verbose ? GLib.LogLevelFlags.LEVEL_INFO: GLib.LogLevelFlags.LEVEL_WARNING),
 	  true, "Runner");
 	
