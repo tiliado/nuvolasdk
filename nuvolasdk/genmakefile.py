@@ -175,7 +175,7 @@ def gen_makefile():
 				
 				if compat:  # Nuvola 3.0.x:
 					install.extend((
-						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
+						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)-link/%s' % dest,
 						' $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n',
 					))
 					uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
@@ -190,7 +190,7 @@ def gen_makefile():
 				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
 				if compat:  # Nuvola 3.0.x:
 					install.extend((
-						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)/%s' % dest,
+						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)-link/%s' % dest,
 						' $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size),
 					))
 					uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
