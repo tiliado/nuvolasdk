@@ -1,12 +1,11 @@
 Nuvola SDK Change Log
 =====================
 
-+1
---
+4.6.0 - July 29th, 2017
+-----------------------
 
   * genmakefile: Add `-link` suffix to compat symlinks to workaround Debian not being able to replace a directory
     with a symlink. Issue: tiliado/nuvolaruntime#362
-  * genmakefile: Fix broken compat symlinks to icons.
   * dbus launcher: Rename Diorite to Drt.
   * Added version info - nuvolasdk.VERSION.
   * genmakefile: It is possible to specify required Nuvola SDK version.
