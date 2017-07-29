@@ -28,7 +28,11 @@ from nuvolasdk import defaults
 from nuvolasdk import utils
 from nuvolasdk import VERSION
 
-def gen_makefile():
+def gen_makefile(required_version=VERSION):
+	if not utils.check_version(required_version):
+		print("This project requires Nuvola SDK >= %s but version %s is installed." % (required_version, VERSION))
+		sys.exit(1)
+	
 	prefix = "/usr/local"
 	compat = False
 	dbus_launcher = False

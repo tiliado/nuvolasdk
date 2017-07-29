@@ -9,6 +9,7 @@ Nuvola SDK Change Log
   * genmakefile: Fix broken compat symlinks to icons.
   * dbus launcher: Rename Diorite to Drt.
   * Added version info - nuvolasdk.VERSION.
+  * genmakefile: It is possible to specify required Nuvola SDK version.
 
 4.5.0 - June 23rd, 2017
 -----------------------

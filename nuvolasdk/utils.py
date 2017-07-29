@@ -27,6 +27,7 @@ import unicodedata
 
 from nuvolasdk import defaults
 from nuvolasdk import shkit
+from nuvolasdk import VERSION
 
 APP_ID_RE = re.compile("^[a-z0-9]+(?:_[a-z0-9]+)*$")
 
@@ -111,3 +112,10 @@ def check_desktop_categories(categories):
 			errors.append('If the desktop category "Video" is specified, the desktop category AudioVideo must be specified too.')
 	return errors
 		
+
+def parse_version(version):
+	return  tuple(int(i.strip() or "0") for i in version.strip().split("."))
+
+
+def check_version(version):
+	return parse_version(version) <= parse_version(VERSION)
