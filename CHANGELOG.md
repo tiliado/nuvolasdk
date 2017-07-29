@@ -8,6 +8,7 @@ Nuvola SDK Change Log
     with a symlink. Issue: tiliado/nuvolaruntime#362
   * genmakefile: Fix broken compat symlinks to icons.
   * dbus launcher: Rename Diorite to Drt.
+  * Added version info - nuvolasdk.VERSION.
 
 4.5.0 - June 23rd, 2017
 -----------------------

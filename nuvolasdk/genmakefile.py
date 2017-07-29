@@ -26,6 +26,7 @@ import sys
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
 from nuvolasdk import utils
+from nuvolasdk import VERSION
 
 def gen_makefile():
 	prefix = "/usr/local"
@@ -82,7 +83,7 @@ def gen_makefile():
 	files = ' '.join(all_files)
 	
 	makefile = [
-		defaults.GENERATED_MAKEFILE,
+		defaults.GENERATED_MAKEFILE % VERSION,
 		"APP_ID = ", app_id, "\n",
 		"APP_NAME = ", app_name, "\n",
 		"APP_ID_DASHED = ", app_id_dashed, "\n",
@@ -266,5 +267,5 @@ def gen_makefile():
 	metadata["has_desktop_launcher"] = True
 	writejson("metadata.json", metadata)
 	
-	print("Makefile written. Run `make all` and then `make install`.")
+	print("Nuvola SDK %s Makefile written. Run `make all` and then `make install`." % VERSION)
 		

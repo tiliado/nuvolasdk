@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from nuvolasdk import VERSION
 from setuptools import setup
 
 LONG_DESC = """\
@@ -10,7 +11,7 @@ Documentation: https://github.com/tiliado/nuvolasdk
 
 setup(
 	name = "nuvolasdk",
-	version = "4.5.0",
+	version = VERSION,
 	author = "Jiří Janoušek",
 	author_email = "janousek.jiri@gmail.com",
 	url = "https://github.com/tiliado/nuvolasdk",
