@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name = @@APP_NAME@@
-Exec = @@EXEC@@
-Type = Application
-Categories = @@CATEGORIES@@
-Icon = @@ICON@@
-StartupWMClass = @@APP_UID@@
-StartupNotify = true
-Terminal = false
+Name=@@APP_NAME@@
+Exec=@@EXEC@@
+Type=Application
+Categories=@@CATEGORIES@@
+Icon=@@ICON@@
+StartupWMClass=@@APP_UID@@
+StartupNotify=true
+Terminal=false
