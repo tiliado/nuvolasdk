@@ -7,6 +7,7 @@ Unreleased
   * desktop launcher: Spaces around the equals sign were removed because they confuse kbuildsycoca5.
     Issue: tiliado/nuvolaruntime#365 Upstream ticket: https://bugs.kde.org/show_bug.cgi?id=310674
   * Added individual version info properties - `nuvolasdk.VERSION_MAJOR/MINOR/MICRO`.
+  * new-project: New `metadata.in.json` files use the latest Nuvola SDK version.
 
 4.6.0 - July 29th, 2017
 -----------------------
