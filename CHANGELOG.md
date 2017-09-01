@@ -1,8 +1,8 @@
 Nuvola SDK Change Log
 =====================
 
-Unreleased
-----------
+4.7.0 - September 1st, 2017
+------------------------
 
   * desktop launcher: Spaces around the equals sign were removed because they confuse kbuildsycoca5.
     Issue: tiliado/nuvolaruntime#365 Upstream ticket: https://bugs.kde.org/show_bug.cgi?id=310674
