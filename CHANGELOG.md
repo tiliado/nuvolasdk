@@ -1,6 +1,12 @@
 Nuvola SDK Change Log
 =====================
 
+4.9.0 - December 17th, 2017
+----------------------
+
+  * Default API version is 4.9.
+  * Sync version with Nuvola Runtime.
+
 4.7.0 - September 1st, 2017
 ------------------------
 
