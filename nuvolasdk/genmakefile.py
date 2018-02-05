@@ -34,7 +34,6 @@ def gen_makefile(required_version=VERSION):
 		sys.exit(1)
 	
 	prefix = "/usr/local"
-	compat = False
 	dbus_launcher = False
 	flatpak_build = False
 	create_appdata = False
@@ -62,8 +61,6 @@ def gen_makefile(required_version=VERSION):
 			flatpak_build = True
 		elif name == "--genuine":
 			genuine = True
-		elif name == "--compat":
-			compat = True
 		else:
 			print("Warning: Unknown option: ", arg)
 	
@@ -116,13 +113,6 @@ def gen_makefile(required_version=VERSION):
 		'uninstall:\n',
 		'\trm -rfv $(DESTDIR)$(APP_DATA_DIR)\n',
 	]
-	
-	if compat:  # Nuvola 3.0.x:
-		install.extend([
-			'\tinstall -vCd $(DESTDIR)$(OLD_APPS_DIR)\n',
-			'\tln -sv ../../nuvolaruntime/web_apps/$(APP_ID) $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)-link\n',
-		])
-		uninstall.append('\trm -rfv $(DESTDIR)$(OLD_APPS_DIR)/$(APP_ID)-link\n')
 	
 	if dbus_launcher:
 		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
@@ -177,14 +167,6 @@ def gen_makefile(required_version=VERSION):
 				install.append('\tcp -v %s $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n' % dest)
 				install.append('\tcp -v -t $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR) %s\n' % dest)
 				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/$(APP_ID_UNIQUE).svg\n')
-				
-				if compat:  # Nuvola 3.0.x:
-					install.extend((
-						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)-link/%s' % dest,
-						' $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n',
-					))
-					uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/scalable/apps/nuvolaplayer3_$(APP_ID).svg\n')
-				
 			else:
 				src = '$(ICONS_DIR)/' + fbasename(path)
 				dest = "$(ICONS_DIR)/%s.png" % size
@@ -193,12 +175,6 @@ def gen_makefile(required_version=VERSION):
 				install.append('\tcp -v %s $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
 				install.append('\tcp -v -t $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR) %s\n' % dest)
 				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
-				if compat:  # Nuvola 3.0.x:
-					install.extend((
-						'\tln -s -f -v -T ../../../../nuvolaplayer3/web_apps/$(APP_ID)-link/%s' % dest,
-						' $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size),
-					))
-					uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/nuvolaplayer3_$(APP_ID).png\n' % (size, size))
 				
 			all_files.append(dest)
 
@@ -231,7 +207,7 @@ def gen_makefile(required_version=VERSION):
 	if dbus_launcher_cmd:
 		launcher_cmd =  dbus_launcher_cmd
 	else:
-		launcher_cmd = "%s -a $(APP_ID)" % ("nuvola" if not compat else "nuvolaplayer3")
+		launcher_cmd = "%s -a $(APP_ID)" % "nuvola"
 	 
 	makefile.extend((
 		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
