@@ -210,16 +210,10 @@ def gen_makefile(required_version=VERSION):
 	
 	if dbus_launcher:
 		makefile.extend((
-			'%s: $(NUVOLA_SDK_DATA)/launch_app.vala\n' % dbus_launcher_cmd,
-			'\tvalac $(VALAFLAGS)',
-			' --vapidir="$(NUVOLA_SDK_DATA)/vapi"',
-			' --pkg gio-2.0 --pkg gtk+-3.0 --pkg gio-unix-2.0 --pkg nuvolaruntime-runner',
-			' -D FLATPAK' if flatpak_build else '',
-			' -X "-DNUVOLASDK_APP_ID=\\"$(APP_ID)\\""',
-			' -X "-DNUVOLASDK_UNIQUE_ID=\\"$(APP_ID_UNIQUE)\\""',
-			' -X "-DNUVOLASDK_FLATPAK_BUILD=%d"' % flatpak_build,
-			' -X "-DNUVOLASDK_APP_DATA_DIR=\\"$(APP_DATA_DIR)\\""',
-			' -o $@ $<\n',
+			'%s: $(NUVOLA_SDK_DATA)/launch_app.sh\n' % dbus_launcher_cmd,
+			'\tsed -e "s#@@APP_DIR@@#$(APP_DATA_DIR)#g"',
+			'  $< > $@\n',
+			'\tchmod a+x $@\n',
 		))
 		makefile.extend((
 			'$(APP_ID_DBUS).service:\n',
