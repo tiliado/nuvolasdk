@@ -195,7 +195,7 @@ def gen_makefile(required_version=VERSION):
 	if create_appdata:
 		makefile.extend((
 			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
-			'\tpython3 -m nuvolasdk create-appdata -o $@ -m $<\n',
+			'\tpython3 -m nuvolasdk create-appdata %s -o $@ -m $<\n' % ('--genuine' if genuine else ''),
 		))
 		
 	makefile.extend((

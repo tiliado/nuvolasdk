@@ -41,14 +41,18 @@ and more), but progress is being made to support generic web apps (e.g. Google C
 
 Features of Nuvola: desktop launchers, integration with media applets (e.g. in GNOME Shell and Ubuntu sound menu),
 Unity launcher quick list actions, lyrics fetching, Last.fm audio scrobbler, tray icon, desktop notifications,
-media keys binding, password manager, remote control over HTTP and more. Some features may be availably only to
-users with premium or patron plans available at https://tiliado.eu/nuvolaplayer/funding/
+media keys binding, password manager, remote control over HTTP and more.
+"""
 
-Users of the official Flatpak builds available at https://nuvola.tiliado.eu are eligible for user support
-free of charge. Users of third-party build should contact the customer care of their distributor or order
+SUPPORT = """
+Support: Users of third-party builds should contact the customer care of their distributor or order
 paid support provided by the Nuvola developer.
 """
 
+SUPPORT_GENUINE = """
+Support: Users of the genuine Flatpak builds available at https://nuvola.tiliado.eu are
+eligible for user support on the best-effort basis free of charge.
+"""
 
 def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
@@ -57,6 +61,7 @@ def create_arg_parser(prog):
 	)
 	parser.add_argument("-m", "--meta", help='Path to a metadata.json file', default="metadata.json", type=str)
 	parser.add_argument("-o", "--output", help='Path to an output file', default=None, type=str)
+	parser.add_argument("--genuine", help='Genuine build.', default=False, action='store_true')
 	return parser
 
 
@@ -64,14 +69,15 @@ def run(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
 	meta = readjson(joinpath(directory, args.meta))
 	output = args.output
-	xml = create_app_data_xml(meta)
+	xml = create_app_data_xml(meta, args.genuine)
 	if output:
 		fwrite(joinpath(directory, output), xml)
 	else:
 		sys.stdout.write(xml)
 
 
-def create_app_data_xml(meta):
+def create_app_data_xml(meta, genuine):
+	runtime_name = "Nuvola Apps" if genuine else "Web Apps"
 	app_id = meta["id"]
 	uid = utils.get_unique_app_id(app_id)
 	dbus_launcher = utils.get_dbus_launcher_name(app_id)
@@ -81,12 +87,22 @@ def create_app_data_xml(meta):
 		tree.add("id", uid + ".desktop")
 		tree.add("metadata_license", "CC0-1.0")
 		tree.add("project_license", licenses.get_spdx_expression(meta["license"], ignore_unknown=True))
-		tree.add("name", "%s (Nuvola app)" % meta["name"])
-		tree.add("summary", "%s - Sandboxed web application" % meta["name"])
+		tree.add("name", "%s in %s Runtime" % (meta["name"], runtime_name))
+		if genuine:
+			summary = "%s is a semi-sandboxed web application running in %s Runtime." % (meta["name"], runtime_name)
+		else:
+			summary = ("%s is a semi-sandboxed web application running in %s Runtime" % (meta["name"], runtime_name)
+			+ " based on the source code from Nuvola Apps project.")
+		tree.add("summary", summary)
 		with tree("description"):
-			tree.add("p", "%s (Nuvola app) is a semi-sandboxed web application running in the Nuvola Apps runtime." % meta["name"])
-			for para in DESCRIPTION.strip().split("\n\n"):
-				tree.add("p", para)
+			tree.add("p", summary)
+			if genuine:
+				desc = DESCRIPTION, SUPPORT_GENUINE
+			else:
+				desc = DESCRIPTION, SUPPORT
+			for entry in desc:
+				for para in entry.strip().split("\n\n"):
+					tree.add("p", para)
 		with tree("screenshots"):
 			for i, (url, caption) in enumerate(screenshots.SCREENSHOTS):
 				args = {"type": "default"} if i == 0 else {} 
@@ -95,7 +111,7 @@ def create_app_data_xml(meta):
 					tree.add("caption", caption)
 		tree.add("url", "https://tiliado.eu/nuvolaplayer/", type="homepage")
 		tree.add("url", "https://github.com/tiliado/nuvolaplayer/wiki/Bug-Reporting-Guidelines", type="bugtracker")
-		tree.add("url", "https://tiliado.github.io/nuvolaplayer/documentation/3.1/explore.html", type="help")
+		tree.add("url", "https://tiliado.github.io/nuvolaplayer/documentation/4/explore.html", type="help")
 		tree.add("url", "https://tiliado.eu/nuvolaplayer/funding/", type="donation")
 		
 		tree.add("developer_name", meta["maintainer_name"])
