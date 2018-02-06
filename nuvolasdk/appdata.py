@@ -87,13 +87,17 @@ def create_app_data_xml(meta, genuine):
 		tree.add("id", uid + ".desktop")
 		tree.add("metadata_license", "CC0-1.0")
 		tree.add("project_license", licenses.get_spdx_expression(meta["license"], ignore_unknown=True))
-		tree.add("name", "%s in %s Runtime" % (meta["name"], runtime_name))
+		tree.add("name", "%s • %s" % (meta["name"], "Nuvola App" if genuine else "web app"))
+		if genuine:
+			summary = "Web app running in Nuvola Apps Runtime."
+		else:
+			summary = "Running in a runtime based on the source code from Nuvola Apps project."
+		tree.add("summary", summary)
 		if genuine:
 			summary = "%s is a semi-sandboxed web application running in %s Runtime." % (meta["name"], runtime_name)
 		else:
 			summary = ("%s is a semi-sandboxed web application running in %s Runtime" % (meta["name"], runtime_name)
 			+ " based on the source code from Nuvola Apps project.")
-		tree.add("summary", summary)
 		with tree("description"):
 			tree.add("p", summary)
 			if genuine:
