@@ -136,11 +136,8 @@ def gen_makefile(required_version=VERSION):
 		install.extend((
 			'\tinstall -vCd $(DESTDIR)$(DATADIR)/metainfo\n',
 			'\tcp -vf -t $(DESTDIR)$(DATADIR)/metainfo $(APP_ID_UNIQUE).appdata.xml\n',
-			'\tinstall -vCd $(DESTDIR)$(DATADIR)/appdata\n',
-			'\tcp -vf -t $(DESTDIR)$(DATADIR)/appdata $(APP_ID_UNIQUE).appdata.xml\n',
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/metainfo/$(APP_ID_UNIQUE).appdata.xml\n')
-		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/appdata/$(APP_ID_UNIQUE).appdata.xml\n')
 		
 	icons_spec = build_json.get("icons", defaults.BUILD_JSON["icons"])
 	icons = [
