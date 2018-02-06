@@ -1,5 +1,5 @@
 """
-Copyright 2014-2017 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -34,7 +34,6 @@ def gen_makefile(required_version=VERSION):
 		sys.exit(1)
 	
 	prefix = "/usr/local"
-	dbus_launcher = False
 	flatpak_build = False
 	create_appdata = False
 	genuine = False
@@ -53,8 +52,6 @@ def gen_makefile(required_version=VERSION):
 			prefix = value
 		elif name in ("CFLAGS", "CXXFLAGS"):
 			pass
-		elif name == "--with-dbus-launcher":
-			dbus_launcher = True
 		elif name == "--with-appdata-xml":
 			create_appdata = True
 		elif name == "--flatpak-build":
@@ -65,7 +62,6 @@ def gen_makefile(required_version=VERSION):
 			print("Warning: Unknown option: ", arg)
 	
 	if flatpak_build:
-		dbus_launcher = True
 		create_appdata = True
 	
 	app_id = metadata["id"]
@@ -114,21 +110,19 @@ def gen_makefile(required_version=VERSION):
 		'\trm -rfv $(DESTDIR)$(APP_DATA_DIR)\n',
 	]
 	
-	if dbus_launcher:
-		dbus_launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
-		all_files.extend((dbus_launcher_cmd, '$(APP_ID_DBUS).service'))
-		install.extend((
-			'\tinstall -vCd $(DESTDIR)$(BINDIR)\n',
-			'\tinstall -vC -t $(DESTDIR)$(BINDIR) %s\n' % dbus_launcher_cmd,
-			'\tinstall -vCd $(DESTDIR)$(DATADIR)/dbus-1/services\n',
-			'\tcp -vf -t $(DESTDIR)$(DATADIR)/dbus-1/services $(APP_ID_DBUS).service\n',
-		))
-		uninstall.extend((
-			'\trm -fv $(DESTDIR)$(DATADIR)/dbus-1/services/$(APP_ID_DBUS).service\n',
-			'\trm -fv $(DESTDIR)$(BINDIR)/%s\n' % dbus_launcher_cmd,
-		))
-	else:
-		dbus_launcher_cmd = None
+	
+	launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
+	all_files.extend((launcher_cmd, '$(APP_ID_DBUS).service'))
+	install.extend((
+		'\tinstall -vCd $(DESTDIR)$(BINDIR)\n',
+		'\tinstall -vC -t $(DESTDIR)$(BINDIR) %s\n' % launcher_cmd,
+		'\tinstall -vCd $(DESTDIR)$(DATADIR)/dbus-1/services\n',
+		'\tcp -vf -t $(DESTDIR)$(DATADIR)/dbus-1/services $(APP_ID_DBUS).service\n',
+	))
+	uninstall.extend((
+		'\trm -fv $(DESTDIR)$(BINDIR)/%s\n' % launcher_cmd,
+	))
+	
 	
 	all_files.append('$(APP_ID_UNIQUE).desktop')
 	install.extend((
@@ -184,19 +178,19 @@ def gen_makefile(required_version=VERSION):
 		'\t$(error metadata.in.json is newer that metadata.json. Run ./configure again.)\n',
 	])
 	
-	if dbus_launcher:
-		makefile.extend((
-			'%s: $(NUVOLA_SDK_DATA)/launch_app.sh\n' % dbus_launcher_cmd,
-			'\tsed -e "s#@@APP_DIR@@#$(APP_DATA_DIR)#g"',
-			'  $< > $@\n',
-			'\tchmod a+x $@\n',
-		))
-		makefile.extend((
-			'$(APP_ID_DBUS).service:\n',
-			'\techo "[D-BUS Service]" > $@\n',
-			'\techo "Name=$(APP_ID_DBUS)" >> $@\n',
-			'\techo "Exec=%s --gapplication-service" >> $@\n' % dbus_launcher_cmd,
-		))
+	
+	makefile.extend((
+		'%s: $(NUVOLA_SDK_DATA)/launch_app.sh\n' % launcher_cmd,
+		'\tsed -e "s#@@APP_DIR@@#$(APP_DATA_DIR)#g"',
+		'  $< > $@\n',
+		'\tchmod a+x $@\n',
+	))
+	makefile.extend((
+		'$(APP_ID_DBUS).service:\n',
+		'\techo "[D-BUS Service]" > $@\n',
+		'\techo "Name=$(APP_ID_DBUS)" >> $@\n',
+		'\techo "Exec=%s --gapplication-service" >> $@\n' % launcher_cmd,
+	))
 	
 	if create_appdata:
 		makefile.extend((
@@ -204,11 +198,6 @@ def gen_makefile(required_version=VERSION):
 			'\tpython3 -m nuvolasdk create-appdata -o $@ -m $<\n',
 		))
 		
-	if dbus_launcher_cmd:
-		launcher_cmd =  dbus_launcher_cmd
-	else:
-		launcher_cmd = "%s -a $(APP_ID)" % "nuvola"
-	 
 	makefile.extend((
 		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
 		'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
@@ -224,7 +213,7 @@ def gen_makefile(required_version=VERSION):
 	
 	makefile.extend((
 		"clean:\n",
-		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n' if dbus_launcher else "",
+		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n',
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
 		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
 		'\trm -fv $(APP_ID_DBUS).service\n' if flatpak_build else "",
@@ -237,7 +226,7 @@ def gen_makefile(required_version=VERSION):
 	fwrite("Makefile", "".join(makefile))
 	
 	del(metadata["build"])
-	metadata["has_dbus_launcher"] = dbus_launcher
+	metadata["has_dbus_launcher"] = True
 	metadata["has_desktop_launcher"] = True
 	writejson("metadata.json", metadata)
 	
