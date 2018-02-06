@@ -228,6 +228,7 @@ def gen_makefile(required_version=VERSION):
 	del(metadata["build"])
 	metadata["has_dbus_launcher"] = True
 	metadata["has_desktop_launcher"] = True
+	metadata["sdk_version"] = VERSION
 	writejson("metadata.json", metadata)
 	
 	print("Nuvola SDK %s Makefile written. Run `make all` and then `make install`." % VERSION)
