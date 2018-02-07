@@ -79,7 +79,7 @@ def run(directory, prog, argv):
 def create_app_data_xml(meta, genuine):
 	runtime_name = "Nuvola Apps" if genuine else "Web Apps"
 	app_id = meta["id"]
-	uid = utils.get_unique_app_id(app_id)
+	uid = utils.get_unique_app_id(app_id, genuine)
 	dbus_launcher = utils.get_dbus_launcher_name(app_id)
 	
 	tree = xmltree.TreeBuilder()

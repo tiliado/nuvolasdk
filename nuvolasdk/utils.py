@@ -50,11 +50,11 @@ def app_id_from_name(app_name):
 def get_dashed_app_id(app_id):
 	return app_id.replace("_", "-")
 
-def get_dbus_app_id(app_id, genuine=False):
-	return build_unique_id("eu.tiliado.Nuvola" if genuine else "eu.tiliado.NuvolaOse", app_id)
+def get_dbus_app_id(app_id, genuine):
+	return get_unique_app_id(app_id, genuine)
 	
-def get_unique_app_id(app_id):
-	return build_unique_id("eu.tiliado.Nuvola", app_id)
+def get_unique_app_id(app_id, genuine):
+	return build_unique_id("eu.tiliado.Nuvola" if genuine else "eu.tiliado.WebRuntime", app_id)
 	
 def build_unique_id(base_id, app_id):
 	app_id_unique = [base_id, "App"]
@@ -69,18 +69,19 @@ def get_app_dir_name(app_id):
 def get_dbus_launcher_name(app_id):
 	return get_app_dir_name(app_id)
 
-def get_desktop_launcher_name(app_id):
-	return get_unique_app_id(app_id) + ".desktop"
+def get_desktop_launcher_name(app_id, genuine):
+	return get_unique_app_id(app_id, genuine) + ".desktop"
 
 def get_gitignore_for_app_id(app_id):
-	uid = get_unique_app_id(app_id)
-	return ''.join((
-		defaults.GITIGNORE,
-		get_dbus_launcher_name(app_id) + '\n',
-		get_desktop_launcher_name(app_id) + '\n',
-		uid + '.data.service\n',
-		uid + '.appdata.xml\n',
-		app_id + '.tar.gz\n'))
+	buffer = [defaults.GITIGNORE, get_dbus_launcher_name(app_id) + '\n',]
+	for genuine in True, False:
+		uid = get_unique_app_id(app_id, genuine)
+		buffer.extend((
+			get_desktop_launcher_name(app_id, genuine) + '\n',
+			uid + '.data.service\n',
+			uid + '.appdata.xml\n',
+		))
+	return ''.join(buffer)
 
 def get_license_files():
 	return shkit.glob("LICENSE*")

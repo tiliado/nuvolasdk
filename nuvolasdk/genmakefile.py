@@ -67,7 +67,7 @@ def gen_makefile(required_version=VERSION):
 	app_id = metadata["id"]
 	app_name = metadata["name"]
 	app_id_dashed = utils.get_dashed_app_id(app_id)
-	app_id_unique = utils.get_unique_app_id(app_id)
+	app_id_unique = utils.get_unique_app_id(app_id, genuine)
 	app_id_dbus = utils.get_dbus_app_id(app_id, genuine)
 	
 	sdk_data = joinpath(fdirname(__file__), "data")
