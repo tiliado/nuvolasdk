@@ -138,7 +138,14 @@ def gen_makefile(required_version=VERSION):
 			'\tcp -vf -t $(DESTDIR)$(DATADIR)/metainfo $(APP_ID_UNIQUE).appdata.xml\n',
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/metainfo/$(APP_ID_UNIQUE).appdata.xml\n')
-		
+	else:
+		all_files.append('nuvola-app-$(APP_ID_DASHED).metainfo.xml')
+		install.extend((
+			'\tinstall -vCd $(DESTDIR)$(DATADIR)/metainfo\n',
+			'\tcp -vf -t $(DESTDIR)$(DATADIR)/metainfo nuvola-app-$(APP_ID_DASHED).metainfo.xml\n',
+		))
+		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/metainfo/nuvola-app-$(APP_ID_DASHED).metainfo.xml\n')
+	
 	icons_spec = build_json.get("icons", defaults.BUILD_JSON["icons"])
 	icons = [
 		'$(ICONS_DIR):\n',
@@ -194,6 +201,11 @@ def gen_makefile(required_version=VERSION):
 			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
 			'\tpython3 -m nuvolasdk create-appdata %s -o $@ -m $<\n' % ('--genuine' if genuine else ''),
 		))
+	else:
+		makefile.extend((
+			'nuvola-app-$(APP_ID_DASHED).metainfo.xml: metadata.json\n',
+			'\tpython3 -m nuvolasdk create-addondata %s -o $@ -m $<\n' % ('--genuine' if genuine else ''),
+		))
 		
 	makefile.extend((
 		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
@@ -213,6 +225,7 @@ def gen_makefile(required_version=VERSION):
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n',
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
 		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
+		'\trm -fv nuvola-app-$(APP_ID_DASHED).metainfo.xml\n' if create_appdata else "",
 		'\trm -fv $(APP_ID_DBUS).service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
 		"\trm -rvf icons\n",

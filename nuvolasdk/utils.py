@@ -52,9 +52,12 @@ def get_dashed_app_id(app_id):
 
 def get_dbus_app_id(app_id, genuine):
 	return get_unique_app_id(app_id, genuine)
-	
+
+def get_nuvola_unique_id(genuine):
+	return "eu.tiliado.Nuvola" if genuine else "eu.tiliado.WebRuntime"
+
 def get_unique_app_id(app_id, genuine):
-	return build_unique_id("eu.tiliado.Nuvola" if genuine else "eu.tiliado.WebRuntime", app_id)
+	return build_unique_id(get_nuvola_unique_id(genuine), app_id)
 	
 def build_unique_id(base_id, app_id):
 	app_id_unique = [base_id, "App"]
