@@ -54,6 +54,11 @@ Support: Users of the genuine Flatpak builds available at https://nuvola.tiliado
 eligible for user support on the best-effort basis free of charge.
 """
 
+LEGAL = """
+This software is not affiliated with nor endorsed by the {name} website and its operators/owners.
+{name} may be a trademark or a registered trademark owned by the operators/owners of the {name} website.
+"""
+
 def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
 		prog = prog,
@@ -107,6 +112,7 @@ def create_app_data_xml(meta, genuine):
 			for entry in desc:
 				for para in entry.strip().split("\n\n"):
 					tree.add("p", para)
+			tree.add("p", LEGAL.strip().format(name=meta["name"]))
 		with tree("screenshots"):
 			for i, (url, caption) in enumerate(screenshots.SCREENSHOTS):
 				args = {"type": "default"} if i == 0 else {} 
