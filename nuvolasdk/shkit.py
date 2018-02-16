@@ -153,4 +153,4 @@ def writejson2(path, data, **kwargs):
 		return _json.dump(data, f, **kwargs)
 
 def writejson(path, data):
-	return writejson2(path, data, indent=4, sort_keys=False, separators=(', ', ': '), ensure_ascii=False)
+	return writejson2(path, data, indent=4, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
