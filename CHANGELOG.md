@@ -1,6 +1,15 @@
 Nuvola SDK Change Log
 =====================
 
+4.10.0 - March 4th, 2018
+------------------------
+
+* Nuvola 3.0 compatibility mode was removed.
+* The `nuvola-app-xxx` binary launcher was replaced with a shell script, which is now always included.
+  It requires Nuvola 4.10. Consequently, `--with-dbus-launcher` configure option was removed.
+* Individual apps now use the `eu.tiliado.WebRuntimeApp...` unique id.
+* AppStream Addon XML metadata are generated. Issue: tiliado/nuvolasdk#1
+
 4.9.0 - December 17th, 2017
 ----------------------
 
