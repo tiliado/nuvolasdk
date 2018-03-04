@@ -224,8 +224,8 @@ def gen_makefile(required_version=VERSION):
 		"clean:\n",
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n',
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
-		'\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else "",
-		'\trm -fv nuvola-app-$(APP_ID_DASHED).metainfo.xml\n' if create_appdata else "",
+		('\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else 
+		'\trm -fv nuvola-app-$(APP_ID_DASHED).metainfo.xml\n'),
 		'\trm -fv $(APP_ID_DBUS).service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
 		"\trm -rvf icons\n",
