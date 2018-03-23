@@ -39,6 +39,13 @@ def gen_makefile(required_version=VERSION):
 	genuine = False
 	metadata = readjson("metadata.in.json")
 	build_json = metadata.get("build", {})
+
+	major, minor, micro, revision = utils.compute_version_from_git(
+		metadata["version_major"], metadata.get("version_minor", 0), metadata.get("version_micro", 0))
+	metadata["version_major"] = major
+	metadata["version_minor"] = minor
+	metadata["version_micro"] = micro
+	metadata["version_revision"] = revision
 	
 	for arg in sys.argv[1:]:
 		try:

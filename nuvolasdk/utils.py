@@ -24,6 +24,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
 import unicodedata
+import os
+import subprocess
 
 from nuvolasdk import defaults
 from nuvolasdk import shkit
@@ -123,3 +125,26 @@ def parse_version(version):
 
 def check_version(version):
 	return parse_version(version) <= parse_version(VERSION)
+
+
+def get_git_version():
+	if os.path.isdir(".git"):
+		try:
+			output = subprocess.check_output(["git", "describe", "--tags", "--long"])
+			return output.decode("utf-8").strip().split("-")
+		except subprocess.CalledProcessError:
+			return None
+	return None
+
+
+def compute_version_from_git(major, minor, micro):
+	git_version = get_git_version()
+	revision = None
+	if git_version:
+		revision = "%s-%s" % (git_version[1], git_version[2])
+		commits = int(git_version[1])
+		git_version = [int(i) for i in git_version[0].split(".")]
+		assert git_version == [major, minor], "Mismatch between metadata version %s and git tag %s." % (
+			[major, minor], git_version)
+		micro += commits
+	return major, minor, micro, revision
