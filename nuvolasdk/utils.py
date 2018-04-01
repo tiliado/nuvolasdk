@@ -83,8 +83,9 @@ def get_gitignore_for_app_id(app_id):
 		uid = get_unique_app_id(app_id, genuine)
 		buffer.extend((
 			get_desktop_launcher_name(app_id, genuine) + '\n',
-			uid + '.data.service\n',
+			uid + '.service\n',
 			uid + '.appdata.xml\n',
+			'nuvola-app-%s.metainfo.xml\n' % (app_id.replace('_', '-')),
 		))
 	return ''.join(buffer)
 
