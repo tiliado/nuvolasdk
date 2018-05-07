@@ -1,5 +1,5 @@
 """
-Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,7 @@ import nuvolasdk.checkproject
 import nuvolasdk.datadir
 import nuvolasdk.appdata
 import nuvolasdk.addondata
+import nuvolasdk.createscreenshots
 
 def print_help(prog):
 	print('Help')
@@ -59,6 +60,9 @@ def print_help(prog):
 	print('\nCreate addon data XML')
 	print('====================\n')
 	nuvolasdk.addondata.create_arg_parser(prog + " create-addondata").print_help()
+	print('\nCreate combined screenshots')
+	print('===========================\n')
+	nuvolasdk.createscreenshots.create_arg_parser(prog + " create-screenshots").print_help()
 
 def run(wd, argv):
 	prog = os.path.basename(argv[0])
@@ -79,6 +83,8 @@ def run(wd, argv):
 		return nuvolasdk.appdata.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "create-addondata":
 		return nuvolasdk.addondata.run(wd, prog + " " + cmd, argv[2:]) or 0
+	if cmd == "create-screenshots":
+		return nuvolasdk.createscreenshots.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "data-dir":
 		return nuvolasdk.datadir.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd in ('-h', '--help', 'help'):

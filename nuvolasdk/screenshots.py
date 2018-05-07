@@ -54,3 +54,11 @@ SCREENSHOTS = [
         "Enable and configure available features."
     ),
 ]
+
+BASE_SCREENSHOTS = {
+	'other': [
+		('pantheon.png', '104,69+1080,600', '#c1c1c1'),
+		('unity.png', '132,106+1080,600', '#c1c1c1'),
+	]
+}
+

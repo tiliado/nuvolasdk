@@ -39,6 +39,7 @@ def gen_makefile(required_version=VERSION):
 	genuine = False
 	metadata = readjson("metadata.in.json")
 	build_json = metadata.get("build", {})
+	build_screenshots = isfile(defaults.WEB_VIEW_IMAGE)
 
 	major, minor, micro, revision = utils.compute_version_from_git(
 		metadata["version_major"], metadata.get("version_minor", 0), metadata.get("version_micro", 0))
@@ -152,6 +153,9 @@ def gen_makefile(required_version=VERSION):
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/metainfo/nuvola-app-$(APP_ID_DASHED).metainfo.xml\n')
 	
+	if build_screenshots:
+		all_files.append('screenshots/%s' % defaults.SCREENSHOTS_DIR_TIMESTAMP)
+
 	icons_spec = build_json.get("icons", defaults.BUILD_JSON["icons"])
 	icons = [
 		'$(ICONS_DIR):\n',
@@ -222,6 +226,13 @@ def gen_makefile(required_version=VERSION):
 		' $< > $@\n',
 	))
 	
+	if build_screenshots:
+		makefile.extend((
+			'screenshots/%s: %s\n' % (defaults.SCREENSHOTS_DIR_TIMESTAMP, defaults.WEB_VIEW_IMAGE),
+			'\tpython3 -m nuvolasdk create-screenshots -o screenshots -i $<\n',
+		))
+		all_files.append('screenshots/%s' % defaults.SCREENSHOTS_DIR_TIMESTAMP)
+
 	makefile.extend(icons)
 	makefile.extend(install)
 	makefile.extend(uninstall)
@@ -235,6 +246,7 @@ def gen_makefile(required_version=VERSION):
 		'\trm -fv $(APP_ID_DBUS).service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
 		"\trm -rvf icons\n",
+		"\trm -rvf screenshots\n" if build_screenshots else "",
 		"distclean: clean\n",
 		"\trm -vf Makefile metadata.json\n"
 	));

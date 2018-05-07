@@ -1,5 +1,5 @@
 """
-Copyright 2014-2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -37,7 +37,7 @@ BUILD_JSON = {
 	]
 }
 
-GITIGNORE = "Makefile\nmetadata.json\nicons\n"
+GITIGNORE = "Makefile\nmetadata.json\nicons\n/screenshots/\n"
 
 METADATA_IN_JSON = OrderedDict((
     ("id", "happy_songs"), 
@@ -56,3 +56,7 @@ METADATA_IN_JSON = OrderedDict((
 ))
 
 CONFIGURE_SCRIPT = "#!/usr/bin/env python3\nimport nuvolasdk\nnuvolasdk.gen_makefile(\"%s\")\n" % VERSION
+
+WEB_VIEW_IMAGE = 'src/webview.png'
+
+SCREENSHOTS_DIR_TIMESTAMP = 'timestamp.txt'
