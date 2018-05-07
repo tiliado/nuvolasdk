@@ -162,4 +162,5 @@ def parse_json(data, **kwargs):
 
 
 def dump_json(data):
-	return json.dumps(data, indent=2, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
+	data = json.dumps(data, indent=2, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
+	return data + '\n' if data else ''
