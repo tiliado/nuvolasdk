@@ -1,7 +1,7 @@
 """
 shkit.py - Shell Kit - write shell script alternatives easily in Python 3 
 
-Copyright 2014-2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -153,4 +153,4 @@ def writejson2(path, data, **kwargs):
 		return _json.dump(data, f, **kwargs)
 
 def writejson(path, data):
-	return writejson2(path, data, indent=4, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
+	return writejson2(path, data, indent=2, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
