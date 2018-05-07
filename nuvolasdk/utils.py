@@ -1,5 +1,5 @@
 """
-Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -22,6 +22,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+from collections import OrderedDict
+import json
 import re
 import unicodedata
 import os
@@ -153,3 +155,11 @@ def compute_version_from_git(major, minor, micro):
 
 def get_sdk_data_dir(*args):
 	return shkit.joinpath(shkit.fdirname(__file__), "data", *args)
+
+
+def parse_json(data, **kwargs):
+	return json.loads(data, object_pairs_hook=OrderedDict, **kwargs)
+
+
+def dump_json(data):
+	return json.dumps(data, indent=2, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
