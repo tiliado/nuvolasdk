@@ -70,23 +70,17 @@ def run(wd, argv):
 		return 1
 	cmd = argv[1]
 	if cmd == "convert-project":
-		convert_project(wd, prog + " " + cmd, argv[2:])
-		return 0
+		return convert_project(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "check-project":
-		nuvolasdk.checkproject.run(wd, prog + " " + cmd, argv[2:])
-		return 0
+		return nuvolasdk.checkproject.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "new-project":
-		nuvolasdk.newproject.new_project(wd, prog + " " + cmd, argv[2:])
-		return 0	
+		return nuvolasdk.newproject.new_project(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "create-appdata":
-		nuvolasdk.appdata.run(wd, prog + " " + cmd, argv[2:])
-		return 0
+		return nuvolasdk.appdata.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "create-addondata":
-		nuvolasdk.addondata.run(wd, prog + " " + cmd, argv[2:])
-		return 0
+		return nuvolasdk.addondata.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd == "data-dir":
-		nuvolasdk.datadir.run(wd, prog + " " + cmd, argv[2:])
-		return 0
+		return nuvolasdk.datadir.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd in ('-h', '--help', 'help'):
 		print_help(prog)
 		return 0
