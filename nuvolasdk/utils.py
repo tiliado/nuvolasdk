@@ -149,3 +149,7 @@ def compute_version_from_git(major, minor, micro):
 			[major, minor], git_version)
 		micro += commits
 	return major, minor, micro, revision
+
+
+def get_sdk_data_dir(*args):
+	return shkit.joinpath(shkit.fdirname(__file__), "data", *args)

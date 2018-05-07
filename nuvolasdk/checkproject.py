@@ -38,7 +38,7 @@ def create_arg_parser(prog):
 
 def run(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
-	sdk_data = joinpath(fdirname(__file__), "data")
+	sdk_data = utils.get_sdk_data_dir()
 	pushdir(directory)
 	n_errors = 0
 	

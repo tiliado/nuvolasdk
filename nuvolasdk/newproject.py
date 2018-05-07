@@ -111,7 +111,7 @@ def new_project(directory, prog, argv):
 	except ExecError as e:
 		print("Error: Failed to set up git. %s" % e)
 	
-	sdk_data = joinpath(fdirname(__file__), "data")
+	sdk_data = utils.get_sdk_data_dir()
 	app_dir_name = utils.get_app_dir_name(app_id)
 	top_dir = joinpath(directory, app_dir_name)
 	

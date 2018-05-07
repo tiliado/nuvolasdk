@@ -1,5 +1,5 @@
 """
-Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import argparse
 
-from nuvolasdk.shkit import *
+from nuvolasdk import utils
 
 def create_arg_parser(prog):
 	parser = argparse.ArgumentParser(
@@ -35,5 +35,5 @@ def create_arg_parser(prog):
 
 def run(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
-	sdk_data = joinpath(fdirname(__file__), "data")
+	sdk_data = utils.get_sdk_data_dir()
 	print(sdk_data, end='')
