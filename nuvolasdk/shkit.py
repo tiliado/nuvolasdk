@@ -40,6 +40,8 @@ from pprint import pprint
 import json as _json
 from collections import OrderedDict
 
+from nuvolasdk import utils as _utils
+
 ExecError = _subprocess.CalledProcessError
 shquote = _shlex.quote
 cptree = copytree
@@ -150,7 +152,7 @@ def readjson(path, **kwargs):
 
 def writejson2(path, data, **kwargs):
 	with open(path, "w", encoding="utf-8") as f:
-		return _json.dump(data, f, **kwargs)
+		f.write(_utils.dump_json(data))
 
 def writejson(path, data):
-	return writejson2(path, data, indent=2, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
+	return writejson2(path, data)
