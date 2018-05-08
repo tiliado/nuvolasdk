@@ -2,14 +2,14 @@
  * Copyright ${year} ${maintainer_name} <${maintainer_mail}>
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,66 +22,64 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-"use strict";
+'use strict';
 
-(function(Nuvola)
-{
+(function (Nuvola) {
+  // Create media player component
+  var player = Nuvola.$object(Nuvola.MediaPlayer)
 
-// Create media player component
-var player = Nuvola.$object(Nuvola.MediaPlayer);
+  // Handy aliases
+  var PlaybackState = Nuvola.PlaybackState
+  var PlayerAction = Nuvola.PlayerAction
 
-// Handy aliases
-var PlaybackState = Nuvola.PlaybackState;
-var PlayerAction = Nuvola.PlayerAction;
+  // Create new WebApp prototype
+  var WebApp = Nuvola.$WebApp()
 
-// Create new WebApp prototype
-var WebApp = Nuvola.$WebApp();
+  // Initialization routines
+  WebApp._onInitWebWorker = function (emitter) {
+    Nuvola.WebApp._onInitWebWorker.call(this, emitter)
 
-// Initialization routines
-WebApp._onInitWebWorker = function(emitter)
-{
-    Nuvola.WebApp._onInitWebWorker.call(this, emitter);
+    var state = document.readyState
+    if (state === 'interactive' || state === 'complete') {
+      this._onPageReady()
+    } else {
+      document.addEventListener('DOMContentLoaded', this._onPageReady.bind(this))
+    }
+  }
 
-    var state = document.readyState;
-    if (state === "interactive" || state === "complete")
-        this._onPageReady();
-    else
-        document.addEventListener("DOMContentLoaded", this._onPageReady.bind(this));
-}
-
-// Page is ready for magic
-WebApp._onPageReady = function()
-{
+  // Page is ready for magic
+  WebApp._onPageReady = function () {
     // Connect handler for signal ActionActivated
-    Nuvola.actions.connect("ActionActivated", this);
+    Nuvola.actions.connect('ActionActivated', this)
 
     // Start update routine
-    this.update();
-}
+    this.update()
+  }
 
-// Extract data from the web page
-WebApp.update = function()
-{
+  // Extract data from the web page
+  WebApp.update = function () {
     var track = {
-        title: null,
-        artist: null,
-        album: null,
-        artLocation: null,
-        rating: null
+      title: null,
+      artist: null,
+      album: null,
+      artLocation: null,
+      rating: null
     }
 
-    player.setTrack(track);
-    player.setPlaybackState(PlaybackState.UNKNOWN);
+    player.setTrack(track)
+    player.setPlaybackState(PlaybackState.UNKNOWN)
 
     // Schedule the next update
-    setTimeout(this.update.bind(this), 500);
-}
+    setTimeout(this.update.bind(this), 500)
+  }
 
-// Handler of playback actions
-WebApp._onActionActivated = function(emitter, name, param)
-{
-}
+  // Handler of playback actions
+  WebApp._onActionActivated = function (emitter, name, param) {
+    switch (name) {
+      case PlayerAction.Play:
+        break
+    }
+  }
 
-WebApp.start();
-
-})(this);  // function(Nuvola)
+  WebApp.start()
+})(this)  // function(Nuvola)
