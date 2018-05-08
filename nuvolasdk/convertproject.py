@@ -176,30 +176,37 @@ def convert_project(directory, prog, argv):
 	
 	F_README_MD = "README.md"
 	if not fexists(F_README_MD):
+		readme_md_to_substitute = F_README_MD
 		print("Generating", F_README_MD)
 		todos.append("Revise the content of the auto-generated file %s." % F_README_MD)
-		cp(joinpath(sdk_data, "template", F_README_MD), F_README_MD)
+
 		copyright_details = 'copyright details (Copyright 2014-2016 Johny Bollen <johny@example.net>)'
-		
+
 		maintainer_mail = None
 		while not maintainer_mail:
 			prompt = 'Enter your contact e-mail to be used in %s.' % copyright_details
 			prompt += "\n" + " " * (len(prompt) - 20) + "^" * 17 + "\n"
 			maintainer_mail = input(prompt).strip()
 		subst["maintainer_mail"] = maintainer_mail
-		
+
 		copyright_years = None
 		while not copyright_years:
 			prompt = 'Enter copyright years to be used in %s.' % copyright_details
 			prompt += "\n" + " " * (len(prompt) - 44) + "^" * 9 + "\n"
 			copyright_years = input(prompt).strip()
 		subst["year"] = copyright_years
-		
-		dollar_replace(F_README_MD, subst)
-	
-	F_UPDATE_README_MD = "Update.README.md"
-	cp(joinpath(sdk_data, F_UPDATE_README_MD), F_UPDATE_README_MD)
-	
+	else:
+		F_TEMPLATE_README_MD = 'template--' + F_README_MD
+		F_TEMPLATE_README_MD_DIFF = F_TEMPLATE_README_MD + ".diff"
+		readme_md_to_substitute = F_TEMPLATE_README_MD
+		todos.append("Check out the template '%s' and '%s' whether you need to update '%s'." % (
+			F_TEMPLATE_README_MD, F_TEMPLATE_README_MD_DIFF, F_README_MD))
+
+	cp(joinpath(sdk_data, "template", F_README_MD), readme_md_to_substitute)
+	dollar_replace(readme_md_to_substitute, subst)
+	if readme_md_to_substitute != F_README_MD:
+		fwrite(F_TEMPLATE_README_MD_DIFF, diff(F_README_MD, F_TEMPLATE_README_MD))
+
 	D_SRC = "src"
 	F_ICON_SVG = joinpath(D_SRC, "icon.svg")
 	if isdir(D_SRC) and not isfile(F_ICON_SVG):
@@ -209,18 +216,7 @@ def convert_project(directory, prog, argv):
 		print("Copying generic icons to " + "src")
 		cptree(joinpath(sdk_data, "template", "src"), "src")
 		git_commands.append("git add " + D_SRC)
-		ICONS_COPYRIGHT = """
-Copyright
----------
 
-  - `src/icon*.svg`
-    + Copyright 2011 Alexander King <alexanderddking@gmail.com>
-    + Copyright 2011 Arturo Torres Sánchez <arturo.ilhuitemoc@gmail.com>
-    + License: [CC-BY-3.0](./LICENSE-CC-BY.txt)
-"""
-		fappend(F_UPDATE_README_MD, ICONS_COPYRIGHT)
-	
-	
 	for icon, *sizes in ("icon-sm.svg", 32, 48), ("icon-xs.svg", 16, 22, 24):
 		f_icon = joinpath(D_SRC, icon)
 		if not isfile(f_icon):
@@ -267,7 +263,6 @@ Copyright
 	
 	print("Finished!")
 	print("\nTasks to do:\n")
-	print("  - Update README.md according to Update.README.md and then remove this template.")
 	for todo in todos:
 		print("  -", todo)
 

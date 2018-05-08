@@ -4,6 +4,8 @@ Nuvola SDK Change Log
 
 * check-project: Added check that `metadata.in.json` use two spaces for indentation and no trailing whitespace.
 * convert-project: Save `metadata.in.json` with correct indentation and no trailing whitespace.
+* new-project: README.md template was updated.
+* convert-project: Create `template--README.md` & `template--README.md.diff` to help with the update of README.md.
 
 4.11.0 - May 8th, 2018
 ----------------------

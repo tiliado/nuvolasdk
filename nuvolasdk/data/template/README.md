@@ -1,16 +1,21 @@
-${app_name} Nuvola Player App
-=============================
+${app_name} • Nuvola Apps Runtime
+=================================
 
 Integration of ${app_name} into your linux desktop via
-[Nuvola Player](https://github.com/tiliado/nuvolaplayer).
- 
+[Nuvola Apps Runtime](https://github.com/tiliado/nuvolaruntime).
+
 Support
 -------
 
-Report bugs and issues at <https://github.com/tiliado/nuvola-app-${app_id_dashed}/issues>.
+Follow [Bug reporting guidelines](https://github.com/tiliado/nuvolaruntime/wiki/Bug-Reporting-Guidelines).
 
 Installation
 ------------
+
+Install the [genuine cross-distribution flatpak packages](https://nuvola.tiliado.eu/app/${app_id_dashed}/).
+
+Building
+--------
 
 This project uses [Nuvola SDK](https://github.com/tiliado/nuvolasdk#create-new-project). Please refer to
 the [Build a Project Using Nuvola SDK](https://github.com/tiliado/nuvolasdk#build-a-project-using-nuvola-sdk)
