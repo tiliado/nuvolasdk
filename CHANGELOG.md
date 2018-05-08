@@ -1,6 +1,13 @@
 Nuvola SDK Change Log
 =====================
 
+4.11.0 - May 8th, 2018
+----------------------
+
+* Compute micro version from git and add it to `metadata.json`
+* Update gitignore generator.
+* Two spaces are use for the indentation of JSON files.
+
 4.10.0 - March 4th, 2018
 ------------------------
 
@@ -52,7 +59,7 @@ Nuvola SDK Change Log
   * Compatibility with Nuvola Player 3.0.x must be enabled with the --compat flag passed to ./configure.
   * Web apps scripts are installed into the PREFIX/share/nuvolaruntime/web_apps directory used by Nuvola 4.4+
     but legacy symlinks in the PREFIX/share/nuvolaplayer3/web_apps directory are also provided for Nuvola 3.x.
-    
+
 1.4.0 - April 30th, 2017
 ------------------------
 
@@ -82,7 +89,7 @@ Nuvola SDK Change Log
   * It is possible to run nuvolasdk as `python3 -m nuvolasdk ...`. This way is now used in generated Makefiles.
   * Makefile ends with an erro if the generated metadada.json file is older then the source metadata.in.json file.
   * Convert project: Also adds missing icons.
-  
+
 1.1.0 - December 4th, 2016
 --------------------------
 
@@ -90,7 +97,7 @@ Nuvola SDK Change Log
   * data-dir: New command to print the Nuvola SDK data directory.
   * Added `examples/home.html` to the data directory. It is a dumb
     example of a streaming service to be used in a tutorial.
-  
+
 1.0.0 - December 3rd, 2016
 --------------------------
 
