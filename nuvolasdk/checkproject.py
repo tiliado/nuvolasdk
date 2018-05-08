@@ -221,6 +221,16 @@ def run(directory, prog, argv):
 			print('Error: metadata.in.json file does not follow two space indentation or has extra whitespace. Run nuvolasdk convert-project')
 			n_errors += 1
 
+	if fexists(F_INTEGRATE_JS):
+		F_JS_STYLE_LOG = 'javascript_style_check.txt'
+		js_style_log = getstdout('standard', success_codes=(1,))
+		if js_style_log.strip():
+			fwrite(F_JS_STYLE_LOG, js_style_log)
+			print(
+				'Error: JavaScript files do not adhere to Standard JavaScript coding style. See %s.' % F_JS_STYLE_LOG,
+				'Run `standard --fix` to fix some violations automatically, then run `standard` to check style again.')
+			n_errors += 1
+
 	if n_errors > 0:
 		print("\n-----------------------------------------------------\n%s errors have been found." % n_errors)
 		return 3
