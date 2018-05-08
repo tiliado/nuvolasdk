@@ -159,3 +159,8 @@ def writejson2(path, data, **kwargs):
 
 def writejson(path, data):
 	return writejson2(path, data)
+
+def diff(*args, verbose=False):
+	command = ['diff', '-u']
+	command.extend(args)
+	return getstdout(command, verbose=verbose, success_codes=(1,))
