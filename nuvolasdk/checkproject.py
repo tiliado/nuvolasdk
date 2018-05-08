@@ -1,5 +1,5 @@
 """
-Copyright 2016-2017 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -214,12 +214,17 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "build" property.')
 			n_errors += 1
-	
-	
+
+		orig_data = fread(F_METADATA_IN_JSON)
+		expected_json = utils.dump_json(utils.parse_json(orig_data))
+		if orig_data != expected_json:
+			print('Error: metadata.in.json file does not follow two space indentation or has extra whitespace. Run nuvolasdk convert-project')
+			n_errors += 1
+
 	if n_errors > 0:
 		print("\n-----------------------------------------------------\n%s errors have been found." % n_errors)
-		return 2
-	
+		return 3
+
 	print("No errors have been found.")
 	return 0
 	

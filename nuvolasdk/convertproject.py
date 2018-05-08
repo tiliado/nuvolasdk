@@ -1,5 +1,5 @@
 """
-Copyright 2014-2016 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -142,7 +142,13 @@ def convert_project(directory, prog, argv):
 	
 	if metadata_changed:
 		writejson(metadata_in, metadata)
-	
+	else:
+		orig_data = fread(metadata_in)
+		expected_json = utils.dump_json(utils.parse_json(orig_data))
+		if orig_data != expected_json:
+			# Fix whitespace
+			writejson(metadata_in, metadata)
+
 	print("Creating new configure script")
 	configure = joinpath(directory, "configure")
 	fwrite(configure, defaults.CONFIGURE_SCRIPT)
