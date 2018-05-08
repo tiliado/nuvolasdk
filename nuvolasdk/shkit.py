@@ -68,15 +68,18 @@ def shell(command, *, verbose=False):
 def runtuple(*args, verbose=False):
 	return run(" ".join(args), verbose=verbose)
 
-def getstdout(command, *, verbose=False):
+def getstdout(command, *, verbose=False, success_codes=None):
 	if verbose:
 		print(">", command)
-	argv = _shlex.split(command)
+	argv = _shlex.split(command) if isinstance(command, str) else command
 	try:
 		return _subprocess.check_output(argv, stderr=_subprocess.STDOUT).decode("utf-8")
 	except _subprocess.CalledProcessError as e:
 		e.output = e.output.decode("utf-8")
-		raise e
+		if success_codes and e.returncode in success_codes:
+			return e.output
+		else:
+			raise
 
 def fread(path, encoding="utf-8"):
 	with open(str(path), "r", encoding=encoding) as f:
