@@ -224,7 +224,16 @@ def convert_project(directory, prog, argv):
 			print("Copy the icon %s as %s." % (F_ICON_SVG, f_icon))
 			cp(F_ICON_SVG, f_icon)
 			git_commands.append("git add " + f_icon)
-			
+
+	print('Running Standard JS style check with autofix')
+	F_JS_STYLE_LOG = 'javascript_style_check.txt'
+	js_style_log = getstdout('standard --fix', success_codes=(1,))
+	if js_style_log.strip():
+		fwrite(F_JS_STYLE_LOG, js_style_log)
+		todos.append(
+			'JavaScript files do not adhere to Standard JavaScript coding style. See %s.' % F_JS_STYLE_LOG
+			+ ' Run `standard --fix` to fix some violations automatically, then run `standard` to check style again.')
+
 	print("Removing obsolete scripts")
 	rmf("svg-convert.sh", "svg-optimize.sh")
 

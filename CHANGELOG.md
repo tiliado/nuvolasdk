@@ -7,6 +7,7 @@ Nuvola SDK Change Log
 * new-project: README.md template was updated.
 * convert-project: Create `template--README.md` & `template--README.md.diff` to help with the update of README.md.
 * new-project: The `integrate.js` template uses Standard JS code style.
+* convert-project: Convert `integrate.js` to Standard JS code style.
 
 4.11.0 - May 8th, 2018
 ----------------------
