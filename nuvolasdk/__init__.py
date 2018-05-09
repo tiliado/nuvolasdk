@@ -2,13 +2,13 @@
 Copyright 2016 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -59,7 +59,7 @@ def print_help(prog):
 	print('\nCreate addon data XML')
 	print('====================\n')
 	nuvolasdk.addondata.create_arg_parser(prog + " create-addondata").print_help()
-	
+
 def run(wd, argv):
 	prog = os.path.basename(argv[0])
 	if prog.startswith("__main__"):
@@ -84,7 +84,7 @@ def run(wd, argv):
 	if cmd in ('-h', '--help', 'help'):
 		print_help(prog)
 		return 0
-	
+
 	print("Error: Unknown command '%s'.\n" % cmd)
 	print_help(prog)
 	return 2

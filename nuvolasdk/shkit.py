@@ -1,16 +1,16 @@
 """
-shkit.py - Shell Kit - write shell script alternatives easily in Python 3 
+shkit.py - Shell Kit - write shell script alternatives easily in Python 3
 
 Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -92,7 +92,7 @@ def fwrite(path, text, encoding="utf-8"):
 def fappend(path, text, encoding="utf-8"):
 	with open(str(path), "at", encoding=encoding) as f:
 		f.write(text)
-	
+
 def rmftree(path):
 	if not fexists(path):
 		return
@@ -119,11 +119,11 @@ _PERCENT_REPLACE = _re.compile(r"%\{([a-zA-Z0-9_]+)\}")
 def file_replace(pattern, path, data):
 	with open(path, "r", encoding="utf-8") as f:
 		text = f.read()
-	
+
 	def replace_func(match):
 		key = match.group(1)
 		return str(data.get(key))
-	
+
 	text = pattern.sub(replace_func, text)
 	fwrite(path, text)
 

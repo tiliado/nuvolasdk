@@ -2,13 +2,13 @@
 Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -62,13 +62,13 @@ def get_nuvola_unique_id(genuine):
 
 def get_unique_app_id(app_id, genuine):
 	return build_unique_id(get_nuvola_unique_id(genuine), app_id)
-	
+
 def build_unique_id(base_id, app_id):
 	app_id_unique = [base_id, "App"]
 	for part in app_id.split("_"):
 		app_id_unique.append(part[0].upper())
 		app_id_unique.append(part[1:].lower())
-	return "".join(app_id_unique)	
+	return "".join(app_id_unique)
 
 def get_app_dir_name(app_id):
 	return "nuvola-app-" + get_dashed_app_id(app_id)
@@ -104,7 +104,7 @@ def check_desktop_categories(categories):
 		audio_video = False
 		audio = False
 		video = False
-		
+
 		for category in categories:
 			if category not in DESKTOP_CATEGORIES:
 				errors.append('The desktop category "%s" is not valid.' % category)
@@ -114,13 +114,13 @@ def check_desktop_categories(categories):
 				audio = True
 			elif category == "Video":
 				video = True
-		
+
 		if audio and not audio_video:
 			errors.append('If the desktop category "Audio" is specified, the desktop category AudioVideo must be specified too.')
 		if video and not audio_video:
 			errors.append('If the desktop category "Video" is specified, the desktop category AudioVideo must be specified too.')
 	return errors
-		
+
 
 def parse_version(version):
 	return  tuple(int(i.strip() or "0") for i in version.strip().split("."))

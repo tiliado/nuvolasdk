@@ -2,13 +2,13 @@
 Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -41,14 +41,14 @@ def run(directory, prog, argv):
 	sdk_data = utils.get_sdk_data_dir()
 	pushdir(directory)
 	n_errors = 0
-	
+
 	if fexists("Makefile"):
 		print("Cleaning the project...")
 		try_run('make clean')
 		print("")
-	
+
 	print("Checking the project...")
-	
+
 	F_METADATA_IN_JSON = "metadata.in.json"
 	F_CONFIGURE = "configure"
 	F_CHANGELOG_MD = "CHANGELOG.md"
@@ -56,21 +56,21 @@ def run(directory, prog, argv):
 	F_CONTRIBUTING_MD = "CONTRIBUTING.md"
 	F_INTEGRATE_JS = "integrate.js"
 	F_GITIGNORE = ".gitignore"
-	
+
 	files = (
 		F_METADATA_IN_JSON, F_INTEGRATE_JS, F_CONFIGURE,
 		F_CHANGELOG_MD, F_README_MD, F_CONTRIBUTING_MD, F_GITIGNORE
 	)
-	
+
 	for filename in files:
 		if not fexists(filename):
 			print("Error: A file '%s' is missing." % filename)
 			n_errors += 1
-	
+
 	if not utils.get_license_files():
 		print("Error: No license files (LICENSE*) have been found.")
 		n_errors += 1
-	
+
 	METADATA_JSON = "metadata.json"
 	if fexists(F_METADATA_IN_JSON):
 		metadata = readjson(F_METADATA_IN_JSON)
@@ -82,7 +82,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "id" property.')
 			n_errors += 1
-		
+
 		try:
 			app_name = metadata["name"].strip()
 			if not app_name:
@@ -91,7 +91,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "name" property.')
 			n_errors += 1
-		
+
 		prop_name = "version_major"
 		try:
 			version_major = metadata[prop_name]
@@ -101,7 +101,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-		
+
 		prop_name = "version_minor"
 		try:
 			version_minor = metadata[prop_name]
@@ -111,7 +111,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-		
+
 		prop_name = "api_major"
 		try:
 			api_major = metadata[prop_name]
@@ -121,7 +121,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-		
+
 		prop_name = "api_minor"
 		try:
 			api_minor = metadata[prop_name]
@@ -131,7 +131,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-		
+
 		prop_name = "maintainer_link"
 		try:
 			maintainer_link = metadata[prop_name]
@@ -141,7 +141,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-			
+
 		prop_name = "maintainer_name"
 		try:
 			maintainer_name = metadata[prop_name]
@@ -151,7 +151,7 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-			
+
 		prop_name = "license"
 		try:
 			license = metadata[prop_name]
@@ -170,11 +170,11 @@ def run(directory, prog, argv):
 						licenses.check_canonical(license)
 					except ValueError as e:
 						print('Warning: "{}" is not a canonical SPDX license name, use "{}" instead.'.format(*e.args))
-					
+
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % prop_name)
 			n_errors += 1
-		
+
 		prop_name = "categories"
 		try:
 			categories = metadata[prop_name]
@@ -184,9 +184,9 @@ def run(directory, prog, argv):
 		except KeyError:
 			print('Error: metadata.json file must contain the "%s" property.' % categories)
 			n_errors += 1
-		
-		
-		
+
+
+
 		try:
 			build = metadata["build"]
 			try:
@@ -237,4 +237,4 @@ def run(directory, prog, argv):
 
 	print("No errors have been found.")
 	return 0
-	
+

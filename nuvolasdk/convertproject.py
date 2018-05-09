@@ -2,13 +2,13 @@
 Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -36,7 +36,7 @@ def create_arg_parser(prog):
 		description = 'Converts an old-style project to a SDK project.'
 	)
 	return parser
-	
+
 def convert_project(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
 	sdk_data = utils.get_sdk_data_dir()
@@ -44,14 +44,14 @@ def convert_project(directory, prog, argv):
 	build_extra_data = []
 	todos = []
 	git_commands = []
-	
+
 	try:
 		git.set_up_git()
 	except KeyboardInterrupt:
 		return 1
 	except ExecError as e:
 		print("Error: Failed to set up git. %s" % e)
-		
+
 	MAKEFILE = "Makefile"
 	makefile = joinpath(directory, MAKEFILE)
 	if fexists(makefile) and not fexists(makefile + ".old"):
@@ -68,7 +68,7 @@ def convert_project(directory, prog, argv):
 						entry = entry.strip()
 						if entry and entry not in defaults.BASE_INSTALL_FILES:
 							extra_data.append(entry)
-		
+
 		if backup_makefile:
 			build_extra_data.extend(extra_data)
 			print("Making a backup of the Makefile")
@@ -77,14 +77,14 @@ def convert_project(directory, prog, argv):
 				todos.append("If the script builds, remove the Makefile.old file.")
 			except FileNotFoundError as e:
 				pass
-	
-	
+
+
 	METADATA_JSON = "metadata.json"
 	metadata_in = "metadata.in.json"
 	if fexists(METADATA_JSON) and not fexists(metadata_in):
 		print("Renaming %s to %s" % (METADATA_JSON, metadata_in))
 		rename(METADATA_JSON, metadata_in)
-	
+
 	metadata = readjson(metadata_in)
 	metadata_changed = False
 	try:
@@ -95,7 +95,7 @@ def convert_project(directory, prog, argv):
 		app_name = metadata["name"]
 	except KeyError:
 		raise ValueError('Error: metadata.json file must contain the "name" property.')
-	
+
 	try:
 		version_major = metadata["version_major"]
 	except KeyError:
@@ -112,7 +112,7 @@ def convert_project(directory, prog, argv):
 		maintainer_link = metadata["maintainer_link"]
 	except KeyError:
 		raise ValueError('Error: metadata.json file must contain the "maintainer_link" property.')
-	
+
 	try:
 		license = metadata["license"]
 	except KeyError:
@@ -122,7 +122,7 @@ def convert_project(directory, prog, argv):
 			license = input(prompt).strip()
 		metadata["license"] = license
 		metadata_changed = True
-	
+
 	subst = {
 		"maintainer_name": maintainer_name,
 		"year": datetime.date.today().year,
@@ -130,7 +130,7 @@ def convert_project(directory, prog, argv):
 		"app_id_dashed": utils.get_dashed_app_id(app_id),
 		"app_name": app_name,
 	}
-		
+
 	try:
 		build = metadata["build"]
 	except KeyError:
@@ -139,7 +139,7 @@ def convert_project(directory, prog, argv):
 			metadata["build"]["extra_data"] = build_extra_data
 		print("Adding the build section to metadata.in.json")
 		metadata_changed = True
-	
+
 	if metadata_changed:
 		writejson(metadata_in, metadata)
 	else:
@@ -153,7 +153,7 @@ def convert_project(directory, prog, argv):
 	configure = joinpath(directory, "configure")
 	fwrite(configure, defaults.CONFIGURE_SCRIPT)
 	fchmod(configure, fstat(configure).st_mode|0o111)
-	
+
 	F_CHANGELOG_MD = "CHANGELOG.md"
 	if not fexists(F_CHANGELOG_MD):
 		print("Generating", F_CHANGELOG_MD)
@@ -166,14 +166,14 @@ def convert_project(directory, prog, argv):
 		changelog.append("  * Ported to use Nuvola SDK.")
 		with open(F_CHANGELOG_MD, "wt", encoding="utf-8") as f:
 			f.write("\n".join(changelog) + "\n")
-	
+
 	F_CONTRIBUTING_MD = "CONTRIBUTING.md"
 	if not fexists(F_CONTRIBUTING_MD):
 		print("Generating", F_CONTRIBUTING_MD)
 		todos.append("Revise the content of the auto-generated file %s." % F_CONTRIBUTING_MD)
 		cp(joinpath(sdk_data, "template", F_CONTRIBUTING_MD), F_CONTRIBUTING_MD)
 		dollar_replace(F_CONTRIBUTING_MD, subst)
-	
+
 	F_README_MD = "README.md"
 	if not fexists(F_README_MD):
 		readme_md_to_substitute = F_README_MD
@@ -244,18 +244,18 @@ def convert_project(directory, prog, argv):
 			del(gitignore[-1])
 	except Exception:
 		gitignore = []
-	
+
 	expected_rules = set(s for s in utils.get_gitignore_for_app_id(app_id).splitlines() if s)
 	for rule in gitignore:
 		expected_rules.discard(rule)
-	
+
 	if expected_rules:
 		for rule in sorted(expected_rules):
 			gitignore.append(rule)
 		gitignore.append("")
 		print("Updating .gitignore")
 		fwrite(GITIGNORE, "\n".join(gitignore))
-	
+
 	print("Trying to update git repo")
 	try_run('git add metadata.in.json')
 	try_run('git add configure')
@@ -269,7 +269,7 @@ def convert_project(directory, prog, argv):
 	try_run('git rm -f --cached svg-optimize.sh')
 	for cmd in git_commands:
 		try_run(cmd)
-	
+
 	print("Finished!")
 	print("\nTasks to do:\n")
 	for todo in todos:
