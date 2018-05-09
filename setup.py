@@ -27,6 +27,7 @@ setup(
 				'data/template/src/*',
 				'data/examples/*',
 				'data/vapi/*',
+				'data/screenshots/*',
 			]
 		},
 	exclude_package_data = {
@@ -35,6 +36,7 @@ setup(
 			'data/template/src',
 			'data/examples',
 			'data/vapi',
+			'data/screenshots',
 		]
 	},
 	scripts = ['scripts/nuvolasdk'],
@@ -47,4 +49,4 @@ setup(
         "Programming Language :: Python :: 3 :: Only"
     ]
 )
-	
+
