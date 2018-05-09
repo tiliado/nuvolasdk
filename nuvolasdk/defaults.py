@@ -2,13 +2,13 @@
 Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -40,15 +40,15 @@ BUILD_JSON = {
 GITIGNORE = "Makefile\nmetadata.json\nicons\n/screenshots/\n"
 
 METADATA_IN_JSON = OrderedDict((
-    ("id", "happy_songs"), 
-    ("name", "Happy Songs"), 
-    ("home_url", "http://www.happy_songs.com"), 
-    ("maintainer_name", "FIXME"), 
-    ("maintainer_link", "https://github.com/FIXME"), 
-    ("version_major", 1), 
-    ("version_minor", 0), 
-    ("api_major", VERSION_MAJOR), 
-    ("api_minor", VERSION_MINOR), 
+    ("id", "happy_songs"),
+    ("name", "Happy Songs"),
+    ("home_url", "http://www.happy_songs.com"),
+    ("maintainer_name", "FIXME"),
+    ("maintainer_link", "https://github.com/FIXME"),
+    ("version_major", 1),
+    ("version_minor", 0),
+    ("api_major", VERSION_MAJOR),
+    ("api_minor", VERSION_MINOR),
     ("categories", "AudioVideo;Audio;"),
     ("requirements", "Feature[Flash] Codec[MP3]"),
     ("license", "BSD-2-Clause; CC-BY-SA-3.0"),

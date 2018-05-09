@@ -2,13 +2,13 @@
 Copyright 2014-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -32,7 +32,7 @@ def gen_makefile(required_version=VERSION):
 	if not utils.check_version(required_version):
 		print("This project requires Nuvola SDK >= %s but version %s is installed." % (required_version, VERSION))
 		sys.exit(1)
-	
+
 	prefix = "/usr/local"
 	flatpak_build = False
 	create_appdata = False
@@ -47,7 +47,7 @@ def gen_makefile(required_version=VERSION):
 	metadata["version_minor"] = minor
 	metadata["version_micro"] = micro
 	metadata["version_revision"] = revision
-	
+
 	for arg in sys.argv[1:]:
 		try:
 			name, value = arg.split("=", 1)
@@ -68,24 +68,24 @@ def gen_makefile(required_version=VERSION):
 			genuine = True
 		else:
 			print("Warning: Unknown option: ", arg)
-	
+
 	if flatpak_build:
 		create_appdata = True
-	
+
 	app_id = metadata["id"]
 	app_name = metadata["name"]
 	app_id_dashed = utils.get_dashed_app_id(app_id)
 	app_id_unique = utils.get_unique_app_id(app_id, genuine)
 	app_id_dbus = utils.get_dbus_app_id(app_id, genuine)
 	sdk_data = utils.get_sdk_data_dir()
-	
+
 	all_files = defaults.BASE_INSTALL_FILES[:]
 	all_files.extend(utils.get_license_files())
 	for entry in build_json.get("extra_data", []):
 		all_files.extend(glob(entry))
-	
+
 	files = ' '.join(all_files)
-	
+
 	makefile = [
 		defaults.GENERATED_MAKEFILE % VERSION,
 		"APP_ID = ", app_id, "\n",
@@ -116,8 +116,8 @@ def gen_makefile(required_version=VERSION):
 		'uninstall:\n',
 		'\trm -rfv $(DESTDIR)$(APP_DATA_DIR)\n',
 	]
-	
-	
+
+
 	launcher_cmd = 'nuvola-app-$(APP_ID_DASHED)'
 	all_files.extend((launcher_cmd, '$(APP_ID_DBUS).service'))
 	install.extend((
@@ -129,15 +129,15 @@ def gen_makefile(required_version=VERSION):
 	uninstall.extend((
 		'\trm -fv $(DESTDIR)$(BINDIR)/%s\n' % launcher_cmd,
 	))
-	
-	
+
+
 	all_files.append('$(APP_ID_UNIQUE).desktop')
 	install.extend((
 		'\tinstall -vCd $(DESTDIR)$(DATADIR)/applications\n',
 		'\tcp -vf -t $(DESTDIR)$(DATADIR)/applications $(APP_ID_UNIQUE).desktop\n',
 	))
 	uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/applications/$(APP_ID_UNIQUE).desktop\n')
-	
+
 	if create_appdata:
 		all_files.append('$(APP_ID_UNIQUE).appdata.xml')
 		install.extend((
@@ -152,7 +152,7 @@ def gen_makefile(required_version=VERSION):
 			'\tcp -vf -t $(DESTDIR)$(DATADIR)/metainfo nuvola-app-$(APP_ID_DASHED).metainfo.xml\n',
 		))
 		uninstall.append('\trm -fv $(DESTDIR)$(DATADIR)/metainfo/nuvola-app-$(APP_ID_DASHED).metainfo.xml\n')
-	
+
 	if build_screenshots:
 		all_files.append('screenshots/%s' % defaults.SCREENSHOTS_DIR_TIMESTAMP)
 
@@ -183,7 +183,7 @@ def gen_makefile(required_version=VERSION):
 				install.append('\tcp -v %s $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (dest, size, size))
 				install.append('\tcp -v -t $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR) %s\n' % dest)
 				uninstall.append('\trm -fv $(DESTDIR)$(HICOLOR_DIR)/%sx%s/apps/$(APP_ID_UNIQUE).png\n' % (size, size))
-				
+
 			all_files.append(dest)
 
 	makefile.extend([
@@ -191,8 +191,8 @@ def gen_makefile(required_version=VERSION):
 		'metadata.json: metadata.in.json\n',
 		'\t$(error metadata.in.json is newer that metadata.json. Run ./configure again.)\n',
 	])
-	
-	
+
+
 	makefile.extend((
 		'%s: $(NUVOLA_SDK_DATA)/launch_app.sh\n' % launcher_cmd,
 		'\tsed -e "s#@@APP_DIR@@#$(APP_DATA_DIR)#g"',
@@ -205,7 +205,7 @@ def gen_makefile(required_version=VERSION):
 		'\techo "Name=$(APP_ID_DBUS)" >> $@\n',
 		'\techo "Exec=%s --gapplication-service" >> $@\n' % launcher_cmd,
 	))
-	
+
 	if create_appdata:
 		makefile.extend((
 			'$(APP_ID_UNIQUE).appdata.xml: metadata.json\n',
@@ -216,7 +216,7 @@ def gen_makefile(required_version=VERSION):
 			'nuvola-app-$(APP_ID_DASHED).metainfo.xml: metadata.json\n',
 			'\tpython3 -m nuvolasdk create-addondata %s -o $@ -m $<\n' % ('--genuine' if genuine else ''),
 		))
-		
+
 	makefile.extend((
 		'$(APP_ID_UNIQUE).desktop: $(NUVOLA_SDK_DATA)/launcher.desktop\n',
 		'\tsed -e "s/@@APP_NAME@@/$(APP_NAME)/g" -e "s/@@APP_ID@@/$(APP_ID)/g"',
@@ -225,7 +225,7 @@ def gen_makefile(required_version=VERSION):
 		' -e "s/@@ICON@@/$(APP_ID_UNIQUE)/g" -e "s/@@APP_UID@@/$(APP_ID_UNIQUE)/g" '
 		' $< > $@\n',
 	))
-	
+
 	if build_screenshots:
 		makefile.extend((
 			'screenshots/%s: %s\n' % (defaults.SCREENSHOTS_DIR_TIMESTAMP, defaults.WEB_VIEW_IMAGE),
@@ -236,12 +236,12 @@ def gen_makefile(required_version=VERSION):
 	makefile.extend(icons)
 	makefile.extend(install)
 	makefile.extend(uninstall)
-	
+
 	makefile.extend((
 		"clean:\n",
 		'\trm -fv nuvola-app-$(APP_ID_DASHED)\n',
 		'\trm -fv $(APP_ID_UNIQUE).desktop\n',
-		('\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else 
+		('\trm -fv $(APP_ID_UNIQUE).appdata.xml\n' if create_appdata else
 		'\trm -fv nuvola-app-$(APP_ID_DASHED).metainfo.xml\n'),
 		'\trm -fv $(APP_ID_DBUS).service\n' if flatpak_build else "",
 		'\trm -fv $(APP_ID).tar.gz\n' if flatpak_build else "",
@@ -250,14 +250,14 @@ def gen_makefile(required_version=VERSION):
 		"distclean: clean\n",
 		"\trm -vf Makefile metadata.json\n"
 	));
-	
+
 	fwrite("Makefile", "".join(makefile))
-	
+
 	del(metadata["build"])
 	metadata["has_dbus_launcher"] = True
 	metadata["has_desktop_launcher"] = True
 	metadata["sdk_version"] = VERSION
 	writejson("metadata.json", metadata)
-	
+
 	print("Nuvola SDK %s Makefile written. Run `make all` and then `make install`." % VERSION)
-		
+
