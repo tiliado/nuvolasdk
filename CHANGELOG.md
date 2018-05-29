@@ -9,6 +9,7 @@ Nuvola SDK Change Log
 * new-project: The `integrate.js` template uses Standard JS code style.
 * convert-project: Convert `integrate.js` to Standard JS code style.
 * check-project: Check that `integrate.js` uses Standard JS code style.
+* convert-project: API number in metadata is upgraded to that of Nuvola SDK.
 
 4.11.0 - May 8th, 2018
 ----------------------

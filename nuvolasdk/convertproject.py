@@ -25,6 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import argparse
 import datetime
 
+import nuvolasdk
 from nuvolasdk.shkit import *
 from nuvolasdk import defaults
 from nuvolasdk import git
@@ -121,6 +122,14 @@ def convert_project(directory, prog, argv):
 			prompt = 'Enter license of your script (e.g. BSD-2-Clause)\n'
 			license = input(prompt).strip()
 		metadata["license"] = license
+		metadata_changed = True
+
+	if metadata.get('api_major', -1) != nuvolasdk.VERSION_MAJOR:
+		metadata['api_major'] = nuvolasdk.VERSION_MAJOR
+		metadata_changed = True
+
+	if metadata.get('api_minor', -1) < nuvolasdk.VERSION_MINOR:
+		metadata['api_minor'] = nuvolasdk.VERSION_MINOR
 		metadata_changed = True
 
 	subst = {
