@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
-from nuvolasdk.version import BASE_VERSION
+from nuvolasdk import version
 from setuptools import setup
+import os
+
+version.write_version(os.path.dirname(__file__))
 
 LONG_DESC = """\
 SDK for building Nuvola Apps scripts.
@@ -9,9 +12,10 @@ SDK for building Nuvola Apps scripts.
 Documentation: https://github.com/tiliado/nuvolasdk
 """
 
+
 setup(
 	name = "nuvolasdk",
-	version = BASE_VERSION,
+	version = version.BASE_VERSION,
 	author = "Jiří Janoušek",
 	author_email = "janousek.jiri@gmail.com",
 	url = "https://github.com/tiliado/nuvolasdk",

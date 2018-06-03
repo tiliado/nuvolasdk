@@ -26,7 +26,7 @@ import os.path
 import subprocess
 
 BASE_VERSION = "4.11.0"
-
+GIT_VERSION_FILE = 'nuvolasdk/git_version_info.py'
 
 def get_git_version(path=None):
 	if path is None:
@@ -54,6 +54,9 @@ def compute_version_from_git(major, minor=0, micro=0, path=None):
 		assert git_version == [major, minor, micro], "Mismatch between metadata version %s and git tag %s." % (
 			[major, minor], git_version)
 		micro += commits
+	elif os.path.isfile(os.path.join(path, GIT_VERSION_FILE)):
+		from nuvolasdk.git_version_info import GIT_VERSION_INFO
+		return GIT_VERSION_INFO
 	return major, minor, micro, revision
 
 
@@ -61,3 +64,8 @@ VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, REVISION = compute_version_from_git
 	BASE_VERSION, path=os.path.dirname(os.path.dirname(__file__)))
 VERSION = "%d.%d.%d" % (VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO)
 VERSION_FULL = "%s (%s)" % (VERSION, REVISION or 'unknown')
+
+
+def write_version(root_dir):
+	with open(os.path.join(root_dir, GIT_VERSION_FILE), 'w') as f:
+		f.write('GIT_VERSION_INFO = %r' % ((VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, REVISION),))

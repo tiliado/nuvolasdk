@@ -3,3 +3,4 @@ dist
 MANIFEST
 Makefile
 build
+/nuvolasdk/git_version_info.py
