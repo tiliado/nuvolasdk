@@ -25,7 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os.path
 import subprocess
 
-VERSION = "4.11.0"
+BASE_VERSION = "4.11.0"
 
 
 def get_git_version(path=None):
@@ -58,6 +58,6 @@ def compute_version_from_git(major, minor=0, micro=0, path=None):
 
 
 VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, REVISION = compute_version_from_git(
-	VERSION, path=os.path.dirname(os.path.dirname(__file__)))
+	BASE_VERSION, path=os.path.dirname(os.path.dirname(__file__)))
 VERSION = "%d.%d.%d" % (VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO)
 VERSION_FULL = "%s (%s)" % (VERSION, REVISION or 'unknown')
