@@ -22,11 +22,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-VERSION = "4.11.0"
-VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO = [int(i) for i in VERSION.split(".")]
-
 import os.path
 
+from nuvolasdk.version import VERSION, VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, VERSION_FULL
 from nuvolasdk.genmakefile import gen_makefile
 from nuvolasdk.convertproject import convert_project
 import nuvolasdk.newproject
@@ -42,6 +40,10 @@ def print_help(prog):
 	print('====\n')
 	print('usage: %s help|-h|--help' % prog)
 	print('\nShows this help.\n')
+	print('Version')
+	print('=======\n')
+	print('usage: %s version|--version' % prog)
+	print('\nPrint version and exit.\n')
 	print('New project')
 	print('===========\n')
 	nuvolasdk.newproject.create_arg_parser(prog + " new-project").print_help()
@@ -63,6 +65,11 @@ def print_help(prog):
 	print('\nCreate combined screenshots')
 	print('===========================\n')
 	nuvolasdk.createscreenshots.create_arg_parser(prog + " create-screenshots").print_help()
+
+
+def print_version(prog):
+	print(VERSION_FULL)
+
 
 def run(wd, argv):
 	prog = os.path.basename(argv[0])
@@ -89,6 +96,9 @@ def run(wd, argv):
 		return nuvolasdk.datadir.run(wd, prog + " " + cmd, argv[2:]) or 0
 	if cmd in ('-h', '--help', 'help'):
 		print_help(prog)
+		return 0
+	if cmd in ('--version', 'version'):
+		print_version(prog)
 		return 0
 
 	print("Error: Unknown command '%s'.\n" % cmd)
