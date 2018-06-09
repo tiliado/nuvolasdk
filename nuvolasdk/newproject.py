@@ -2,13 +2,13 @@
 Copyright 2014-2016 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -47,19 +47,19 @@ def create_arg_parser(prog):
 
 def new_project(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
-	
+
 	app_name = args.name.strip() if args.name else None
 	while not app_name:
 		try:
 			app_name = input('Type name of the script,  e.g. "Google Play Music". Or press Ctrl-C to abort.\n').strip()
 		except KeyboardInterrupt:
 			return
-	
+
 	app_id = args.id.strip() if args.id else None
 	if app_id and not utils.validate_app_id(app_id):
 		print('Error: App id "%s" is not valid.' % app_id)
 		app_id = None
-	
+
 	default_app_id = utils.app_id_from_name(app_name)
 	while not app_id:
 		try:
@@ -72,31 +72,31 @@ def new_project(directory, prog, argv):
 				app_id = input('Type app id, e.g. "google_play_music". Or press Ctrl-C to abort.\n').strip()
 			if not utils.validate_app_id(app_id):
 				print('Error: App id "%s" is not valid.' % app_id)
-				app_id = None 
+				app_id = None
 		except KeyboardInterrupt:
 			return 1
-	
+
 	app_url = args.url.strip() if args.url else None
 	while not app_url:
 		try:
 			app_url = input('Type URL of the main page of the web app, e.g. "https://deezer.com". Or press Ctrl-C to abort.\n').strip()
 		except KeyboardInterrupt:
 			return 1
-			
+
 	maintainer_name = args.maintainer_name.strip() if args.maintainer_name else None
 	while not maintainer_name:
 		try:
 			maintainer_name = input('Type name of the maintainer, e.g. "John Doe". Or press Ctrl-C to abort.\n').strip()
 		except KeyboardInterrupt:
 			return 1
-	
+
 	maintainer_mail = args.maintainer_mail.strip() if args.maintainer_mail else None
 	while not maintainer_mail:
 		try:
 			maintainer_mail = input('Type email of the maintainer, e.g. "john@doe.com". Or press Ctrl-C to abort.\n').strip()
 		except KeyboardInterrupt:
 			return 1
-	
+
 	maintainer_github = args.maintainer_github.strip() if args.maintainer_github else None
 	while not maintainer_github:
 		try:
@@ -117,20 +117,20 @@ def new_project(directory, prog, argv):
 	sdk_data = utils.get_sdk_data_dir()
 	app_dir_name = utils.get_app_dir_name(app_id)
 	top_dir = joinpath(directory, app_dir_name)
-	
-	
+
+
 	try:
 		mkdirs(top_dir, False)
 	except FileExistsError:
 		print('Error: The directory "%s" already exists.' % top_dir)
 		return 2
-	
+
 	rmdir(top_dir)
 	print("Copying a template to " + top_dir)
 	cptree(joinpath(sdk_data, "template"), top_dir)
 	pushdir()
 	pushdir(top_dir)
-	
+
 	F_GITIGNORE = ".gitignore"
 	F_README_MD = "README.md"
 	F_METADATA_IN_JSON = "metadata.in.json"
@@ -150,7 +150,7 @@ def new_project(directory, prog, argv):
 	writejson(F_METADATA_IN_JSON, metadata)
 	fwrite(F_CONFIGURE, defaults.CONFIGURE_SCRIPT)
 	fchmod(F_CONFIGURE, fstat(F_CONFIGURE).st_mode|0o111)
-	
+
 	subst = {
 		"maintainer_name": maintainer_name,
 		"maintainer_mail": maintainer_mail,
