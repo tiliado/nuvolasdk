@@ -13,6 +13,10 @@ Documentation: https://github.com/tiliado/nuvolasdk
 """
 
 
+pkg_data = []
+for root, dirs, files in os.walk('nuvolasdk/data'):
+	pkg_data.extend(os.path.join(root, path)[10:] for path in files)
+
 setup(
 	name = "nuvolasdk",
 	version = version.BASE_VERSION,
@@ -25,23 +29,7 @@ setup(
 	license = 'BSD',
 	packages = ['nuvolasdk'],
 	package_data = {
-		'nuvolasdk': [
-				'data/*',
-				'data/template/*',
-				'data/template/src/*',
-				'data/examples/*',
-				'data/vapi/*',
-				'data/screenshots/*',
-			]
-		},
-	exclude_package_data = {
-		'nuvolasdk': [
-			'data/template',
-			'data/template/src',
-			'data/examples',
-			'data/vapi',
-			'data/screenshots',
-		]
+		'nuvolasdk': pkg_data
 	},
 	scripts = ['scripts/nuvolasdk'],
 	classifiers = [
