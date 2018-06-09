@@ -54,7 +54,7 @@ def compute_version_from_git(major, minor=0, micro=0, path=None):
 		assert git_version == [major, minor, micro], "Mismatch between metadata version %s and git tag %s." % (
 			[major, minor], git_version)
 		micro += commits
-	elif os.path.isfile(os.path.join(path, GIT_VERSION_FILE)):
+	elif os.path.isfile(os.path.join(path or '.', GIT_VERSION_FILE)):
 		from nuvolasdk.git_version_info import GIT_VERSION_INFO
 		return GIT_VERSION_INFO
 	return major, minor, micro, revision
