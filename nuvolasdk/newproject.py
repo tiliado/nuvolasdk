@@ -43,6 +43,7 @@ def create_arg_parser(prog):
 	parser.add_argument("--maintainer-github", help='Github profile of the maintainer, e.g. "john.doe"', type=str)
 	parser.add_argument("--no-git-repo", help='Don\'t create git repository', action='store_false', default=True,
 		dest='init_git_repo')
+	parser.add_argument("--extra-data", help='Extra data to install. Can be specified multiple times', action='append')
 	return parser
 
 def new_project(directory, prog, argv):
@@ -147,6 +148,8 @@ def new_project(directory, prog, argv):
 	metadata["maintainer_name"] = maintainer_name
 	metadata["maintainer_link"] = "https://github.com/" + maintainer_github
 	metadata["home_url"] = app_url
+	if args.extra_data:
+		metadata['build']['extra_data'] = args.extra_data
 	writejson(F_METADATA_IN_JSON, metadata)
 	fwrite(F_CONFIGURE, defaults.CONFIGURE_SCRIPT)
 	fchmod(F_CONFIGURE, fstat(F_CONFIGURE).st_mode|0o111)
