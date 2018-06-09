@@ -110,7 +110,7 @@ def gen_makefile(required_version=VERSION):
 	install = [
 		'install: all\n',
 		'\tinstall -vCd $(DESTDIR)$(APP_DATA_DIR)/$(ICONS_DIR)\n',
-		'\tcp -v -t $(DESTDIR)$(APP_DATA_DIR) $(FILES)\n',
+		'\tcp -rv -t $(DESTDIR)$(APP_DATA_DIR) $(FILES)\n',
 	]
 	uninstall = [
 		'uninstall:\n',
