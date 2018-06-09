@@ -1,0 +1,66 @@
+.btn-img {
+    width: 2.375rem;
+    height: 2.375rem;
+    padding: 0.1875rem;
+}
+
+.btn-img.btn-lg {
+    width: 4rem;
+    height: 4rem;
+
+}
+
+.btn-img img, .btn-img object{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+#green-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #008800;
+    z-index: 10000;
+    display: none;
+}
+
+svg.ic {
+    width: 188px; height: 120px; fill: red; x: 100;
+}
+
+#progressbar, #volume-bar {
+    cursor: pointer;
+}
+
+#rating {
+    position: absolute;
+}
+
+#rating:hover {
+    visibility: none;
+}
+
+#rating-change {
+    position: relative;
+    z-index: 9999;
+    min-width: 10px;
+    display: inline;
+}
+
+#rating-change:hover {
+    background-color: #363D42;
+}
+
+#rating-change img {
+    visibility: hidden;
+    cursor: pointer;
+}
+
+#rating-change:hover img {
+    visibility: visible;
+}
