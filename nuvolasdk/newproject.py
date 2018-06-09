@@ -41,6 +41,8 @@ def create_arg_parser(prog):
 	parser.add_argument("--maintainer-name", help='Name of the maintainer, e.g. "John Doe"', type=str)
 	parser.add_argument("--maintainer-mail", help='Email of the maintainer, e.g. "john@doe.com"', type=str)
 	parser.add_argument("--maintainer-github", help='Github profile of the maintainer, e.g. "john.doe"', type=str)
+	parser.add_argument("--no-git-repo", help='Don\'t create git repository', action='store_false', default=True,
+		dest='init_git_repo')
 	return parser
 
 def new_project(directory, prog, argv):
@@ -103,14 +105,15 @@ def new_project(directory, prog, argv):
 			maintainer_github = 'FIXME'
 			print("")
 			break
-		
-	try:
-		git.set_up_git()
-	except KeyboardInterrupt:
-		return 1
-	except ExecError as e:
-		print("Error: Failed to set up git. %s" % e)
-	
+
+	if args.init_git_repo:
+		try:
+			git.set_up_git()
+		except KeyboardInterrupt:
+			return 1
+		except ExecError as e:
+			print("Error: Failed to set up git. %s" % e)
+
 	sdk_data = utils.get_sdk_data_dir()
 	app_dir_name = utils.get_app_dir_name(app_id)
 	top_dir = joinpath(directory, app_dir_name)
@@ -159,15 +162,16 @@ def new_project(directory, prog, argv):
 	for path in F_INTEGRATE_JS, F_CHANGELOG_MD, F_README_MD, F_CONTRIBUTING_MD:
 		print("Expanding variables in", path)
 		dollar_replace(path, subst)
-	
-	print("Trying to init git repo")
-	ok = try_run('git init')
-	
-	for name in new_files + ["src", F_INTEGRATE_JS, F_README_MD, F_CONTRIBUTING_MD, F_CHANGELOG_MD, "LICENSE*"]:
-		if not try_run('git add -v ' + name):
-			ok = False
-	if ok:
-		try_run('git commit -v -m "Initial commit"')
+
+	if args.init_git_repo:
+		print("Trying to init git repo")
+		ok = try_run('git init')
+		for name in new_files + ["src", F_INTEGRATE_JS, F_README_MD, F_CONTRIBUTING_MD, F_CHANGELOG_MD, "LICENSE*"]:
+			if not try_run('git add -v ' + name):
+				ok = False
+		if ok:
+			try_run('git commit -v -m "Initial commit"')
+
 	print("Finished!\n")
 	popdir()
 	popdir()
