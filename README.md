@@ -1,7 +1,7 @@
 Nuvola SDK
 ==========
 
-SDK for building Nuvola Player's web app scripts.
+SDK for building Nuvola Apps Runtime's web app scripts.
 
 Install Nuvola SDK
 ------------------
@@ -19,7 +19,7 @@ Install Nuvola SDK
 
   * `python3 setup.py build`
   * `python3 setup.py install --prefix="$(PREFIX)" --root="$(DEST)"`
- 
+
 
 Build a Project Using Nuvola SDK
 --------------------------------
@@ -30,17 +30,12 @@ Build a Project Using Nuvola SDK
   * SVG optimizer: [Scour](https://github.com/codedread/scour)
   * SVG converter: Lasem, librsvg, GraphicsMagick, ImageMagick
   * [Pillow](https://pypi.org/project/Pillow/) >= 4.3
-  * Nuvola 4.x libraries - only for `./configure --with-dbus-launcher`
 
 
 ### Installation
 
  1. Run `./configure` to generate `Makefile` and `metadata.json` from details in `metadata.in.json`. Recognized options:
       - `--prefix`: Specify a custom build prefix instead of `/usr/local`. Example: `./configure --prefix=/usr`
-      - `--compat`: Turn on compatibility with Nuvola Player 3.0.x.
-      - `--with-dbus-launcher`: Build a small launcher (`nuvola-app-{APP ID with dashes}`) to start a standalone
-        Nuvola App Runner process instead of calling the Nuvola Master process to do so. The app runner then registers
-        with the master process via DBus.
  2. Run `make all` to build the project.
  3. Run `make install` to install the project. Recognized variables:
       - `DESTDIR`: A custom installation destination (defaults to the filesystem root).
@@ -57,7 +52,7 @@ nuvolasdk new-project
 ```
 
 When run without additional arguments, user will be asked to provide necessary metadata for the script.
-In order to get information about available argumentsm run `nuvolasdk new-project --help`.
+In order to get information about available arguments run `nuvolasdk new-project --help`.
 
 Check whether a project is well-formed
 --------------------------------------
@@ -68,14 +63,16 @@ nuvolasdk check-project
 
 Please run this check before a code review.
 
-Convert an Old Project to Use Nuvola SDK
-----------------------------------------
+Convert or Upgrade Project to Use Nuvola SDK
+--------------------------------------------
 
 ```
 nuvolasdk convert-project
 ```
 
-Converts old-style projects without SDK to a new-style project with SDK. Notable changes:
+If used on new-style projects using Nuvola SDK, the project is updated to the latest standards.
+
+If used on old-style projects without SDK, the project is converted to a new-style project with SDK. Notable changes:
 
   * The metadata file `metadata.json` has been renamed to `metadata.in.json` and contains a new `build` section.
   * A new script `configure` loads the SDK to read `metadata.in.json` in order to generate `Makefile` and
