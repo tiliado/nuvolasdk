@@ -29,6 +29,7 @@ Build a Project Using Nuvola SDK
   * GNU Make
   * SVG optimizer: [Scour](https://github.com/codedread/scour)
   * SVG converter: Lasem, librsvg, GraphicsMagick, ImageMagick
+  * [Pillow](https://pypi.org/project/Pillow/) >= 4.3
   * Nuvola 4.x libraries - only for `./configure --with-dbus-launcher`
 
 

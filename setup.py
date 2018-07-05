@@ -39,6 +39,9 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3 :: Only"
-    ]
+    ],
+    install_requires=[
+        'Pillow >= 4.3.0',
+    ],
 )
 
