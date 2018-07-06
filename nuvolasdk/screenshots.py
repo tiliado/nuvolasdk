@@ -57,8 +57,9 @@ SCREENSHOTS = [
 
 BASE_SCREENSHOTS = {
 	'other': [
-		('pantheon.png', '104,69+1080,600', '#c1c1c1'),
-		('unity.png', '132,106+1080,600', '#c1c1c1'),
+		('pantheon.png', '90,80+1080,600', '#c1c1c1'),
+		('unity.png', '108,106+1080,600', '#c1c1c1'),
+		('gnome.png', '117,87+1080,600', '#c1c1c1'),
 	]
 }
 

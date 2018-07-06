@@ -11,6 +11,9 @@ Nuvola SDK Change Log
 * convert-project: Convert `integrate.js` to Standard JS code style.
 * check-project: Check that `integrate.js` uses Standard JS code style.
 * convert-project: API number in metadata is upgraded to that of Nuvola SDK.
+* Makefile generator: If `src/webview.png` image is found, it is used to generate screenshots combining that web view
+  snapshot image with base Nuvola screenshots. The resulting images can be found in the screenshots subdirectory.
+  More screenshot types will be added in the next development cycle. Issue: tiliado/nuvolasdk#5
 
 4.11.0 - May 8th, 2018
 ----------------------
