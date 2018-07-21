@@ -1,6 +1,8 @@
 Nuvola SDK Change Log
 =====================
 
+4.12.0 - July 21st, 2018
+------------------------
 
 * New dependency for building Nuvola scripts: [Pillow](https://pypi.org/project/Pillow/) >= 4.3
 * check-project: Added check that `metadata.in.json` use two spaces for indentation and no trailing whitespace.
