@@ -29,6 +29,7 @@
 
   var PlaybackState = Nuvola.PlaybackState
   var PlayerAction = Nuvola.PlayerAction
+  var PlayerRepeat = Nuvola.PlayerRepeat
   var _ = Nuvola.Translate.gettext
 
   // Define rating options - 5 states with state id 0-5 representing 0-5 stars
@@ -117,11 +118,31 @@
     player.setCanRate(state !== PlaybackState.UNKNOWN)
     player.setCanSeek(state !== PlaybackState.UNKNOWN && elms.progressbar)
     player.setCanChangeVolume(!!elms.volumebar)
+    var repeat = this._getRepeat()
+    Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
+    Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
     Nuvola.actions.updateEnabledFlag(ACTION_RATING, state !== PlaybackState.UNKNOWN)
     Nuvola.actions.updateState(ACTION_RATING, stars)
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500)
+  }
+
+  WebApp._getRepeat = function () {
+	  var elm = this._getElements().repeat
+	  if (!elm) {
+		  return null
+	  }
+    if (elm.firstChild.src.endsWith('ic_repeat_one_48px.svg')) {
+      return PlayerRepeat.TRACK
+    }
+    return elm.classList.contains('btn-info') ? PlayerRepeat.PLAYLIST : PlayerRepeat.NONE
+  }
+
+  WebApp._setRepeat = function (repeat) {
+    while (this._getRepeat() !== repeat) {
+      Nuvola.clickOnElement(this._getElements().repeat)
+    }
   }
 
   WebApp._onActionActivated = function (emitter, name, param) {
@@ -146,6 +167,9 @@
         break
       case PlayerAction.NEXT_SONG:
         Nuvola.clickOnElement(elms.next)
+        break
+      case PlayerAction.REPEAT:
+        this._setRepeat(param)
         break
       case ACTION_RATING:
         this._setRating(param)
@@ -210,7 +234,8 @@
       repeat: document.getElementById('repeat'),
       shuffle: document.getElementById('shuffle'),
       progressbar: document.getElementById('progressbar'),
-      volumebar: document.getElementById('volume-bar')
+      volumebar: document.getElementById('volume-bar'),
+      repeat: document.getElementById('repeat')
     }
     for (var key in elms) {
       if (elms[key] && elms[key].disabled) {

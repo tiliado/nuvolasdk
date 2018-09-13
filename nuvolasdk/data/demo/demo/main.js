@@ -7,7 +7,9 @@ Demo.Icons = {
   STAR_FULL_WHITE: 'icons/ic_star_white_48dp.png',
   STAR_OUTLINE_WHITE: 'icons/ic_star_border_white_48dp.png',
   STAR_FULL_BLACK: 'icons/ic_star_24px.svg',
-  STAR_OUTLINE_BLACK: 'icons/ic_star_border_24px.svg'
+  STAR_OUTLINE_BLACK: 'icons/ic_star_border_24px.svg',
+  REPEAT: 'icons/ic_repeat_48px.svg',
+  REPEAT_ONE: 'icons/ic_repeat_one_48px.svg',
 }
 
 Demo.AlbumCovers = {
@@ -16,6 +18,16 @@ Demo.AlbumCovers = {
   BLUE: 'resources/album-blue.png',
   ORANGE: 'resources/album-orange.png',
   PURPLE: 'resources/album-purple.png'
+}
+
+Demo.Repeat = {
+	NONE: 0,
+	TRACK: 1,
+	PLAYLIST: 2
+}
+
+Demo.Storage = {
+  REPEAT: "repeat"
 }
 
 Demo.greenScreen = function (show) {
@@ -82,6 +94,7 @@ Demo.Player = function () {
     track: document.getElementById('track-title'),
     artist: document.getElementById('track-artist'),
     album: document.getElementById('track-album'),
+    repeat: document.getElementById('repeat'),
     rating: document.getElementById('rating'),
     ratingChange: document.getElementById('rating-change'),
     progressbar: document.getElementById('progressbar'),
@@ -114,11 +127,14 @@ Demo.Player = function () {
   this.elm.pp.onclick = this.togglePlay.bind(this)
   this.elm.prev.onclick = this.prev.bind(this)
   this.elm.next.onclick = this.next.bind(this)
+  this.elm.repeat.onclick = this.toggleRepeat.bind(this)
   this.setStatus(0)
   this.pos = -1
   this.timer = -1
   this.timerId = 0
   this.setVisibility(false)
+  this.repeat = null
+  this.setRepeat(1 * (window.localStorage.getItem(Demo.Storage.REPEAT) || 0))
 }
 
 Demo.Songs =
@@ -283,7 +299,8 @@ Demo.Player.prototype.next = function () {
     this.setPos(this.pos + 1)
     return true
   }
-  return false
+  this.setPos(0)
+  return true
 }
 
 Demo.Player.prototype.prev = function () {
@@ -365,6 +382,33 @@ Demo.Player.prototype.changeRating = function (rating) {
   for (var i = 0; i < 5; i++) {
     stars[i].src = Demo.Icons[track.rating > i ? 'STAR_FULL_BLACK' : 'STAR_OUTLINE_BLACK']
   }
+}
+
+Demo.Player.prototype.setRepeat = function (repeat) {
+	window.localStorage.setItem(Demo.Storage.REPEAT, "" + repeat)
+	this.repeat = repeat
+	var elm = this.elm.repeat
+	switch (repeat) {
+		case Demo.Repeat.TRACK:
+			elm.classList.remove('btn-secondary')
+			elm.classList.add('btn-info')
+			elm.firstChild.src = Demo.Icons.REPEAT_ONE
+			break
+		case Demo.Repeat.PLAYLIST:
+			elm.classList.remove('btn-secondary')
+			elm.classList.add('btn-info')
+			elm.firstChild.src = Demo.Icons.REPEAT
+			break
+		default:
+			elm.classList.add('btn-secondary')
+			elm.classList.remove('btn-info')
+			elm.firstChild.src = Demo.Icons.REPEAT
+			break
+	}
+}
+
+Demo.Player.prototype.toggleRepeat = function () {
+	this.setRepeat(this.repeat === Demo.Repeat.PLAYLIST ? 0 : this.repeat + 1)
 }
 
 window.player = new Demo.Player()
