@@ -118,9 +118,14 @@
     player.setCanRate(state !== PlaybackState.UNKNOWN)
     player.setCanSeek(state !== PlaybackState.UNKNOWN && elms.progressbar)
     player.setCanChangeVolume(!!elms.volumebar)
+
     var repeat = this._getRepeat()
+    var shuffle = this._getShuffle()
+
     Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
     Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
+    Nuvola.actions.updateEnabledFlag(PlayerAction.SHUFFLE, shuffle !== null)
+    Nuvola.actions.updateState(PlayerAction.SHUFFLE, shuffle)
     Nuvola.actions.updateEnabledFlag(ACTION_RATING, state !== PlaybackState.UNKNOWN)
     Nuvola.actions.updateState(ACTION_RATING, stars)
 
@@ -137,6 +142,11 @@
       return PlayerRepeat.TRACK
     }
     return elm.classList.contains('btn-info') ? PlayerRepeat.PLAYLIST : PlayerRepeat.NONE
+  }
+
+  WebApp._getShuffle = function () {
+	  var elm = this._getElements().shuffle
+    return elm ? elm.classList.contains('btn-info') : null
   }
 
   WebApp._setRepeat = function (repeat) {
@@ -170,6 +180,9 @@
         break
       case PlayerAction.REPEAT:
         this._setRepeat(param)
+        break
+      case PlayerAction.SHUFFLE:
+        Nuvola.clickOnElement(elms.shuffle)
         break
       case ACTION_RATING:
         this._setRating(param)
@@ -235,7 +248,8 @@
       shuffle: document.getElementById('shuffle'),
       progressbar: document.getElementById('progressbar'),
       volumebar: document.getElementById('volume-bar'),
-      repeat: document.getElementById('repeat')
+      repeat: document.getElementById('repeat'),
+      shuffle: document.getElementById('shuffle')
     }
     for (var key in elms) {
       if (elms[key] && elms[key].disabled) {

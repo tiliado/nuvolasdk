@@ -27,7 +27,8 @@ Demo.Repeat = {
 }
 
 Demo.Storage = {
-  REPEAT: "repeat"
+  REPEAT: "repeat",
+  SHUFFLE: "shuffle"
 }
 
 Demo.greenScreen = function (show) {
@@ -95,6 +96,7 @@ Demo.Player = function () {
     artist: document.getElementById('track-artist'),
     album: document.getElementById('track-album'),
     repeat: document.getElementById('repeat'),
+    shuffle: document.getElementById('shuffle'),
     rating: document.getElementById('rating'),
     ratingChange: document.getElementById('rating-change'),
     progressbar: document.getElementById('progressbar'),
@@ -128,6 +130,7 @@ Demo.Player = function () {
   this.elm.prev.onclick = this.prev.bind(this)
   this.elm.next.onclick = this.next.bind(this)
   this.elm.repeat.onclick = this.toggleRepeat.bind(this)
+  this.elm.shuffle.onclick = this.toggleShuffle.bind(this)
   this.setStatus(0)
   this.pos = -1
   this.timer = -1
@@ -135,6 +138,9 @@ Demo.Player = function () {
   this.setVisibility(false)
   this.repeat = null
   this.setRepeat(1 * (window.localStorage.getItem(Demo.Storage.REPEAT) || 0))
+  this.shuffle = null
+  this.setShuffle(window.localStorage.getItem(Demo.Storage.SHUFFLE) === 'true')
+
 }
 
 Demo.Songs =
@@ -409,6 +415,19 @@ Demo.Player.prototype.setRepeat = function (repeat) {
 
 Demo.Player.prototype.toggleRepeat = function () {
 	this.setRepeat(this.repeat === Demo.Repeat.PLAYLIST ? 0 : this.repeat + 1)
+}
+
+Demo.Player.prototype.setShuffle = function (shuffle) {
+	window.localStorage.setItem(Demo.Storage.SHUFFLE, shuffle ? 'true' : 'false')
+	this.shuffle = shuffle
+	var elm = this.elm.shuffle
+	var classes = shuffle ? ['btn-info', 'btn-secondary'] : ['btn-secondary', 'btn-info']
+	elm.classList.add(classes[0])
+	elm.classList.remove(classes[1])
+}
+
+Demo.Player.prototype.toggleShuffle = function () {
+	this.setShuffle(!this.shuffle)
 }
 
 window.player = new Demo.Player()
