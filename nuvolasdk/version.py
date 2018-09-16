@@ -35,7 +35,7 @@ def get_git_version(path=None):
 		try:
 			output = subprocess.check_output(["git", "-C", path, "describe", "--tags", "--long"])
 			return output.decode("utf-8").strip().split("-")
-		except subprocess.CalledProcessError:
+		except (subprocess.CalledProcessError, FileNotFoundError):
 			return None
 	return None
 
