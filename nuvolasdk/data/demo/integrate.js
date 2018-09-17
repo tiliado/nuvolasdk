@@ -124,8 +124,8 @@
 
     Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
     Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
-    Nuvola.actions.updateEnabledFlag(PlayerAction.SHUFFLE, shuffle !== null)
-    Nuvola.actions.updateState(PlayerAction.SHUFFLE, shuffle)
+    player.setCanShuffle(shuffle !== null)
+    player.setShuffleState(shuffle)
     Nuvola.actions.updateEnabledFlag(ACTION_RATING, state !== PlaybackState.UNKNOWN)
     Nuvola.actions.updateState(ACTION_RATING, stars)
 
