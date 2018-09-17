@@ -122,8 +122,8 @@
     var repeat = this._getRepeat()
     var shuffle = this._getShuffle()
 
-    Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
-    Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
+    player.setCanRepeat(repeat !== null)
+    player.setRepeatState(repeat)
     player.setCanShuffle(shuffle !== null)
     player.setShuffleState(shuffle)
     Nuvola.actions.updateEnabledFlag(ACTION_RATING, state !== PlaybackState.UNKNOWN)
