@@ -9,7 +9,7 @@ Demo.Icons = {
   STAR_FULL_BLACK: 'icons/ic_star_24px.svg',
   STAR_OUTLINE_BLACK: 'icons/ic_star_border_24px.svg',
   REPEAT: 'icons/ic_repeat_48px.svg',
-  REPEAT_ONE: 'icons/ic_repeat_one_48px.svg',
+  REPEAT_ONE: 'icons/ic_repeat_one_48px.svg'
 }
 
 Demo.AlbumCovers = {
@@ -21,14 +21,14 @@ Demo.AlbumCovers = {
 }
 
 Demo.Repeat = {
-	NONE: 0,
-	TRACK: 1,
-	PLAYLIST: 2
+  NONE: 0,
+  TRACK: 1,
+  PLAYLIST: 2
 }
 
 Demo.Storage = {
-  REPEAT: "repeat",
-  SHUFFLE: "shuffle"
+  REPEAT: 'repeat',
+  SHUFFLE: 'shuffle'
 }
 
 Demo.greenScreen = function (show) {
@@ -140,7 +140,6 @@ Demo.Player = function () {
   this.setRepeat(1 * (window.localStorage.getItem(Demo.Storage.REPEAT) || 0))
   this.shuffle = null
   this.setShuffle(window.localStorage.getItem(Demo.Storage.SHUFFLE) === 'true')
-
 }
 
 Demo.Songs =
@@ -391,43 +390,43 @@ Demo.Player.prototype.changeRating = function (rating) {
 }
 
 Demo.Player.prototype.setRepeat = function (repeat) {
-	window.localStorage.setItem(Demo.Storage.REPEAT, "" + repeat)
-	this.repeat = repeat
-	var elm = this.elm.repeat
-	switch (repeat) {
-		case Demo.Repeat.TRACK:
-			elm.classList.remove('btn-secondary')
-			elm.classList.add('btn-info')
-			elm.firstChild.src = Demo.Icons.REPEAT_ONE
-			break
-		case Demo.Repeat.PLAYLIST:
-			elm.classList.remove('btn-secondary')
-			elm.classList.add('btn-info')
-			elm.firstChild.src = Demo.Icons.REPEAT
-			break
-		default:
-			elm.classList.add('btn-secondary')
-			elm.classList.remove('btn-info')
-			elm.firstChild.src = Demo.Icons.REPEAT
-			break
-	}
+  window.localStorage.setItem(Demo.Storage.REPEAT, '' + repeat)
+  this.repeat = repeat
+  var elm = this.elm.repeat
+  switch (repeat) {
+    case Demo.Repeat.TRACK:
+      elm.classList.remove('btn-secondary')
+      elm.classList.add('btn-info')
+      elm.firstChild.src = Demo.Icons.REPEAT_ONE
+      break
+    case Demo.Repeat.PLAYLIST:
+      elm.classList.remove('btn-secondary')
+      elm.classList.add('btn-info')
+      elm.firstChild.src = Demo.Icons.REPEAT
+      break
+    default:
+      elm.classList.add('btn-secondary')
+      elm.classList.remove('btn-info')
+      elm.firstChild.src = Demo.Icons.REPEAT
+      break
+  }
 }
 
 Demo.Player.prototype.toggleRepeat = function () {
-	this.setRepeat(this.repeat === Demo.Repeat.PLAYLIST ? 0 : this.repeat + 1)
+  this.setRepeat(this.repeat === Demo.Repeat.PLAYLIST ? 0 : this.repeat + 1)
 }
 
 Demo.Player.prototype.setShuffle = function (shuffle) {
-	window.localStorage.setItem(Demo.Storage.SHUFFLE, shuffle ? 'true' : 'false')
-	this.shuffle = shuffle
-	var elm = this.elm.shuffle
-	var classes = shuffle ? ['btn-info', 'btn-secondary'] : ['btn-secondary', 'btn-info']
-	elm.classList.add(classes[0])
-	elm.classList.remove(classes[1])
+  window.localStorage.setItem(Demo.Storage.SHUFFLE, shuffle ? 'true' : 'false')
+  this.shuffle = shuffle
+  var elm = this.elm.shuffle
+  var classes = shuffle ? ['btn-info', 'btn-secondary'] : ['btn-secondary', 'btn-info']
+  elm.classList.add(classes[0])
+  elm.classList.remove(classes[1])
 }
 
 Demo.Player.prototype.toggleShuffle = function () {
-	this.setShuffle(!this.shuffle)
+  this.setShuffle(!this.shuffle)
 }
 
 window.player = new Demo.Player()

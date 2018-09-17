@@ -134,10 +134,10 @@
   }
 
   WebApp._getRepeat = function () {
-	  var elm = this._getElements().repeat
-	  if (!elm) {
-		  return null
-	  }
+    var elm = this._getElements().repeat
+    if (!elm) {
+      return null
+    }
     if (elm.firstChild.src.endsWith('ic_repeat_one_48px.svg')) {
       return PlayerRepeat.TRACK
     }
@@ -145,7 +145,7 @@
   }
 
   WebApp._getShuffle = function () {
-	  var elm = this._getElements().shuffle
+    var elm = this._getElements().shuffle
     return elm ? elm.classList.contains('btn-info') : null
   }
 
@@ -247,9 +247,7 @@
       repeat: document.getElementById('repeat'),
       shuffle: document.getElementById('shuffle'),
       progressbar: document.getElementById('progressbar'),
-      volumebar: document.getElementById('volume-bar'),
-      repeat: document.getElementById('repeat'),
-      shuffle: document.getElementById('shuffle')
+      volumebar: document.getElementById('volume-bar')
     }
     for (var key in elms) {
       if (elms[key] && elms[key].disabled) {
