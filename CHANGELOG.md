@@ -1,6 +1,15 @@
 Nuvola SDK Change Log
 =====================
 
+4.13.0 - October 14th, 2018
+---------------------------
+
+* The demo player example was updated with shuffle/repeat functionality.
+  Issue: tiliado/nuvolaruntime#20, tiliado/nuvolaruntime#21
+* new-project, convert-project: CircleCI configuration was added to run `nuvolasdk check-project` when a new commit
+  is pushed. Look at [Tiliado projet at CircleCI](https://circleci.com/gh/tiliado) to see the results.
+  Issue: tiliado/nuvolaruntime#420
+
 4.12.0 - July 21st, 2018
 ------------------------
 
