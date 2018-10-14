@@ -216,6 +216,10 @@ def convert_project(directory, prog, argv):
 	if readme_md_to_substitute != F_README_MD:
 		fwrite(F_TEMPLATE_README_MD_DIFF, diff(F_README_MD, F_TEMPLATE_README_MD))
 
+	F_CIRCLECI_CONFIG = '.circleci/config.yml'
+	mkdirs(fdirname(F_CIRCLECI_CONFIG))
+	cp(joinpath(sdk_data, "template", F_CIRCLECI_CONFIG), F_CIRCLECI_CONFIG)
+
 	D_SRC = "src"
 	F_ICON_SVG = joinpath(D_SRC, "icon.svg")
 	if isdir(D_SRC) and not isfile(F_ICON_SVG):
@@ -269,6 +273,7 @@ def convert_project(directory, prog, argv):
 	try_run('git add metadata.in.json')
 	try_run('git add configure')
 	try_run('git add .gitignore')
+	try_run('git add .circleci/config.yml')
 	try_run('git add ' + F_CHANGELOG_MD)
 	try_run('git add ' + F_CONTRIBUTING_MD)
 	try_run('git add ' + F_README_MD)

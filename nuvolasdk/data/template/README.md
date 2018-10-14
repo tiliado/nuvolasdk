@@ -1,4 +1,4 @@
-${app_name} • Nuvola Apps Runtime
+${app_name} • Nuvola Apps Runtime [![CircleCI](https://circleci.com/gh/tiliado/nuvola-app-${app_id_dashed}/tree/master.svg?style=svg)](https://circleci.com/gh/tiliado/nuvola-app-${app_id_dashed}/tree/master)
 =================================
 
 Integration of ${app_name} into your linux desktop via
