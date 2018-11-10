@@ -2,6 +2,7 @@ Nuvola SDK Change Log
 =====================
 
 * Circle CI jobs now use Fedora 29.
+* Per-application screenshots are used in AppStream metadata. Issue: tiliado/nuvolasdk#5
 
 4.13.0 - October 14th, 2018
 ---------------------------
