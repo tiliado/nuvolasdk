@@ -1,6 +1,8 @@
 Nuvola SDK Change Log
 =====================
 
+* Circle CI jobs now use Fedora 29.
+
 4.13.0 - October 14th, 2018
 ---------------------------
 

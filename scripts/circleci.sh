@@ -2,7 +2,7 @@
 
 docker run \
   --mount src=`pwd`,target=/workdir,type=bind \
-  --privileged --name fedora fedora:28 \
+  --privileged --name fedora fedora:29 \
   bash -c '
     set -eu;
     export LANG=en_US.UTF-8
