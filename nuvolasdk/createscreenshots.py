@@ -45,11 +45,11 @@ def create_arg_parser(prog):
 def run(directory, prog, argv):
 	args = create_arg_parser(prog).parse_args(argv)
 	output_dir = abspath(args.output_dir or directory)
-	kind = args.kind or 'other'
+	kind = args.kind or screenshots.DEFAULT_KIND
 	web_view_screenshot = abspath(args.input)
 	screenshots_dir = utils.get_sdk_data_dir('screenshots')
 	mkdirs(output_dir)
-	for base, bounds, fill in screenshots.BASE_SCREENSHOTS[kind]:
+	for base, bounds, fill, _caption in screenshots.BASE_SCREENSHOTS[kind]:
 		input_path = joinpath(screenshots_dir, base)
 		output_path = joinpath(output_dir, base)
 		print("'%s' → '%s'" % (input_path, output_path))

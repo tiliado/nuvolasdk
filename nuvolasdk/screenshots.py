@@ -55,11 +55,15 @@ SCREENSHOTS = [
     ),
 ]
 
+HOSTED_SCREENSHOTS_WEB_ROOT = 'https://nuvola.tiliado.eu/screenshots/apps/'
+
+DEFAULT_KIND = 'other'
+
 BASE_SCREENSHOTS = {
 	'other': [
-		('pantheon.png', '90,80+1080,600', '#c1c1c1'),
-		('unity.png', '108,106+1080,600', '#c1c1c1'),
-		('gnome.png', '117,87+1080,600', '#c1c1c1'),
+		('gnome.png', '117,87+1080,600', '#c1c1c1', 'Integration with GNOME desktop environment.'),
+		('unity.png', '108,106+1080,600', '#c1c1c1', 'Integration with Unity desktop environment.'),
+		('pantheon.png', '90,80+1080,600', '#c1c1c1', 'Integration with Pantheon desktop environment.'),
 	]
 }
 

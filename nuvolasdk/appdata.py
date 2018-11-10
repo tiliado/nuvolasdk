@@ -1,5 +1,5 @@
 """
-Copyright 2016-2017 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -114,8 +114,9 @@ def create_app_data_xml(meta, genuine):
 					tree.add("p", para)
 			tree.add("p", LEGAL.strip().format(name=meta["name"]))
 		with tree("screenshots"):
-			for i, (url, caption) in enumerate(screenshots.SCREENSHOTS):
-				args = {"type": "default"} if i == 0 else {} 
+			for i, (filename, _bounds, _fill, caption) in enumerate(screenshots.BASE_SCREENSHOTS[screenshots.DEFAULT_KIND]):
+				url = screenshots.HOSTED_SCREENSHOTS_WEB_ROOT + app_id + "/" + filename
+				args = {"type": "default"} if i == 0 else {}
 				with tree("screenshot", **args):
 					tree.add("image", url)
 					tree.add("caption", caption)
