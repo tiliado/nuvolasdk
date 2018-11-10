@@ -11,9 +11,9 @@ docker run \
     flatpak remote-add flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     flatpak remote-add  nuvola https://dl.tiliado.eu/flatpak/nuvola.flatpakrepo
     echo Installing eu.tiliado.NuvolaAdk//stable...
-    flatpak install -y nuvola eu.tiliado.NuvolaAdk//stable > /dev/null
+    flatpak install -y nuvola eu.tiliado.NuvolaAdk//stable
     echo Installing eu.tiliado.NuvolaAdk//master...
-    flatpak install -y nuvola eu.tiliado.NuvolaAdk//master > /dev/null
+    flatpak install -y nuvola eu.tiliado.NuvolaAdk//master
     echo Done installation
     cd /workdir
     mkdir -p keep/stable keep/master
