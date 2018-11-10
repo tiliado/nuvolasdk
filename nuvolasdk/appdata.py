@@ -2,13 +2,13 @@
 Copyright 2016-2018 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -86,7 +86,7 @@ def create_app_data_xml(meta, genuine):
 	app_id = meta["id"]
 	uid = utils.get_unique_app_id(app_id, genuine)
 	dbus_launcher = utils.get_dbus_launcher_name(app_id)
-	
+
 	tree = xmltree.TreeBuilder()
 	with tree("component", type="desktop"):
 		tree.add("id", uid + ".desktop")
@@ -124,7 +124,7 @@ def create_app_data_xml(meta, genuine):
 		tree.add("url", "https://github.com/tiliado/nuvolaplayer/wiki/Bug-Reporting-Guidelines", type="bugtracker")
 		tree.add("url", "https://tiliado.github.io/nuvolaplayer/documentation/4/explore.html", type="help")
 		tree.add("url", "https://tiliado.eu/nuvolaplayer/funding/", type="donation")
-		
+
 		tree.add("developer_name", meta["maintainer_name"])
 		tree.add("updatecontact", "janousek.jiri@gmail.com")
 		with tree("provides"):
