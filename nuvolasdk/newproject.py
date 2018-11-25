@@ -166,6 +166,9 @@ def new_project(directory, prog, argv):
 		print("Expanding variables in", path)
 		dollar_replace(path, subst)
 
+	print("Fixing zero mtimes")
+	utils.fix_zero_mtime(top_dir)
+
 	if args.init_git_repo:
 		print("Trying to init git repo")
 		ok = try_run('git init')

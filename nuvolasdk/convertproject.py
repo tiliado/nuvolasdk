@@ -269,6 +269,9 @@ def convert_project(directory, prog, argv):
 		print("Updating .gitignore")
 		fwrite(GITIGNORE, "\n".join(gitignore))
 
+	print("Fixing zero mtimes")
+	utils.fix_zero_mtime(directory)
+
 	print("Trying to update git repo")
 	try_run('git add metadata.in.json')
 	try_run('git add configure')

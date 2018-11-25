@@ -28,6 +28,7 @@ import re
 import unicodedata
 import os
 import subprocess
+import time
 
 from nuvolasdk import defaults
 from nuvolasdk import shkit
@@ -142,3 +143,12 @@ def parse_json(data, **kwargs):
 def dump_json(data):
 	data = json.dumps(data, indent=2, sort_keys=False, separators=(',', ': '), ensure_ascii=False)
 	return data + '\n' if data else ''
+
+
+def fix_zero_mtime(directory):
+	now = time.time()
+	for root, _dirs, files in os.walk(directory):
+		for path in files:
+			full_path = os.path.join(root, path)
+			if not os.path.getmtime(full_path):
+				os.utime(full_path, (now, now))
