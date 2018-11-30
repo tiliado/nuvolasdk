@@ -152,3 +152,11 @@ def fix_zero_mtime(directory):
 			full_path = os.path.join(root, path)
 			if not os.path.getmtime(full_path):
 				os.utime(full_path, (now, now))
+
+
+def list_files_with_zero_mtime(directory):
+	for root, _dirs, files in os.walk(directory):
+		for path in files:
+			full_path = os.path.join(root, path)
+			if not os.path.getmtime(full_path):
+				yield full_path

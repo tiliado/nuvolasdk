@@ -231,6 +231,15 @@ def run(directory, prog, argv):
 				'Run `standard --fix` to fix some violations automatically, then run `standard` to check style again.')
 			n_errors += 1
 
+	zero_mtime_files = list(utils.list_files_with_zero_mtime(directory))
+	if zero_mtime_files:
+		n_errors += 1
+		print("There are {} file(s) with zero modification time. Run `nuvolasdk convert-project` to fix that.".format(
+			len(zero_mtime_files)))
+		prefix_len = len(directory) + 1
+		for path in zero_mtime_files:
+			print("  - ", path[prefix_len:])
+
 	if n_errors > 0:
 		print("\n-----------------------------------------------------\n%s errors have been found." % n_errors)
 		return 3
