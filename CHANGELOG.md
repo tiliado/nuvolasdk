@@ -1,6 +1,9 @@
 Nuvola SDK Change Log
 =====================
 
+4.15.0 - December 28th, 2018
+----------------------------
+
 * new-project, convert-project: Fix zero modification times for files copied from a template inside Nuvola ADK.
   Issue: tiliado/nuvolasdk#10
 * check-project: Files with zero modification times are detected. Issue: tiliado/nuvolasdk#10
