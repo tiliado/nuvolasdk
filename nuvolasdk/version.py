@@ -1,5 +1,5 @@
 """
-Copyright 2018 Jiří Janoušek <janousek.jiri@gmail.com>
+Copyright 2018-2019 Jiří Janoušek <janousek.jiri@gmail.com>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os.path
 import subprocess
 
-BASE_VERSION = "4.15.0"
+BASE_VERSION = "4.16.0"
 GIT_VERSION_FILE = 'nuvolasdk/git_version_info.py'
 
 def get_git_version(path=None):
