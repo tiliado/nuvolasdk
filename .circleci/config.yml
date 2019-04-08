@@ -2,6 +2,7 @@ version: 2
 jobs:
   build:
     docker:
+      - image: circleci/classic:latest
     working_directory: ~/workdir
     steps:
       - checkout
