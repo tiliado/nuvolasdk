@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eu
+mkdir -p keep/stable keep/master
+
+run() {
+  branch="$1"
+  shift
+  cmd="$1"
+  shift
+  flatpak run --filesystem=/workdir --command="$cmd" "eu.tiliado.NuvolaAdk//$branch" "$@"
+}
+
+for branch in stable master; do
+	run "$branch" nuvolasdk check-project
+	run "$branch" sh -c "./configure --genuine"
+	run "$branch" make all
+	cp -rv screenshots "keep/$branch"
+	run "$branch" make distclean
+done
