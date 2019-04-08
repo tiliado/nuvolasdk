@@ -7,5 +7,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build Docker image tiliado/nuvolasdk-ci:$CIRCLE_BRANCH
-          command: cd circleci-image && docker build -t tiliado/nuvolasdk-ci:$CIRCLE_BRANCH .
+          name: Build & push Docker image tiliado/nuvolasdk-ci
+          command: |
+            if [ "$CIRCLE_BRANCH" = 'master' ]; then
+                TAG=latest
+            else
+                TAG="$CIRCLE_BRANCH"
+            fi
+            IMAGE="tiliado/nuvolasdk-ci:$TAG"
+            echo -e "\n\n~~~~ Building $IMAGE ~~~~\n"
+            cd circleci-image
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker build -t "$IMAGE" .
+            docker push "$IMAGE"
