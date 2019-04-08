@@ -1,6 +1,22 @@
 #!/bin/bash
-set -eu
-mkdir -p keep/stable keep/master
+set -E
+set -u
+
+branch=
+
+fail()
+{
+  code=$?
+  if [ ! -z "$branch" ]; then
+    echo -e "\n\n~~~ Archiving build directory because of failure ~~~"
+    for item in *; do
+      test "$item" = keep || cp -rv "$item" "keep/$branch"
+    done
+  fi
+  exit $code
+}
+
+trap fail ERR
 
 run() {
   branch="$1"
@@ -10,10 +26,17 @@ run() {
   flatpak run --filesystem=/workdir --command="$cmd" "eu.tiliado.NuvolaAdk//$branch" "$@"
 }
 
+check() {
+  branch="$1"
+  echo -e "\n\n~~~~~~~~~~ Testing with ADK branch $branch: ~~~~~~~~~~\n"
+  mkdir -pv "keep/$branch"
+  run "$branch" nuvolasdk check-project
+  run "$branch" sh -c "./configure --genuine"
+  run "$branch" make all
+  cp -rv screenshots "keep/$branch"
+  run "$branch" make distclean
+}
+
 for branch in stable master; do
-	run "$branch" nuvolasdk check-project
-	run "$branch" sh -c "./configure --genuine"
-	run "$branch" make all
-	cp -rv screenshots "keep/$branch"
-	run "$branch" make distclean
+  check "$branch"
 done
