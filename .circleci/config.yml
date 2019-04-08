@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+    working_directory: ~/workdir
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image tiliado/nuvolasdk-ci:$CIRCLE_BRANCH
+          command: cd circleci-image && docker build -t tiliado/nuvolasdk-ci:$CIRCLE_BRANCH .
