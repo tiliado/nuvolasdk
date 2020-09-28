@@ -1,6 +1,13 @@
 Nuvola SDK Change Log
 =====================
 
+4.17.0 - September 28, 2020
+---------------------------
+
+* Add Nuvola SDK CI Image Issue: tiliado/nuvolasdk#11
+* Use Nuvola SDK CI image for CI of scripts. Issue: tiliado/nuvolasdk#11
+* Store built files on CI failure.
+
 4.16.0 - February 24th, 2019
 ----------------------------
 
