@@ -1,7 +1,7 @@
 Nuvola SDK
 ==========
 
-SDK for building Nuvola Apps Runtime's web app scripts.
+SDK for building Nuvola Player integration scripts.
 
 Install Nuvola SDK
 ------------------

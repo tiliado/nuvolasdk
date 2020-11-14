@@ -33,11 +33,9 @@ from nuvolasdk.shkit import *
 
 
 DESCRIPTION = """
-Nuvola is a runtime for semi-sandboxed web apps providing more native user experience and tighter
-integration with Linux desktop environments than usual web browsers can offer. It tries to feel and look
-like a native application as much as possible.
-Nuvola mostly specializes on music streaming web apps (e.g. Google Play Music, Spotify, Amazon Music, Deezer,
-and more), but progress is being made to support generic web apps (e.g. Google Calendar, Google Keep, etc.).
+Nuvola Player provides a tight Linux desktop integration for web-based media streaming services such as Spotify, YouTube Music,
+Apple Music and others. The goal is to achieve more native user experience and tighter integration with Linux desktop
+environments than usual web browsers can offer. It tries to feel and look like a native application as much as possible.
 
 Features of Nuvola: desktop launchers, integration with media applets (e.g. in GNOME Shell and Ubuntu sound menu),
 Unity launcher quick list actions, lyrics fetching, Last.fm audio scrobbler, tray icon, desktop notifications,
@@ -82,7 +80,7 @@ def run(directory, prog, argv):
 
 
 def create_app_data_xml(meta, genuine):
-	runtime_name = "Nuvola Apps" if genuine else "Web Apps"
+	runtime_name = "Nuvola Player" if genuine else "Cloud Player"
 	app_id = meta["id"]
 	uid = utils.get_unique_app_id(app_id, genuine)
 	dbus_launcher = utils.get_dbus_launcher_name(app_id)
@@ -92,17 +90,17 @@ def create_app_data_xml(meta, genuine):
 		tree.add("id", uid + ".desktop")
 		tree.add("metadata_license", "CC0-1.0")
 		tree.add("project_license", licenses.get_spdx_expression(meta["license"], ignore_unknown=True))
-		tree.add("name", "%s • %s" % (meta["name"], "Nuvola App" if genuine else "web app"))
+		tree.add("name", "%s • %s" % (meta["name"], "Nuvola Player" if genuine else "Cloud Player"))
 		if genuine:
-			summary = "Web app running in Nuvola Apps Runtime."
+			summary = "Web-based media streaming service integrated with Nuvola Player."
 		else:
-			summary = "Running in a runtime based on the source code from Nuvola Apps project."
+			summary = "Running in a runtime based on the source code from Nuvola Player project."
 		tree.add("summary", summary)
 		if genuine:
-			summary = "%s is a semi-sandboxed web application running in %s Runtime." % (meta["name"], runtime_name)
+			summary = "%s is a web-based media streaming service integrated with %s." % (meta["name"], runtime_name)
 		else:
-			summary = ("%s is a semi-sandboxed web application running in %s Runtime" % (meta["name"], runtime_name)
-			+ " based on the source code from Nuvola Apps project.")
+			summary = ("%s is a web-based media streaming service integrated with %s " % (meta["name"], runtime_name)
+			+ " based on the source code from Nuvola Player project.")
 		with tree("description"):
 			tree.add("p", summary)
 			if genuine:
