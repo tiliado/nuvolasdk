@@ -25,15 +25,15 @@
 'use strict';
 
 (function (Nuvola) {
-  var player = Nuvola.$object(Nuvola.MediaPlayer)
+  const player = Nuvola.$object(Nuvola.MediaPlayer)
 
-  var PlaybackState = Nuvola.PlaybackState
-  var PlayerAction = Nuvola.PlayerAction
-  var PlayerRepeat = Nuvola.PlayerRepeat
-  var _ = Nuvola.Translate.gettext
+  const PlaybackState = Nuvola.PlaybackState
+  const PlayerAction = Nuvola.PlayerAction
+  const PlayerRepeat = Nuvola.PlayerRepeat
+  const _ = Nuvola.Translate.gettext
 
   // Define rating options - 5 states with state id 0-5 representing 0-5 stars
-  var ratingOptions = [
+  const ratingOptions = [
     // stateId, label, mnemo_label, icon, keybinding
     [0, _('Rating: 0 stars'), null, null, null, null],
     [1, _('Rating: 1 star'), null, null, null, null],
@@ -43,14 +43,14 @@
     [5, _('Rating: 5 stars'), null, null, null, null]
   ]
   // Add new radio action named ``rating`` with initial state ``3`` (3 stars)
-  var ACTION_RATING = 'rating'
+  const ACTION_RATING = 'rating'
   Nuvola.actions.addRadioAction('playback', 'win', ACTION_RATING, 3, ratingOptions)
 
-  var WebApp = Nuvola.$WebApp()
+  const WebApp = Nuvola.$WebApp()
 
   WebApp._onInitWebWorker = function (emitter) {
     Nuvola.WebApp._onInitWebWorker.call(this, emitter)
-    var state = document.readyState
+    const state = document.readyState
     if (state === 'interactive' || state === 'complete') {
       this._onPageReady()
     } else {
@@ -58,11 +58,11 @@
     }
   }
 
-// Page is ready for magic
+  // Page is ready for magic
   WebApp._onPageReady = function () {
     // Add extra actions
-    var actions = []
-    for (var i = 0; i <= 5; i++) {
+    const actions = []
+    for (let i = 0; i <= 5; i++) {
       actions.push(ACTION_RATING + '::' + i)
     }
     player.addExtraActions(actions)
@@ -75,8 +75,8 @@
 
   // Extract data from the web page
   WebApp.update = function () {
-    var elms = this._getElements()
-    var state
+    const elms = this._getElements()
+    let state
     if (elms.pause) {
       state = PlaybackState.PLAYING
     } else if (elms.play) {
@@ -85,7 +85,7 @@
       state = PlaybackState.UNKNOWN
     }
 
-    var track = {
+    const track = {
       title: Nuvola.queryText('#track-title'),
       artist: Nuvola.queryText('#track-artist'),
       album: Nuvola.queryText('#track-album'),
@@ -96,8 +96,8 @@
       rating: null
     }
 
-    var rating = document.getElementById('rating')
-    var stars = 0
+    const rating = document.getElementById('rating')
+    let stars = 0
     if (rating) {
       for (; stars < rating.childNodes.length; stars++) {
         if (rating.childNodes[stars].src.includes('star_border_white')) {
@@ -119,8 +119,8 @@
     player.setCanSeek(state !== PlaybackState.UNKNOWN && elms.progressbar)
     player.setCanChangeVolume(!!elms.volumebar)
 
-    var repeat = this._getRepeat()
-    var shuffle = this._getShuffle()
+    const repeat = this._getRepeat()
+    const shuffle = this._getShuffle()
 
     player.setCanRepeat(repeat !== null)
     player.setRepeatState(repeat)
@@ -134,7 +134,7 @@
   }
 
   WebApp._getRepeat = function () {
-    var elm = this._getElements().repeat
+    const elm = this._getElements().repeat
     if (!elm) {
       return null
     }
@@ -145,7 +145,7 @@
   }
 
   WebApp._getShuffle = function () {
-    var elm = this._getElements().shuffle
+    const elm = this._getElements().shuffle
     return elm ? elm.classList.contains('btn-info') : null
   }
 
@@ -156,7 +156,7 @@
   }
 
   WebApp._onActionActivated = function (emitter, name, param) {
-    var elms = this._getElements()
+    const elms = this._getElements()
     switch (name) {
       case PlayerAction.TOGGLE_PLAY:
         if (elms.play) {
@@ -190,17 +190,18 @@
       case PlayerAction.CHANGE_VOLUME:
         Nuvola.clickOnElement(elms.volumebar, param, 0.5)
         break
-      case PlayerAction.SEEK:
-        var total = Nuvola.parseTimeUsec(Nuvola.queryText('#timetotal'))
+      case PlayerAction.SEEK: {
+        const total = Nuvola.parseTimeUsec(Nuvola.queryText('#timetotal'))
         if (param > 0 && param <= total) {
           Nuvola.clickOnElement(elms.progressbar, param / total, 0.5)
         }
         break
+      }
     }
   }
 
   WebApp._onRatingSet = function (emitter, rating) {
-    var stars
+    let stars
     if (rating < 0.1) {
       stars = 0
     } else if (rating < 0.3) {
@@ -220,10 +221,10 @@
   }
 
   WebApp._setRating = function (stars) {
-    var elm = document.getElementById('rating-change')
+    const elm = document.getElementById('rating-change')
     if (elm) {
       if (stars === 0) {
-        var rating = document.getElementById('rating')
+        const rating = document.getElementById('rating')
         if (rating) {
           for (stars = 0; stars < rating.childNodes.length; stars++) {
             if (rating.childNodes[stars].src.includes('star_border_white')) {
@@ -239,7 +240,7 @@
   }
 
   WebApp._getElements = function () {
-    var elms = {
+    const elms = {
       play: document.getElementById('pp'),
       pause: null,
       next: document.getElementById('next'),
@@ -249,7 +250,7 @@
       progressbar: document.getElementById('progressbar'),
       volumebar: document.getElementById('volume-bar')
     }
-    for (var key in elms) {
+    for (const key in elms) {
       if (elms[key] && elms[key].disabled) {
         elms[key] = null
       }
@@ -262,4 +263,4 @@
   }
 
   WebApp.start()
-})(this)  // function(Nuvola)
+})(this) // function(Nuvola)
