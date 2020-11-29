@@ -1,6 +1,11 @@
 Nuvola SDK Change Log
 =====================
 
+4.19.0 - November 29, 2020
+--------------------------
+
+* Apply standard --fix. Issue: tiliado/nuvolaplayer#674
+
 4.18.0 - October 30, 2020
 -------------------------
 
