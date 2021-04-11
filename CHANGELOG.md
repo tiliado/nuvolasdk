@@ -1,6 +1,11 @@
 Nuvola SDK Change Log
 =====================
 
+4.21.0 - April 11th, 2021
+-------------------------
+
+* Sync version with Nuvola Runtime.
+
 4.20.0 - December 27, 2020
 --------------------------
 
