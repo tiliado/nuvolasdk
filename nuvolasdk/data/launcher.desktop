@@ -7,3 +7,4 @@ Icon=@@ICON@@
 StartupWMClass=@@APP_UID@@
 StartupNotify=true
 Terminal=false
+X-GNOME-UsesNotifications=true
