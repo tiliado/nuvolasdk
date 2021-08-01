@@ -1,6 +1,11 @@
 Nuvola SDK Change Log
 =====================
 
+4.23.0 - August 1st, 2021
+-------------------------
+
+* Add X-GNOME-UsesNotifications to desktop files.
+
 4.22.0 - May 9th, 2021
 ----------------------
 
