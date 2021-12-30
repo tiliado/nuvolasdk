@@ -25,7 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os.path
 import subprocess
 
-BASE_VERSION = "4.23.0"
+BASE_VERSION = "4.24.0"
 GIT_VERSION_FILE = 'nuvolasdk/git_version_info.py'
 
 def get_git_version(path=None):
